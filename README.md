@@ -1,3 +1,7 @@
+# Using AirBnB TSLint 
+
+Command: npx install-peerdeps --dev eslint-config-airbnb
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
