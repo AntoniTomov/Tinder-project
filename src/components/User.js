@@ -8,31 +8,58 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+
+import TinderCard from 'react-tinder-card';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+
 export default function User(props) {
-    console.log(props);
-    const [displayName, changeDisplayName] = useState(props.user.displayName);
-    const [image, changeImage] = useState(props.user.image);
-    const [age, changeAge] = useState(props.user.age);
-    const [more, changeMore] = useState(props.user.more);
-    const [infoField, changeInfo] = useState(more.description || more.socialNetwork || more.location);
-    // location, interests, description, music
-    // this.more.description || this.more.socialNetwork || this.more.location
-    // changeInfo(more.description || more.socialNetwork || more.location);
+    // const [displayName, changeDisplayName] = useState(props.user.displayName);
+    // const [image, changeImage] = useState(props.user.image);
+    // const [age, changeAge] = useState(props.user.age);
+    // const [more, changeMore] = useState(props.user.more);
+    // const [infoField, changeInfo] = useState(more.description || more.socialNetwork || more.location);
 
-    const useStyles = makeStyles({
-        root: {
-            maxWidth: 345,
-        },
-        media: {
-            height: 140,
-        },
-    });
+    // const useStyles = makeStyles({
+    //     root: {
+    //         maxWidth: 345,
+    //     },
+    //     media: {
+    //         height: 140,
+    //     },
+    // });
 
-    const classes = useStyles();
+    // const classes = useStyles();
+
+    const characters = props.users;
+    const [lastDirection, setLastDirection] = useState()
+
+    const swiped = (direction, nameToDelete) => {
+        console.log('removing: ' + nameToDelete)
+        setLastDirection(direction)
+    }
+
+    const outOfFrame = (name) => {
+        console.log(name + ' left the screen!')
+    }
 
     return (
         <>
-            <Card className={classes.root}>
+        <link href='https://fonts.googleapis.com/css?family=Damion&display=swap' rel='stylesheet' />
+        <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
+        <h1>Your next love:</h1>
+        <div className='cardContainer'>
+        {characters.map((character) =>
+            <TinderCard className='swipe' key={character.displayName} onSwipe={(dir) => swiped(dir, character.displayName)} onCardLeftScreen={() => outOfFrame(character.displayName)}>
+            <div style={{ backgroundImage: 'url(' + character.image + ')' }} className='card'>
+                <h3 className="card-title">{character.displayName} {character.age}</h3>
+                <p className="card-desc">{character.more.description}</p>
+                <p className="card-loc">{character.more.location}<LocationOnIcon fontSize="small"/></p>
+            </div>
+            </TinderCard>
+        )}
+        </div>
+        {lastDirection ? <h2 className='infoText'>You swiped {lastDirection}</h2> : <h2 className='infoText' />}
+            {/* <Card className={classes.root}>
                 <CardActionArea>
                 <CardMedia
                     className={classes.media}
@@ -43,9 +70,6 @@ export default function User(props) {
                     <Typography gutterBottom variant="h5" component="h2">
                     {displayName} {age}
                     </Typography>
-                    {/* <Typography variant="body2" color="textSecondary" component="p">
-                    {more.description}
-                    </Typography> */}
                     <Typography variant="body2" color="textSecondary" component="p">
                     {infoField}
                     </Typography>
@@ -59,7 +83,7 @@ export default function User(props) {
                     Dislike
                 </Button>
                 </CardActions>
-            </Card>
+            </Card> */}
         </>
     )
 }

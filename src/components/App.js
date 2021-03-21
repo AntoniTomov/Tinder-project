@@ -4,11 +4,11 @@ import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import MenuAppBar from './MenuAppBar';
 import User from "./User";
 
-function HomePage() {
+function Login() {
 
   return (
     <div>
-      <h1>Welcome to the best Dating website!!!</h1>
+      <h1>Login in order to continue...</h1>
     </div>
   )
 }
@@ -91,16 +91,20 @@ function App() {
         <Route exact path='/'>
           {user ? <>
             <h3>Home page</h3>
-            {
+            <User users={users} />
+            {/* {
               users.map(user => <User user={user} />)
-            }
+            } */}
             
           </> : <Redirect to="/login"/>}
         </Route>
         <Route exact path='/login'>
           <>
-            <h3>Login page</h3>
-            <button onClick={login}>Log fake user</button>
+          {user ? <Redirect to="/Home" />
+          : <Login />
+          }
+            {/* <h3>Login page</h3>
+            <button onClick={login}>Log fake user</button> */}
           </>
         </Route>
         <Route exact path='/register'>
