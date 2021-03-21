@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../App.css';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import MenuAppBar from './MenuAppBar';
+import User from "./User";
 
 function HomePage() {
 
@@ -23,6 +24,41 @@ function Matches() {
 function App() {
 
   let [user, setUser] = useState(null);
+  let users = [
+    {
+      displayName: 'Pesho',
+      age: 19,
+      image: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg',
+      more: {
+        description: 'Az sum Mega Pi4!1!',
+        socialNetwork: 'IG:peshoPi4a',
+        location: 'Sofeto',
+      },
+      infoField: '',
+    },
+    {
+      displayName: 'SlaTkata93',
+      age: 19,
+      image: 'https://www.tiktok.com/api/img/?itemId=6917677726480551174&location=1&aid=1988',
+      more: {
+        description: 'Slatka sum.',
+        socialNetwork: 'IG:slatkata93',
+        location: 'Sofeto',
+      },
+      infoField: '',
+    },
+    {
+      displayName: 'Genata',
+      age: 39,
+      image: 'https://pbs.twimg.com/media/A9Hb3hdCIAMteGN.jpg',
+      more: {
+        description: 'Karam koolo',
+        socialNetwork: '',
+        location: 'Sofeto',
+      },
+      infoField: '',
+    }
+  ];
 
   function login() {
     setUser({name: 'Pesho', age: 15});
@@ -53,7 +89,13 @@ function App() {
 
       <Switch>
         <Route exact path='/'>
-          {user ? <h3>Home page</h3> : <Redirect to="/login"/>}
+          {user ? <>
+            <h3>Home page</h3>
+            {
+              users.map(user => <User user={user} />)
+            }
+            
+          </> : <Redirect to="/login"/>}
         </Route>
         <Route exact path='/login'>
           <>
