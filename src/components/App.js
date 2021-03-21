@@ -1,8 +1,9 @@
 import '../App.css';
-import { BrowserRouter } from "react-router-dom"
+import { Button, Menu, MenuItem } from '@material-ui/core';
+import SimpleMenu from './Menu';
 
 function HomePage() {
-  
+
   return (
     <div>
       <h1>Welcome to the best Dating website!!!</h1>
@@ -21,9 +22,11 @@ function Matches() {
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-      
-      </BrowserRouter>
+      <Matches />
+      <Button variant="contained" color="primary">
+        Primary
+      </Button>
+      <SimpleMenu />
     </div>
   );
 }
