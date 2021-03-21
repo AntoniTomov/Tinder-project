@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/AntoniTomov/Tinder-project/static/css/main.c17d4324.chunk.css",
-    "main.js": "/AntoniTomov/Tinder-project/static/js/main.22a25daf.chunk.js",
-    "main.js.map": "/AntoniTomov/Tinder-project/static/js/main.22a25daf.chunk.js.map",
-    "runtime-main.js": "/AntoniTomov/Tinder-project/static/js/runtime-main.8649d8dd.js",
-    "runtime-main.js.map": "/AntoniTomov/Tinder-project/static/js/runtime-main.8649d8dd.js.map",
-    "static/css/2.536049cb.chunk.css": "/AntoniTomov/Tinder-project/static/css/2.536049cb.chunk.css",
-    "static/js/2.6cc95895.chunk.js": "/AntoniTomov/Tinder-project/static/js/2.6cc95895.chunk.js",
-    "static/js/2.6cc95895.chunk.js.map": "/AntoniTomov/Tinder-project/static/js/2.6cc95895.chunk.js.map",
-    "index.html": "/AntoniTomov/Tinder-project/index.html",
-    "static/css/2.536049cb.chunk.css.map": "/AntoniTomov/Tinder-project/static/css/2.536049cb.chunk.css.map",
-    "static/css/main.c17d4324.chunk.css.map": "/AntoniTomov/Tinder-project/static/css/main.c17d4324.chunk.css.map",
-    "static/js/2.6cc95895.chunk.js.LICENSE.txt": "/AntoniTomov/Tinder-project/static/js/2.6cc95895.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/AntoniTomov/Tinder-project/static/media/roboto-vietnamese-400-normal.52cebac0.woff2"
+    "main.css": "/Tinder-project/static/css/main.c17d4324.chunk.css",
+    "main.js": "/Tinder-project/static/js/main.22a25daf.chunk.js",
+    "main.js.map": "/Tinder-project/static/js/main.22a25daf.chunk.js.map",
+    "runtime-main.js": "/Tinder-project/static/js/runtime-main.549904c0.js",
+    "runtime-main.js.map": "/Tinder-project/static/js/runtime-main.549904c0.js.map",
+    "static/css/2.db2f0a09.chunk.css": "/Tinder-project/static/css/2.db2f0a09.chunk.css",
+    "static/js/2.6cc95895.chunk.js": "/Tinder-project/static/js/2.6cc95895.chunk.js",
+    "static/js/2.6cc95895.chunk.js.map": "/Tinder-project/static/js/2.6cc95895.chunk.js.map",
+    "index.html": "/Tinder-project/index.html",
+    "static/css/2.db2f0a09.chunk.css.map": "/Tinder-project/static/css/2.db2f0a09.chunk.css.map",
+    "static/css/main.c17d4324.chunk.css.map": "/Tinder-project/static/css/main.c17d4324.chunk.css.map",
+    "static/js/2.6cc95895.chunk.js.LICENSE.txt": "/Tinder-project/static/js/2.6cc95895.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/Tinder-project/static/media/roboto-vietnamese-400-normal.52cebac0.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.8649d8dd.js",
-    "static/css/2.536049cb.chunk.css",
+    "static/js/runtime-main.549904c0.js",
+    "static/css/2.db2f0a09.chunk.css",
     "static/js/2.6cc95895.chunk.js",
     "static/css/main.c17d4324.chunk.css",
     "static/js/main.22a25daf.chunk.js"
