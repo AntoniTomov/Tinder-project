@@ -32,7 +32,6 @@ export default function MenuAppBar({ login, user }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -60,13 +59,13 @@ export default function MenuAppBar({ login, user }) {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem><Link to='/home'>Home</Link></MenuItem>
+            <MenuItem component={Link} to='/home'>Home</MenuItem>
             {
               user ?
-                <>
-                  <MenuItem><Link to='/matches'>Kotenca</Link></MenuItem>
-                  <MenuItem><Link to='/profile'>Profile</Link></MenuItem>
-                </>
+                <div>
+                  <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
+                  <MenuItem component={Link} to='/profile'>Profile</MenuItem>
+                </div>
                 :
                 <MenuItem onClick={() => login()}>Login</MenuItem>
             }
@@ -75,7 +74,7 @@ export default function MenuAppBar({ login, user }) {
               <MenuItem onClick={handleClose}>Logout</MenuItem> */}
           </Menu>
           <Typography variant="h6" className={classes.title}>
-            MINDER :)
+            MINDER!
           </Typography>
           {auth && (
             <div>
@@ -110,6 +109,7 @@ export default function MenuAppBar({ login, user }) {
           )}
         </Toolbar>
       </AppBar>
+      <></>
     </div>
   );
 }
