@@ -32,6 +32,7 @@ export default function MenuAppBar({ login, user }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -48,7 +49,7 @@ export default function MenuAppBar({ login, user }) {
           label={auth ? 'Logout' : 'Login'}
         />
       </FormGroup> */}
-      <AppBar position="static">
+      <AppBar>
         <Toolbar>
           <MenuIcon aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu}>
           </MenuIcon>
@@ -67,7 +68,10 @@ export default function MenuAppBar({ login, user }) {
                   <MenuItem component={Link} to='/profile'>Profile</MenuItem>
                 </div>
                 :
-                <MenuItem onClick={() => login()}>Login</MenuItem>
+                <div>
+                  <MenuItem component={Link} to='/register'>Register</MenuItem>
+                  <MenuItem onClick={() => login()}>Login</MenuItem>
+                </div>
             }
 
             {/* <MenuItem onClick={handleClose}>My account</MenuItem>
@@ -109,7 +113,6 @@ export default function MenuAppBar({ login, user }) {
           )}
         </Toolbar>
       </AppBar>
-      <></>
     </div>
   );
 }

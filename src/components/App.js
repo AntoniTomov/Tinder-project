@@ -3,6 +3,7 @@ import '../App.css';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import MenuAppBar from './MenuAppBar';
 import Advanced from './Advanced';
+import Register from "./Register";
 
 function Login() {
 
@@ -24,16 +25,21 @@ function Matches() {
 function App() {
 
   let [user, setUser] = useState(null);
-  
+
   function login() {
     setUser({ name: 'Pesho', age: 15 });
   }
 
+  function reg(user) {
+    console.log('From the App.js file: ', user);
+    setUser({name: user.name, age: user.age});
+  }
+
   return (
     <div className="App">
-
+      
       <MenuAppBar login={login} user={user}>
-        
+
       </MenuAppBar>
 
       <Switch>
@@ -58,7 +64,7 @@ function App() {
           </>
         </Route>
         <Route exact path='/register'>
-          <h3>Register page</h3>
+          <Register regUser={(user) => reg(user)}/>
         </Route>
         <Route exact path='/Matches'>
           <Matches />
