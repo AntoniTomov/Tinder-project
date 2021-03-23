@@ -37,6 +37,9 @@ export default function Register(props) {
     }
 
     function getInputData() {
+
+
+
         let user = {
             name: usernameInput,
             age: Number(ageInput),
@@ -49,21 +52,27 @@ export default function Register(props) {
         changeAgeInput('');
     }
 
+    function validateField() {
+
+    }
+
+
+
+
     return (
         <>
         <CssBaseline />
         <Container className={classes.flex} position="relative" align="center" gutterBottom>
             <form className={classes.root} noValidate autoComplete="off">
-                {/* <Label></Label> */}
-                <TextField id="username" value={usernameInput} onChange={(ev) => changeInput(ev, 'username')} label="Username" variant="outlined" margin="dense" />
-                <TextField id="password" value={passInput} onChange={(ev) => changeInput(ev, 'password')}  label="Password" variant="outlined" margin="dense" type="password" autoComplete="current-password" />
-                <TextField id="repeatPassword" value={repeatPassInput} onChange={(ev) => changeInput(ev, 'repeatPassword')}
+                <TextField id="username" autoFocus error={usernameInput.length < 4 && usernameInput.length !== 0} value={usernameInput} onChange={(ev) => changeInput(ev, 'username')} label="Username" variant="outlined" margin="dense" />
+                <TextField id="password" error={usernameInput.length < 4 && usernameInput.length !== 0} value={passInput} onChange={(ev) => changeInput(ev, 'password')}  label="Password" variant="outlined" margin="dense" type="password" autoComplete="current-password" />
+                <TextField id="repeatPassword" error={usernameInput.length < 4 && usernameInput.length !== 0} value={repeatPassInput} onChange={(ev) => changeInput(ev, 'repeatPassword')}
                 label="Re-type password"
                 variant="outlined"
                 margin="dense"
                 type="password"
                 autoComplete="current-password" />
-                <TextField id="age" value={ageInput} onChange={(ev) => changeInput(ev, 'age')}
+                <TextField id="age" error={usernameInput.length < 4 && usernameInput.length !== 0} value={ageInput} onChange={(ev) => changeInput(ev, 'age')}
                 label="How old are you?"
                 variant="outlined"
                 margin="dense"
