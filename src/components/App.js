@@ -3,6 +3,7 @@ import '../App.css';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
 import MenuAppBar from './MenuAppBar';
 import Advanced from './Advanced';
+import Profile from './Profile';
 import Register from "./Register";
 
 function Login() {
@@ -70,7 +71,7 @@ function App() {
           <Matches />
         </Route>
         <Route exact path='/profile'>
-          <h2>My Profile</h2>
+          <Profile />
         </Route>
         <Route path='*'>
           <Redirect to='/' />
