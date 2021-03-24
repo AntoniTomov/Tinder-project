@@ -7,7 +7,8 @@ h2 {
 }
 
 .cardContainer {
-    width: 90vw;
+    margin: 0 auto;
+    width: 60vw;
     max-width: 260px;
     height: 300px;
 }
@@ -47,8 +48,7 @@ h2 {
 }
 
 .buttons {
-    margin: 20px;
-    display: flex;
+    margin: 40px auto;
 }
 
 .buttons button {

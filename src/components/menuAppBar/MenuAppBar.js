@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
     color: 'black',
-    fontSize: '50px',
+    fontSize: '2rem',
     fontWeight: '800',
   },
   appbar: {

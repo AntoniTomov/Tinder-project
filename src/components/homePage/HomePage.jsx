@@ -43,7 +43,7 @@ const db = [
 const alreadyRemoved = [];
 let charactersState = db; // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
 
-function Advanced () {
+function HomePage () {
   const [characters, setCharacters] = useState(db);
   const [lastDirection, setLastDirection] = useState();
 
@@ -72,7 +72,7 @@ function Advanced () {
   }
 
   return (
-    <div>
+    <div style={{width: '60%', margin: '0 auto'}}>
       <link href='https://fonts.googleapis.com/css?family=Damion&display=swap' rel='stylesheet' />
       <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
       <h1>React Tinder Card</h1>
@@ -94,4 +94,4 @@ function Advanced () {
   )
 }
 
-export default Advanced;
+export default HomePage;
