@@ -8,14 +8,7 @@ import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
 import { CssBaseline } from '@material-ui/core';
-
-function Matches() {
-  return (
-    <>
-      <p>Here will reside your matches!</p>
-    </>
-  )
-}
+import Matches from '../matches/Matches';
 
 function App() {
 
@@ -61,9 +54,12 @@ function App() {
         <Route exact path='/register'>
           <Register regUser={(user) => reg(user)}/>
         </Route>
-        <Route exact path='/Matches'>
-          {/* <Matches /> */}
-          <ChosenMatch user={user}/>
+        <Route exact path='/matches'>
+          <Matches />
+          {/* <Route exact path='/chosenMatch'>
+            <ChosenMatch user={user}/>
+          </Route> */}
+          {/* <ChosenMatch user={user}/> */}
         </Route>
         <Route exact path='/profile'>
           <Profile />
