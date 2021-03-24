@@ -6,6 +6,8 @@ import Advanced from './Advanced';
 import Profile from './Profile';
 import Register from "./Register";
 
+import asd from '../dinder.jpg'
+
 function Login() {
 
   return (

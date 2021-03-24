@@ -12,20 +12,38 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import Paper from '@material-ui/core/Paper';
 import { Link } from 'react-router-dom';
+
+import asd from '../dinderTrans2.png'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     width: '100%',
     marginTop: '100px',
+    fontFamily: 'Nunito',
   },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
+    color: 'black',
+    fontSize: '50px',
+    fontWeight: '800',
   },
+  appbar: {
+    background: 'none',
+  },
+  logoPaper:{
+    background: 'rgba(255,255,255,0.3)',
+    padding: '0 10px',
+  },
+  logo: {
+    flexGrow: 1,
+    width: '100px',
+  }
 }));
 
 export default function MenuAppBar({ login, user }) {
@@ -51,8 +69,14 @@ export default function MenuAppBar({ login, user }) {
           label={auth ? 'Logout' : 'Login'}
         />
       </FormGroup> */}
-      <AppBar>
+      <AppBar className={classes.appbar} elevation={0}>
         <Toolbar>
+          <Paper className={classes.logoPaper} elevation={10}>
+            <img src={asd} className={classes.logo} alt='logo'></img>
+          </Paper>
+          <Typography variant="h4" className={classes.title}>
+            DINDER!
+          </Typography>
           <MenuIcon aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu}>
           </MenuIcon>
           <Menu
@@ -79,9 +103,7 @@ export default function MenuAppBar({ login, user }) {
             {/* <MenuItem onClick={handleClose}>My account</MenuItem>
               <MenuItem onClick={handleClose}>Logout</MenuItem> */}
           </Menu>
-          <Typography variant="h6" className={classes.title}>
-            MINDER!
-          </Typography>
+            
           {auth && (
             <div>
               <IconButton

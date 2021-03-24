@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, TextField, Input, Card, CardContent, CardMedia, CardActionArea, Container, CssBaseline, Grid, Avatar, Paper, List, ListItem, ListItemText, Divider } from '@material-ui/core';
-import { } from '@material-ui/icons';
+import { ImportantDevices } from '@material-ui/icons';
 import { spacing } from '@material-ui/system'
 import {
     fade,
@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         color: 'red',
         fontWeight: 'bold',
+        fontFamily: 'Nunito !important',
     },
     bg: {
         background: 'lightgray',
@@ -65,6 +66,10 @@ const CssTextField = withStyles({
         '& .MuiInputBase-input': {
             paddingLeft: '20px',
         },
+        '& .MuiInput-input': {
+            fontFamily: 'Nunito'
+        },
+        fontFamily: 'Nunito',
     },
 })(TextField);
 
