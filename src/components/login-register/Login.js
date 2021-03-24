@@ -9,12 +9,15 @@ const useStyles = makeStyles((theme) => ({
         width: '30ch',
         },
     },
+    form: {
+        minWidth: '300px',
+        maxWidth: '400px',
+    },
     container: {
         marginTop: '5rem',
-        width: 'max-content',
-        margin: theme.spacing(1),
+        maxWidth: '500px',
+        margin: '0 auto',
         display: 'flex',
-        maxWidth: '400px',
     },
     label: {
         lineHeight: '4px',
@@ -65,6 +68,7 @@ export default function Login(props) {
             <form className={classes.root} noValidate autoComplete="off">
                 <TextField
                     id="username"
+                    fullWidth='true'
                     autoFocus
                     error={usernameInput.trim().length < 4 && usernameInput.length !== 0} value={usernameInput}
                     onChange={(ev) => changeUsernameInput(ev)}
@@ -73,6 +77,7 @@ export default function Login(props) {
                     <InputLabel className="label" htmlFor="password">Password</InputLabel>
                     <OutlinedInput
                         id="password"
+                        fullWidth='true'
                         error={passInput.trim().length < 4 && passInput.length !== 0} 
                         value={passInput} 
                         onChange={(ev) => changePasswordInput(ev)}  
