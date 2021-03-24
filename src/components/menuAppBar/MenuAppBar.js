@@ -15,7 +15,7 @@ import Menu from '@material-ui/core/Menu';
 import Paper from '@material-ui/core/Paper';
 import { Link } from 'react-router-dom';
 
-import asd from '../dinderTrans2.png'
+import logo from './dinderTrans2.png'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,7 +72,7 @@ export default function MenuAppBar({ login, user }) {
       <AppBar className={classes.appbar} elevation={0}>
         <Toolbar>
           <Paper className={classes.logoPaper} elevation={10}>
-            <img src={asd} className={classes.logo} alt='logo'></img>
+            <img src={logo} className={classes.logo} alt='logo'></img>
           </Paper>
           <Typography variant="h4" className={classes.title}>
             DINDER!

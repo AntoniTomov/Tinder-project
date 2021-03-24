@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import '../App.css';
+import './App.css';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
-import MenuAppBar from './MenuAppBar';
-import Advanced from './Advanced';
-import Profile from './Profile';
-import Register from "./Register";
-
-import asd from '../dinder.jpg'
+import MenuAppBar from '../menuAppBar/MenuAppBar';
+import HomePage from '../homePage/HomePage';
+import Profile from '../profile/Profile';
+import Register from "../login-register/Register";
 
 function Login() {
 
@@ -39,18 +37,17 @@ function App() {
   }
 
   return (
-    <div className="App">
-      
-      <MenuAppBar login={login} user={user}>
-
-      </MenuAppBar>
-
+    <>
+    <header>
+      <MenuAppBar login={login} user={user} />
+    </header>
+    <main className="App">
       <Switch>
         <Route exact path='/'>
           {user ? 
           <>
             <h3>Home page</h3>
-            <Advanced />
+            <HomePage />
           </> : <Redirect to="/login" />}
         </Route>
         <Route exact path='/login'>
@@ -80,7 +77,8 @@ function App() {
         </Route>
       </Switch>
 
-    </div>
+    </main>
+    </>
   );
 }
 

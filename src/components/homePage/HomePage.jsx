@@ -1,7 +1,8 @@
 import { Hidden } from '@material-ui/core';
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react';
 // import TinderCard from '../react-tinder-card/index'
-import TinderCard from 'react-tinder-card'
+import TinderCard from 'react-tinder-card';
+import './HomePage.css';
 
 const db = [
     {
