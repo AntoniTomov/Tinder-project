@@ -81,7 +81,7 @@ export default function MenuAppBar({ login, user }) {
               DINDER!
                         </Typography>
           </Grid>
-          <Grid item>
+          <Grid container xs={1} justify='flex-end'>
             <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
             <Menu
               id="simple-menu"
