@@ -72,7 +72,7 @@ function Advanced () {
   }
 
   return (
-    <div>
+    <div style={{width: '60%', margin: '0 auto'}}>
       <link href='https://fonts.googleapis.com/css?family=Damion&display=swap' rel='stylesheet' />
       <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
       <h1>React Tinder Card</h1>

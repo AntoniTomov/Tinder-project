@@ -1,16 +1,19 @@
 import React from 'react';
-import { Typography, TextField, Input, Card, CardContent, CardMedia, CardActionArea, Container, CssBaseline, Grid, Avatar, Paper, List, ListItem, ListItemText, Divider } from '@material-ui/core';
-import { ImportantDevices } from '@material-ui/icons';
-import { spacing } from '@material-ui/system'
-import {
-    fade,
-    ThemeProvider,
-    withStyles,
-    makeStyles,
-    createMuiTheme,
-} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-const user = {
+
+import AppBar from '@material-ui/core/AppBar';
+import Typography from '@material-ui/core/Typography';
+import MenuIcon from '@material-ui/icons/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
+import { Link } from 'react-router-dom';
+import logo from '../menuAppBar/dinderTrans2.png'
+
+const profile = {
     name: 'PeshoPi4a',
     age: 19,
     email: 'pesho@abv.bg',
@@ -24,91 +27,89 @@ const user = {
     infoField: '',
 };
 
-let fields = Object.keys(user.more);
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        flexGrow: 1,
-        width: '100%',
-        color: 'red',
-        fontWeight: 'bold',
-        fontFamily: 'Nunito !important',
+const useStyles = makeStyles((theme) => ({
+    logoPaper: {
+        margin: `${theme.spacing(1)}px auto`,
+        background: 'rgba(255,255,255,0.3)',
+        padding: '0 10px',
     },
-    bg: {
-        background: 'lightgray',
+    logo: {
+        width: '100px',
     },
-    input: {
-        lineHeight: '20px',
+    appBar: {
+        background: 'none',
+        padding: `0 ${theme.spacing(3)}px`
     },
-    large: {
-        width: theme.spacing(7),
-        height: theme.spacing(7),
+    title: {
+        fontSize: '3rem',
     },
-    profileHeader: {
-        display: 'flex',
-        alignItems: 'center',
-        padding: '20px',
-    },
-    media: {
-        height: '150px',
-        width: '500px',
+    menu: {
+        fontSize: '35px'
     }
 }));
 
-const CssTextField = withStyles({
-    root: {
-        '& label.Mui-focused': {
-            color: 'green',
-        },
-        '& .MuiInput-underline:after': {
-            borderBottomColor: '#3f51b5',
-        },
-        '& .MuiInputBase-input': {
-            paddingLeft: '20px',
-        },
-        '& .MuiInput-input': {
-            fontFamily: 'Nunito'
-        },
-        fontFamily: 'Nunito',
-    },
-})(TextField);
+
 
 const Profile = () => {
     const classes = useStyles();
 
+    const [auth, setAuth] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <>
             <CssBaseline />
-            <Container maxWidth='sm'>
-                <Paper elevation={10} className={classes.bg}>
-                    <div className={classes.profileHeader}>
+            <AppBar elevation={0} className={classes.appBar}>
+                <Grid
+                    container
+                    justify='space-between'
+                    alignItems='center'
+                >
+                    <Grid item xs={1}>
+                        <Paper className={classes.logoPaper} elevation={10}>
+                            <img src={logo} className={classes.logo} alt='logo'></img>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Typography variant="h4" className={classes.title}>
+                            DINDER!
+                        </Typography>
+                    </Grid>
+                    <Grid item>
+                        <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
+                        <Menu
+                            id="simple-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem component={Link} to='/home'>Home</MenuItem>
+                            {
+                                true ?
+                                    <div>
+                                        <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
+                                        <MenuItem component={Link} to='/profile'>Profile</MenuItem>
+                                    </div>
+                                    :
+                                    <div>
+                                        <MenuItem component={Link} to='/register'>Register</MenuItem>
+                                        <MenuItem component={Link} to='/login'>Login</MenuItem>
+                                    </div>
+                            }
+                        </Menu>
+                    </Grid>
 
-                        <Avatar alt={user.name} src={user.url} className={classes.large} />
-                        <div style={{ padding: '5px' }}>
-                            <div style={{ color: 'white', fontWeight: 'bold', fontSize: '18px' }}>{user.name}</div>
-                            <div>{user.email}</div>
-                        </div>
-                    </div>
-                    <List className={classes.root}>
-                        {fields.map(field => (
-                            <div>
-                                <ListItem>
-                                    <ListItemText primary={field.toUpperCase()} secondary="write sth about you" />
-                                </ListItem>
-                                {/* <Divider component="li" /> */}
-                                <form noValidate autoComplete="off" className={classes.input}>
-                                    <CssTextField fullWidth label="" defaultValue={user.more[field]} />
-                                </form >
-                            </div>
-                        ))}
-                    </List>
-                    {/* <ListItemAvatar>
-                        <Avatar>
-                            <BeachAccessIcon />
-                        </Avatar>
-                    </ListItemAvatar> */}
-                </Paper>
-            </Container>
+                </Grid>
+            </AppBar>
         </>
     )
 }
