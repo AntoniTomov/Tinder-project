@@ -29,7 +29,7 @@
     overflow-y: scroll;
 }
 
-form {
+.chat form {
     height: 40px;
     position: absolute;
     bottom: -40px;
@@ -39,7 +39,7 @@ form {
     font-size: 1rem;
 }
 
-form button {
+.chat form button {
     width: 20%;
     background: radial-gradient(#9198e5,#e66465);
     /* background: linear-gradient(#9198e5,#e66465); */
@@ -48,17 +48,17 @@ form button {
     border-bottom-right-radius: 1rem;
     cursor: pointer;
 }
-form button:hover {
+.chat form button:hover {
     background: #e66465;
     /* background: linear-gradient(#e66465, #9198e5); */
 }
 
-form button:disabled {
+.chat form button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-form input {
+.chat form input {
     font-family: 'Nunito';
     font-weight: bold;
     font-size: 1.2rem;
@@ -71,25 +71,6 @@ form input {
     padding: 0 15px;
     border-bottom-left-radius: 1rem;
 
-}
-
-/* button {
-    border: none;
-    color: white;
-    text-align: center;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    font-size: 1.25rem;
-} */
-
-
-
-.sign-in {
-    color: #282c34;
-    background: white;
-    max-width: 400px;
-    margin: 0 auto;
 }
 
 ul,

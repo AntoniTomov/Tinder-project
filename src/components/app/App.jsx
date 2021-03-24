@@ -19,7 +19,8 @@ function Matches() {
 
 function App() {
 
-  let [user, setUser] = useState({ name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg'});
+  let [user, setUser] = useState(null);
+  //{ name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg'}
 
   function login(user) {
     setUser({ name: user.name, password: user.password, age: user.age , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg' || null });

@@ -92,7 +92,7 @@ export default function MenuAppBar({ login, user }) {
             >
               <MenuItem component={Link} to='/home'>Home</MenuItem>
               {
-                true ?
+                user ?
                   <div>
                     <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
                     <MenuItem component={Link} to='/profile'>Profile</MenuItem>
