@@ -96,7 +96,7 @@ export default function MenuAppBar({ login, user }) {
                 :
                 <div>
                   <MenuItem component={Link} to='/register'>Register</MenuItem>
-                  <MenuItem onClick={() => login()}>Login</MenuItem>
+                  <MenuItem component={Link} to='/login'>Login</MenuItem>
                 </div>
             }
 

@@ -5,15 +5,7 @@ import MenuAppBar from '../menuAppBar/MenuAppBar';
 import HomePage from '../homePage/HomePage';
 import Profile from '../profile/Profile';
 import Register from "../login-register/Register";
-
-function Login() {
-
-  return (
-    <div>
-      <h1>Login in order to continue...</h1>
-    </div>
-  )
-}
+import Login from '../login-register/Login';
 
 function Matches() {
   return (
@@ -27,13 +19,13 @@ function App() {
 
   let [user, setUser] = useState(null);
 
-  function login() {
-    setUser({ name: 'Pesho', age: 15 });
+  function login(user) {
+    setUser({ name: user.name, password: user.password, age: user.age || null });
   }
 
   function reg(user) {
-    console.log('From the App.js file: ', user);
-    setUser({name: user.name, age: user.age});
+    // setUser({name: user.name, password: user.password});
+    login(user);
   }
 
   return (
@@ -57,7 +49,7 @@ function App() {
               <Redirect to="/Home" />
             </div>
                   : 
-            <Login />
+            <Login login={(user) => login(user)}/>
             }
             {/* <h3>Login page</h3>
             <button onClick={login}>Log fake user</button> */}
