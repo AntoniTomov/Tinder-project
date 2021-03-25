@@ -10,7 +10,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 
-import logo from '../menuAppBar/dinderTrans2.png'
+import ImageUploaderContainer from './imageUploader';
 
 const profile = {
     name: 'PeshoPi4a',
@@ -53,24 +53,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Profile = () => {
     const classes = useStyles();
-    let [images, setImages] = useState([]);
-    let [imagesCounter, setImagesCounter] = useState(0);
-    // let [selectedFile, setSelectedFile] = useState(null);
-
-    const handleUploadClick = (e) => {
-        let data = e.target;
-        if (data.files && data.files[0]) {
-            var reader = new FileReader();
-            reader.readAsDataURL(data.files[0]);
-
-            reader.onloadend = function (e) {
-                console.log('target', e.target);
-                setImages([...images, reader.result]);
-            }
-
-            setImagesCounter(prev => prev + 1);
-        }
-    }
 
     return (
         <>
@@ -83,34 +65,32 @@ const Profile = () => {
             >
                 <Paper elevation={10} className={classes.paper}>
                     <Grid container direction='column'>
-                        <Grid item xs className={classes.item}>
-                            <input
-                                accept="image/*"
-                                className={classes.input}
-                                id="contained-button-file"
-                                multiple
-                                type="file"
-                                onChange={e => { handleUploadClick(e) }}
-                            />
-                            <label htmlFor="contained-button-file">
-                                <Tooltip title="Add Photo" arrow TransitionComponent={Zoom} placement='left'>
-                                    <Fab component="span" size='medium' className={classes.button}>
-                                        <AddPhotoAlternateIcon />
-                                    </Fab>
-                                </Tooltip>
-                            </label>
+                        <Grid item className={classes.item}>
+                            <Typography variant='h4' color='primary'>Upload your images</Typography>
                         </Grid>
                         <Grid
                             container
-                            spacing={3}
+                            spacing={4}
+                            justify='space-between'
                         >
-                            {images && images.map((img, i) => {
-                                return (
-                                    <Grid item key={i} xs={4}>
-                                        <img src={img} alt='userImage' className={classes.img} />
-                                    </Grid>
-                                )
-                            })}
+                            <Grid item>
+                                <ImageUploaderContainer key='1'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer key='2'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer key='3'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer key='4'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer key='5'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer key='6'/>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Paper>
