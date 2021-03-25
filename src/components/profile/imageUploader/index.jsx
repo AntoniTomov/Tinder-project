@@ -10,18 +10,18 @@ const useStyles = makeStyles(theme => ({
     paper: {
         position: 'relative',
         height: '300px',
-        width: '170px',
-        margin: '30px',
+        width: '200px',
+        margin: '13px 13px',
         backgroundColor: 'rgba(255,255,255,0.5)',
         '& .MuiFab-root:hover': {
-            backgroundColor: 'lightgray',
+            backgroundColor: 'snow',
         },
         '& input': {
             display: 'none'
         }
     },
     divImg: {
-        height: '300px',
+        height: '100%',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
         width: '40px',
         height: '40px',
         '& .MuiSvgIcon-root': {
-            width: '20px'
+            width: '25px'
         },
         color: '#e66465',
         background: '#9198e5',
