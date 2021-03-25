@@ -74,22 +74,22 @@ const Profile = () => {
                             justify='space-between'
                         >
                             <Grid item>
-                                <ImageUploaderContainer key='1'/>
+                                <ImageUploaderContainer id='1' key='1'/>
                             </Grid>
                             <Grid item>
-                                <ImageUploaderContainer key='2'/>
+                                <ImageUploaderContainer id='2' key='2'/>
                             </Grid>
                             <Grid item>
-                                <ImageUploaderContainer key='3'/>
+                                <ImageUploaderContainer id='3' key='3'/>
                             </Grid>
                             <Grid item>
-                                <ImageUploaderContainer key='4'/>
+                                <ImageUploaderContainer id='4' key='4'/>
                             </Grid>
                             <Grid item>
-                                <ImageUploaderContainer key='5'/>
+                                <ImageUploaderContainer id='5' key='5'/>
                             </Grid>
                             <Grid item>
-                                <ImageUploaderContainer key='6'/>
+                                <ImageUploaderContainer id='6' key='6'/>
                             </Grid>
                         </Grid>
                     </Grid>

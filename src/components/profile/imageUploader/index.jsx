@@ -40,12 +40,12 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ImageUploaderContainer = ({ img }) => {
+const ImageUploaderContainer = ({id}) => {
     const classes = useStyles();
-    let [image, setImage] = useState('');
+    const [image, setImage] = useState('');
 
     const handleUploadClick = (e) => {
-        let data = e.target;
+        const data = e.target;
         if (data.files && data.files[0]) {
             var reader = new FileReader();
             reader.readAsDataURL(data.files[0]);
@@ -62,14 +62,14 @@ const ImageUploaderContainer = ({ img }) => {
             <Paper elevation={6} className={classes.paper}>
                 <div className={classes.divImg} style={{ backgroundImage: `url(${image})` }}></div>
                 <input
-                                accept="image/*"
-                                className={classes.input}
-                                id="contained-button-file"
-                                multiple
-                                type="file"
-                                onChange={e => { handleUploadClick(e) }}
-                            />
-                <label htmlFor="contained-button-file">
+                    accept="image/*"
+                    className={classes.input}
+                    id={`contained-button-file-${id}`}
+                    multiple={false}
+                    type="file"
+                    onChange={e => handleUploadClick(e)}
+                />
+                <label htmlFor={`contained-button-file-${id}`}>
                     <Tooltip title="Add Photo" arrow TransitionComponent={Zoom} placement='right'>
                         <Fab component="div" className={classes.smallBtn}>
                             <AddPhotoAlternateIcon />
