@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-
-import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
-import MenuIcon from '@material-ui/icons/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { Link } from 'react-router-dom';
-import logo from '../menuAppBar/dinderTrans2.png'
+import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
+
+import ImageUploaderContainer from './imageUploader';
 
 const profile = {
     name: 'PeshoPi4a',
@@ -28,24 +27,26 @@ const profile = {
 };
 
 const useStyles = makeStyles((theme) => ({
-    logoPaper: {
-        margin: `${theme.spacing(1)}px auto`,
-        background: 'rgba(255,255,255,0.3)',
-        padding: '0 10px',
+    root: {
+        width: '50%',
+        margin: '0 auto',
     },
-    logo: {
-        width: '100px',
+    paper: {
+        background: 'rgba(255, 255, 255, 0.5)',
     },
-    appBar: {
-        background: 'none',
-        padding: `0 ${theme.spacing(3)}px`
+    item: {
+        border: '1px solid black'
     },
-    title: {
-        fontSize: '3rem',
+    button: {
+        color: '#e66465',
+        background: '#9198e5',
     },
-    menu: {
-        fontSize: '35px'
-    }
+    input: {
+        display: 'none'
+    },
+    img: {
+        width: '200px',
+    },
 }));
 
 
@@ -53,63 +54,47 @@ const useStyles = makeStyles((theme) => ({
 const Profile = () => {
     const classes = useStyles();
 
-    const [auth, setAuth] = React.useState(false);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     return (
         <>
             <CssBaseline />
-            <AppBar elevation={0} className={classes.appBar}>
-                <Grid
-                    container
-                    justify='space-between'
-                    alignItems='center'
-                >
-                    <Grid item xs={1}>
-                        <Paper className={classes.logoPaper} elevation={10}>
-                            <img src={logo} className={classes.logo} alt='logo'></img>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <Typography variant="h4" className={classes.title}>
-                            DINDER!
-                        </Typography>
-                    </Grid>
-                    <Grid item>
-                        <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
-                        <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
+            <Grid
+                container
+                className={classes.root}
+                justify='center'
+                direction='column'
+            >
+                <Paper elevation={10} className={classes.paper}>
+                    <Grid container direction='column'>
+                        <Grid item className={classes.item}>
+                            <Typography variant='h4' color='primary'>Upload your images</Typography>
+                        </Grid>
+                        <Grid
+                            container
+                            spacing={4}
+                            justify='space-between'
                         >
-                            <MenuItem component={Link} to='/home'>Home</MenuItem>
-                            {
-                                true ?
-                                    <div>
-                                        <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
-                                        <MenuItem component={Link} to='/profile'>Profile</MenuItem>
-                                    </div>
-                                    :
-                                    <div>
-                                        <MenuItem component={Link} to='/register'>Register</MenuItem>
-                                        <MenuItem component={Link} to='/login'>Login</MenuItem>
-                                    </div>
-                            }
-                        </Menu>
+                            <Grid item>
+                                <ImageUploaderContainer id='1' key='1'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer id='2' key='2'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer id='3' key='3'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer id='4' key='4'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer id='5' key='5'/>
+                            </Grid>
+                            <Grid item>
+                                <ImageUploaderContainer id='6' key='6'/>
+                            </Grid>
+                        </Grid>
                     </Grid>
-
-                </Grid>
-            </AppBar>
+                </Paper>
+            </Grid>
         </>
     )
 }
