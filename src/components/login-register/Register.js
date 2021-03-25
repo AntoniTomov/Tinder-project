@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     container: {
         marginTop: '5rem',
         width: 'max-content',
-        margin: theme.spacing(1),
+        margin: '0 auto',
         display: 'flex',
         maxWidth: '400px',
     },

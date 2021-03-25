@@ -8,18 +8,12 @@ import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
 import { CssBaseline } from '@material-ui/core';
-
-function Matches() {
-  return (
-    <>
-      <p>Here will reside your matches!</p>
-    </>
-  )
-}
+import Matches from '../matches/Matches';
 
 function App() {
 
-  let [user, setUser] = useState({ name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg'});
+  let [user, setUser] = useState(null);
+  //{ name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg'}
 
   function login(user) {
     setUser({ name: user.name, password: user.password, age: user.age , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg' || null });
@@ -46,7 +40,6 @@ function App() {
           </> : <Redirect to="/login" />}
         </Route>
         <Route exact path='/login'>
-          <>
             {user ? 
             <div>
               <Redirect to="/Home" />
@@ -54,16 +47,19 @@ function App() {
                   : 
             <Login login={(user) => login(user)}/>
             }
-            {/* <h3>Login page</h3>
-            <button onClick={login}>Log fake user</button> */}
-          </>
         </Route>
         <Route exact path='/register'>
           <Register regUser={(user) => reg(user)}/>
         </Route>
-        <Route exact path='/Matches'>
-          {/* <Matches /> */}
-          <ChosenMatch user={user}/>
+        <Route exact path='/matches'>
+          <Matches />
+          {/* <Route exact path='/chosenMatch'>
+            <ChosenMatch user={user}/>
+          </Route> */}
+          {/* <ChosenMatch user={user}/> */}
+        </Route>
+        <Route path="/matches/:userId">
+            <ChosenMatch user={user}/>
         </Route>
         <Route exact path='/profile'>
           <Profile />

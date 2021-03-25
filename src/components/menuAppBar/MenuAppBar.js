@@ -14,6 +14,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Paper from '@material-ui/core/Paper';
 import { Link } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 
 import logo from './dinderTrans2.png'
 
@@ -24,25 +27,23 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '100px',
     fontFamily: 'Nunito',
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-    color: 'black',
-    fontSize: '2rem',
-    fontWeight: '800',
-  },
-  appbar: {
-    background: 'none',
-  },
-  logoPaper:{
+  logoPaper: {
+    margin: `${theme.spacing(1)}px auto`,
     background: 'rgba(255,255,255,0.3)',
     padding: '0 10px',
   },
   logo: {
-    flexGrow: 1,
     width: '100px',
+  },
+  appBar: {
+    background: 'none',
+    padding: `0 ${theme.spacing(3)}px`
+  },
+  title: {
+    fontSize: '3rem',
+  },
+  menu: {
+    fontSize: '35px'
   }
 }));
 
@@ -63,79 +64,49 @@ export default function MenuAppBar({ login, user }) {
 
   return (
     <div className={classes.root}>
-      {/* <FormGroup>
-        <FormControlLabel
-          control={<Switch checked={auth} onChange={handleChange} aria-label="login switch" />}
-          label={auth ? 'Logout' : 'Login'}
-        />
-      </FormGroup> */}
-      <AppBar className={classes.appbar} elevation={0}>
-        <Toolbar>
-          <Paper className={classes.logoPaper} elevation={10}>
-            <img src={logo} className={classes.logo} alt='logo'></img>
-          </Paper>
-          <Typography variant="h4" className={classes.title}>
-            DINDER!
-          </Typography>
-          <MenuIcon aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu}>
-          </MenuIcon>
-          <Menu
-            id="simple-menu"
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem component={Link} to='/home'>Home</MenuItem>
-            {
-              user ?
-                <div>
-                  <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
-                  <MenuItem component={Link} to='/profile'>Profile</MenuItem>
-                </div>
-                :
-                <div>
-                  <MenuItem component={Link} to='/register'>Register</MenuItem>
-                  <MenuItem component={Link} to='/login'>Login</MenuItem>
-                </div>
-            }
+      <CssBaseline />
+      <AppBar elevation={0} className={classes.appBar}>
+        <Grid
+          container
+          justify='space-between'
+          alignItems='center'
+        >
+          <Grid item xs={1}>
+            <Paper className={classes.logoPaper} elevation={10}>
+              <img src={logo} className={classes.logo} alt='logo'></img>
+            </Paper>
+          </Grid>
+          <Grid item xs={10}>
+            <Typography variant="h4" className={classes.title}>
+              DINDER!
+                        </Typography>
+          </Grid>
+          <Grid container xs={1} justify='flex-end'>
+            <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem component={Link} to='/home'>Home</MenuItem>
+              {
+                user ?
+                  <div>
+                    <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
+                    <MenuItem component={Link} to='/profile'>Profile</MenuItem>
+                  </div>
+                  :
+                  <div>
+                    <MenuItem component={Link} to='/register'>Register</MenuItem>
+                    <MenuItem component={Link} to='/login'>Login</MenuItem>
+                  </div>
+              }
+            </Menu>
+          </Grid>
 
-            {/* <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem> */}
-          </Menu>
-            
-          {auth && (
-            <div>
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-              </Menu>
-            </div>
-          )}
-        </Toolbar>
+        </Grid>
       </AppBar>
     </div>
   );
