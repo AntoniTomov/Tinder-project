@@ -39,7 +39,6 @@ function App() {
           </> : <Redirect to="/login" />}
         </Route>
         <Route exact path='/login'>
-          <>
             {user ? 
             <div>
               <Redirect to="/Home" />
@@ -47,9 +46,6 @@ function App() {
                   : 
             <Login login={(user) => login(user)}/>
             }
-            {/* <h3>Login page</h3>
-            <button onClick={login}>Log fake user</button> */}
-          </>
         </Route>
         <Route exact path='/register'>
           <Register regUser={(user) => reg(user)}/>
@@ -60,6 +56,9 @@ function App() {
             <ChosenMatch user={user}/>
           </Route> */}
           {/* <ChosenMatch user={user}/> */}
+        </Route>
+        <Route path="/matches/:userId">
+            <ChosenMatch user={user}/>
         </Route>
         <Route exact path='/profile'>
           <Profile />
