@@ -14,6 +14,7 @@ import styles from './Matches.module.css';
 const useStyles = makeStyles(theme => ({
     container: {
         flexGrow: 1,
+        position: 'relative',
         display: 'flex',
         padding: theme.spacing(0, 10, 2),
         justifyContent: "center",
@@ -106,6 +107,7 @@ export default function Matches() {
                     <Button className={styles.asd} onClick={() => manageCards(user.id)}>{btnMessage}</Button>
             </Card>
         )}
+        
         </Grid>
     );
 }

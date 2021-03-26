@@ -9,10 +9,13 @@ import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
 import { CssBaseline } from '@material-ui/core';
 import Matches from '../matches/Matches';
+import InsertCommentIcon from '@material-ui/icons/InsertComment';
+import Chat from '../chat/Chat';
 
 function App() {
 
   let [user, setUser] = useState(null);
+  const [isChatOpened, setIsChatOpened] = useState(false);
   //{ name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg'}
 
   function login(user) {
@@ -22,6 +25,10 @@ function App() {
   function reg(user) {
     // setUser({name: user.name, password: user.password});
     login(user);
+  }
+
+  const showChat = () => {
+    setIsChatOpened(!isChatOpened);
   }
 
   return (
@@ -70,6 +77,8 @@ function App() {
       </Switch>
 
     </main>
+    {isChatOpened && <Chat user={user}/>}
+    {user && <InsertCommentIcon fontSize='large' className='chatIcon' onClick={showChat}/>}
     </>
   );
 }

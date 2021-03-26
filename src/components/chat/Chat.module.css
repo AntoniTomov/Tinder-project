@@ -1,3 +1,9 @@
+.chatContainer {
+    position: fixed;
+    bottom: 0;
+    right: 35px;
+}
+
 .chat {
     padding: 10px;
     height: 70vh;
@@ -5,7 +11,8 @@
     margin: 50px;
     display: flex;
     flex-direction: column;
-    background-color: rgba(14, 14, 14, 0.3);
+    background-color: rgba(14, 14, 14, 0.7);
+    /* background-color: rgba(255, 255, 255, 0.7); */
     position: relative;
     border-radius: 1rem 1rem 0 0;
     font-family: 'Nunito';
@@ -29,7 +36,7 @@
     overflow-y: scroll;
 }
 
-form {
+.chatForm {
     height: 40px;
     position: absolute;
     bottom: -40px;
@@ -39,7 +46,7 @@ form {
     font-size: 1rem;
 }
 
-form button {
+.chatForm button {
     width: 20%;
     background: radial-gradient(#9198e5,#e66465);
     /* background: linear-gradient(#9198e5,#e66465); */
@@ -48,17 +55,17 @@ form button {
     border-bottom-right-radius: 1rem;
     cursor: pointer;
 }
-form button:hover {
+.chatForm button:hover {
     background: #e66465;
     /* background: linear-gradient(#e66465, #9198e5); */
 }
 
-form button:disabled {
+.chatForm button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-form input {
+.chatForm input {
     font-family: 'Nunito';
     font-weight: bold;
     font-size: 1.2rem;
