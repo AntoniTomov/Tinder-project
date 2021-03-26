@@ -1,0 +1,6 @@
+.asd {
+    position: absolute!important;
+    bottom: 0;
+    width: 100%;
+    background: linear-gradient(transparent, rgb(145, 152, 229));
+}
