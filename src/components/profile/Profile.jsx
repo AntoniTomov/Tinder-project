@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -7,17 +7,17 @@ import Box from '@material-ui/core/Box';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import Select from '@material-ui/core/Select';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
-import { withStyles } from '@material-ui/core/styles';
-
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem'
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
-
 import ImageUploaderContainer from './imageUploader';
 import { getDefaultNormalizer } from '@testing-library/dom';
 
@@ -47,7 +47,8 @@ const useStyles = makeStyles((theme) => ({
         background: 'rgba(255, 255, 255, 0.5)',
     },
     item: {
-        // border: '1px solid black',
+        width: '100%',
+        margin: '20px 0',
     },
     button: {
         color: '#e66465',
@@ -63,21 +64,14 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
         padding: '0 30px',
     },
-    radio: {
-        color: 'green'
+    formControl: {
+        '& .MuiSelect-select:focus': {
+            background: 'rgba(255, 255,	255, 0.3)',
+        },
+        minWidth: '250px',
+        margin: 0
     },
 }));
-
-const GreenRadio = withStyles({
-    root: {
-        color: 'primary.main',
-        '&$checked': {
-            color: 'secondary.main',
-        },
-    },
-    checked: {},
-})(Radio)
-
 
 const Profile = () => {
     const classes = useStyles();
@@ -85,19 +79,38 @@ const Profile = () => {
     const [aboutYou, setAboutYou] = useState('');
     const [passions, setPassions] = useState('');
     const [gender, setGender] = useState('female');
+    const [orientation, setOrientation] = useState('');
+    const [region, setRegion] = useState('');
+    const [allCountriesInARegion, setAllCountriesInARegion] = useState([]);
+    const [livingIn, setLivingIn] = useState('');
 
+    
     const handleAboutYouChange = (e) => {
         setAboutYou(e.target.value);
     }
-
     const handlePassionsChange = e => {
         setPassions(e.target.value)
     }
-
     const handleGenderChange = e => {
         setGender(e.target.value)
     }
+    const handleOrientationChange = e => {
+        setOrientation(e.target.value);
+    }
+    const handleLivingInChange = e => {
+        setLivingIn(e.target.value);
+    }
+    const handleRegion = (e) => {
+        setRegion(e.target.value);
+    }
 
+    useEffect(() => {
+        region && fetch(`https://restcountries.eu/rest/v2/region/` + region)
+                    .then(res => res.json())
+                    .then(res => setAllCountriesInARegion(res))
+                    .catch(err => console.log(err))
+                    .finally(console.log('prikliuchi'))
+    }, [region]);
 
     return (
         <>
@@ -195,7 +208,7 @@ const Profile = () => {
                     </Paper>
                 </Grid>
                 <Grid item>
-                    <Box className={classes.box} boxShadow='0 3px 5px 2px rgba(255, 105, 135, .3)'>
+                    <Paper elevation={20} className={classes.paper}>
                         <Grid
                             container
                             direction='column'
@@ -204,15 +217,91 @@ const Profile = () => {
                             <Grid item className={classes.item}>
                                 <Typography variant='h4' color='primary'>Gender:</Typography>
                             </Grid>
-                            <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                <RadioGroup style={{flexDirection: 'row', justifyContent: 'center'}} aria-flowto='right' aria-label="gender" name="gender1" value={gender} onChange={handleGenderChange}>
-                                    <FormControlLabel className={classes.radio} value="female" control={<Radio />} label="Female" />
-                                    <FormControlLabel value="male" control={<Radio />} label="Male" />
-                                    <FormControlLabel value="other" control={<Radio />} label="Other" />
+                            <Grid item xs={'auto'} style={{ justifyContent: 'center' }}>
+                                <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={gender} onChange={handleGenderChange}>
+                                    <FormControlLabel className={classes.radio} value="female" control={<Radio color='secondary' />} label="Female" />
+                                    <FormControlLabel value="male" control={<Radio color='primary' />} label="Male" />
+                                    <FormControlLabel value="other" control={<Radio color='default' />} label="Other" />
                                 </RadioGroup>
                             </Grid>
                         </Grid>
-                    </Box>
+                    </Paper>
+                </Grid>
+                <Grid item>
+                    <Paper elevation={20} className={classes.paper}>
+                        <Grid
+                            container
+                            direction='column'
+                            alignItems='center'
+                        >
+                            <Grid item className={classes.item}>
+                                <Typography variant='h4' color='primary'>Sexual orientation:</Typography>
+                            </Grid>
+                            <Grid item xs={'auto'} className={classes.item}>
+                                <FormControl className={classes.formControl}>
+                                    <Select
+                                        variant='standard'
+                                        labelId="demo-simple-select-label"
+                                        id='sexualOrientation-select'
+                                        value={orientation}
+                                        onChange={handleOrientationChange}
+                                    >
+                                        <MenuItem value={'Straight'}>Straight</MenuItem>
+                                        <MenuItem value={'Gay'}>Gay</MenuItem>
+                                        <MenuItem value={'Lesbian'}>Lesbian</MenuItem>
+                                        <MenuItem value={'Bisexual'}>Bisexual</MenuItem>
+                                        <MenuItem value={'Asexual'}>Asexual</MenuItem>
+                                        <MenuItem value={'Demisexual'}>Demisexual</MenuItem>
+                                        <MenuItem value={'Queer'}>Queer</MenuItem>
+                                        <MenuItem value={'Questioning'}>Questioning</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </Paper>
+                </Grid>
+                <Grid item>
+                    <Paper elevation={20} className={classes.paper}>
+                        <Grid
+                            container
+                            direction='column'
+                            alignItems='center'
+                        >
+                            <Grid item className={classes.item}>
+                                <Typography variant='h4' color='primary'>Living in:</Typography>
+                            </Grid>
+                            <Grid item xs={'auto'} className={classes.item}>
+                                <FormControl className={classes.formControl}>
+                                    <Select
+                                        variant='standard'
+                                        labelId="demo-simple-select-label"
+                                        id='sexualOrientation-select'
+                                        value={region}
+                                        onChange={handleRegion}
+                                    >
+                                        <MenuItem value={'africa'}>Africa</MenuItem>
+                                        <MenuItem value={'americas'}>Americas</MenuItem>
+                                        <MenuItem value={'asia'}>Asia</MenuItem>
+                                        <MenuItem value={'europe'}>Europe</MenuItem>
+                                        <MenuItem value={'oceania'}>Oceania</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={'auto'} className={classes.item}>
+                                <FormControl className={classes.formControl}>
+                                    <Select
+                                        variant='standard'
+                                        labelId="demo-simple-select-label"
+                                        id='sexualOrientation-select'
+                                        value={livingIn}
+                                        onChange={handleLivingInChange}
+                                    >
+                                        {allCountriesInARegion.map(country => <MenuItem value={country.name}>{country.name}</MenuItem>)}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </Paper>
                 </Grid>
             </Grid>
         </>
@@ -220,3 +309,4 @@ const Profile = () => {
 }
 
 export default Profile;
+
