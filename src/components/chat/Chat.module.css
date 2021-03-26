@@ -1,33 +1,85 @@
 .chatContainer {
     position: fixed;
-    bottom: 0;
-    right: 35px;
+    display: flex;
+    flex-direction: row !important;
+    bottom: 50px;
+    right: 75px;
+}
+
+.profilesInChat {
+    position: absolute;
+    bottom: -40px;
+    left: -175px;
+    width: 175px;
+    border-radius: 1rem 0 0 1rem;
+    background-color: rgba(14, 14, 14, 0.7);
+    /* border-right: 2px solid rgba(255, 255, 255, 0.3); */
+    
+
+}
+
+.innerDivChat {
+    height: calc(70vh + 40px);
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    padding-left: 14px;
+    text-align: center;
+    overflow-y: scroll;
+    /* align-items: center; */
+}
+
+.innerDivChat span {
+    /* border-radius: 2rem; */
+    /* padding: 4px; */
+    height: 2.5rem;
+    margin: 4px 0;
+    /* background-color: white; */
+    color: white;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    /* border-bottom: 1px solid rgba(255, 255, 255, 0.3); */
+}
+
+.innerDivChat span div {
+    margin: 4px;
+}
+
+.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 2rem 0 0 2rem;
+}
+
+.missedMsg {
+    border-right: 3px solid #e66465;
 }
 
 .chat {
     padding: 10px;
     height: 70vh;
     width: 35vw;
-    margin: 50px;
+    /* margin: 50px; */
     display: flex;
     flex-direction: column;
     background-color: rgba(14, 14, 14, 0.7);
     /* background-color: rgba(255, 255, 255, 0.7); */
     position: relative;
-    border-radius: 1rem 1rem 0 0;
+    border-radius: 0 1rem 0 0;
     font-family: 'Nunito';
     font-weight: bold;
 }
 
-.messageContainer::-webkit-scrollbar {
+.messageContainer::-webkit-scrollbar, .innerDivChat::-webkit-scrollbar {
     width: 0.25rem;
 }
 
-.messageContainer::-webkit-scrollbar-track {
+.messageContainer::-webkit-scrollbar-track, .innerDivChat::-webkit-scrollbar-track {
     background: #1e1e24;
 }
 
-.messageContainer::-webkit-scrollbar-thumb {
+.messageContainer::-webkit-scrollbar-thumb, .innerDivChat::-webkit-scrollbar-thumb {
     background: #9198e5;
 }
 
@@ -76,7 +128,7 @@
     outline: none;
     border: none;
     padding: 0 15px;
-    border-bottom-left-radius: 1rem;
+    /* border-bottom-left-radius: 1rem; */
 
 }
 
