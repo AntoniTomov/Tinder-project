@@ -41,14 +41,13 @@ function App() {
         <Route exact path='/'>
           {user ? 
           <>
-            <h3>Home page</h3>
             <HomePage />
           </> : <Redirect to="/login" />}
         </Route>
         <Route exact path='/login'>
             {user ? 
             <div>
-              <Redirect to="/Home" />
+              <Redirect to="/" />
             </div>
                   : 
             <Login setCurrentUser={setCurrentUser} />
