@@ -41,7 +41,7 @@ const db = [
   ];
 
 const alreadyRemoved = [];
-let charactersState = db; // This fixes issues with updating characters state forcing it to use the current state and not the state that was active when the card was created.
+let charactersState = db;
 
 function HomePage () {
   const [characters, setCharacters] = useState(db);

@@ -45,6 +45,8 @@ h1 {
 }
 
 .App {
+  display: flex;
+  justify-content: center;
   width: 100%;
   color: rgb(163, 25, 163);
 }

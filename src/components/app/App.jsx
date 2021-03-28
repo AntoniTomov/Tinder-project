@@ -11,12 +11,13 @@ import { CssBaseline } from '@material-ui/core';
 import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import Chat from '../chat/Chat';
+import { users } from '../matches/Matches';
+import firebase, { auth } from '../../firebase';
 
 function App() {
 
   let [user, setUser] = useState(null);
   const [isChatOpened, setIsChatOpened] = useState(false);
-  //{ name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg'}
 
   const users = [
     { name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg', id: 0, description: 'Golqm/a sum pi4/ka i shte te shruskam... Ha ha ha, ne sum lud/a, a ekstravaganten/na. Obrushtam se kum sebe si w sreden rod - kEkS!!!', location: 'Sofia'},
@@ -31,45 +32,39 @@ function App() {
     { name: 'Ivanka', age: 19 , url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlSyMW39B5owZrxmWcxQy8x8cTC5ofBFPsvA&usqp=CAU', id: 9, location: 'Blagoevgrad'}
 ];
 
-  function login(user) {
-    setUser({ name: user.name, password: user.password, age: user.age , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg' || null });
-  }
-
-  function reg(user) {
-    // setUser({name: user.name, password: user.password});
-    login(user);
-  }
-
   const showChat = () => {
     setIsChatOpened(!isChatOpened);
+  }
+
+  const setCurrentUser = (user) => {
+    setUser(user);
   }
 
   return (
     <>
     <CssBaseline />
     <header>
-      <MenuAppBar login={login} user={user} />
+      <MenuAppBar user={user} setCurrentUser={setCurrentUser} />
     </header>
     <main className="App">
       <Switch>
         <Route exact path='/'>
           {user ? 
           <>
-            <h3>Home page</h3>
             <HomePage />
           </> : <Redirect to="/login" />}
         </Route>
         <Route exact path='/login'>
             {user ? 
             <div>
-              <Redirect to="/Home" />
+              <Redirect to="/" />
             </div>
                   : 
-            <Login login={(user) => login(user)}/>
+            <Login setCurrentUser={setCurrentUser} />
             }
         </Route>
         <Route exact path='/register'>
-          <Register regUser={(user) => reg(user)}/>
+          <Register />
         </Route>
         <Route exact path='/matches'>
           <Matches users={users}/>
@@ -78,15 +73,15 @@ function App() {
           </Route> */}
           {/* <ChosenMatch user={user}/> */}
         </Route>
-        <Route path="/matches/:userId">
-            <ChosenMatch user={user}/>
+        <Route path="/matches/:id" children={<ChosenMatch users={users} />}>
+            <ChosenMatch users={users}/>
         </Route>
         <Route exact path='/profile'>
           <Profile />
         </Route>
-        <Route path='*'>
+        {/* <Route path='*'>
           <Redirect to='/' />
-        </Route>
+        </Route> */}
       </Switch>
 
     </main>

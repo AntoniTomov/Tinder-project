@@ -13,10 +13,10 @@ import styles from './Matches.module.css';
 
 const useStyles = makeStyles(theme => ({
     container: {
-        flexGrow: 1,
+        width: '60%',
         position: 'relative',
         display: 'flex',
-        padding: theme.spacing(0, 10, 2),
+        // padding: theme.spacing(0, 10, 2),
         justifyContent: "center",
         alignItems: "center",
     },
@@ -30,13 +30,17 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
         width: 250,
         height: 350,
-        margin: 16,
+        margin: '13px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
     },
     expanded: {
         height: 'auto',
+        position: 'fixed',
+        top: '50px',
+        left: '5%',
+        zIndex: 2,
     },
     media: {
         height: 240,
@@ -51,12 +55,18 @@ const useStyles = makeStyles(theme => ({
 
 export default function Matches({ users }) {
     const classes = useStyles();
-    const [areExpanded, setAreExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
     const [btnMessage, setBtnMessage] = useState('Show more');
+    const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
 
     const manageCards = (id) => {
-        setAreExpanded(!areExpanded);
+        isExpanded ? setMoreDetailsCardKey(-1) : setMoreDetailsCardKey(id);
+        setIsExpanded(!isExpanded);
         btnMessage === 'Show more' ? setBtnMessage('Show less') : setBtnMessage('Show more');
+    }
+
+    const showProfile = (id) => {
+        
     }
 
     return (
@@ -65,8 +75,8 @@ export default function Matches({ users }) {
             className={classes.container}
         >
         {users.map((user) =>
-            <Card className={areExpanded ? `${classes.root} ${classes.expanded}` : classes.root} key={user.id}>
-                <CardActionArea>
+            <Card elevation={20} className={moreDetailsCardKey === user.id ? [classes.root, classes.expanded] : classes.root} key={user.id} onClick={() => showProfile(user.id)}>
+                <CardActionArea component={Link} to={'/matches/' + user.id}>
                     <CardMedia
                     className={classes.media}
                     image={user.url}
@@ -89,7 +99,7 @@ export default function Matches({ users }) {
                     Dislike
                     </Button>
                 </CardActions>
-                    <Button className={styles.asd} onClick={() => manageCards(user.id)}>{btnMessage}</Button>
+                    <Button className={styles.asd} onClick={() => manageCards(user.id)}>{moreDetailsCardKey === user.id ? btnMessage : 'Show more'}</Button>
             </Card>
         )}
         
