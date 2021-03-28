@@ -11,7 +11,8 @@ import { CssBaseline } from '@material-ui/core';
 import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import Chat from '../chat/Chat';
-import { users } from '../matches/Matches'
+import { users } from '../matches/Matches';
+import firebase, { auth } from '../../firebase';
 
 function App() {
 
@@ -19,24 +20,21 @@ function App() {
   const [isChatOpened, setIsChatOpened] = useState(false);
   //{ name: 'Pesho', age: 19 , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg'}
 
-  function login(user) {
-    setUser({ name: user.name, password: user.password, age: user.age , url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg' || null });
-  }
-
-  function reg(user) {
-    // setUser({name: user.name, password: user.password});
-    login(user);
-  }
+  // setUser(auth.currentUser)
 
   const showChat = () => {
     setIsChatOpened(!isChatOpened);
+  }
+
+  const setCurrentUser = (user) => {
+    setUser(user);
   }
 
   return (
     <>
     <CssBaseline />
     <header>
-      <MenuAppBar login={login} user={user} />
+      <MenuAppBar user={user} setCurrentUser={setCurrentUser} />
     </header>
     <main className="App">
       <Switch>
@@ -53,11 +51,11 @@ function App() {
               <Redirect to="/Home" />
             </div>
                   : 
-            <Login login={(user) => login(user)}/>
+            <Login setCurrentUser={setCurrentUser} />
             }
         </Route>
         <Route exact path='/register'>
-          <Register regUser={(user) => reg(user)}/>
+          <Register />
         </Route>
         <Route exact path='/matches'>
           <Matches />

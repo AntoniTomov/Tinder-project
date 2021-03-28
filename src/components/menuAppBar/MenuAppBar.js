@@ -16,6 +16,7 @@ import Paper from '@material-ui/core/Paper';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import firebase, { auth } from '../../firebase';
 
 
 import logo from './dinderTrans2.png'
@@ -47,9 +48,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MenuAppBar({ login, user }) {
+export default function MenuAppBar({ user, setCurrentUser }) {
   const classes = useStyles();
-  const [auth, setAuth] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -61,6 +61,12 @@ export default function MenuAppBar({ login, user }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const logout = () => {
+    auth.signOut()
+    .then(setCurrentUser(null))
+    .catch(error => console.log(error.message))
+  }
 
   return (
     <div className={classes.root}>
@@ -96,6 +102,7 @@ export default function MenuAppBar({ login, user }) {
                   <div>
                     <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
                     <MenuItem component={Link} to='/profile'>Profile</MenuItem>
+                    <MenuItem component={Link} to='/login' onClick={() => {logout()}} to='/home'>Logout</MenuItem>
                   </div>
                   :
                   <div>
