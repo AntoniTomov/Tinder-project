@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { CssBaseline, Typography, InputLabel, OutlinedInput, FormControl, Container, TextField, Label, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { auth } from '../../firebase';
+import firebase from '../../firebase';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Login(props) {
+export default function Login({ setCurrentUser }) {
 
     const classes = useStyles();
     const [usernameInput, setUsernameInput] = useState("");
@@ -39,12 +41,20 @@ export default function Login(props) {
         setPassInput(ev.target.value);
     }
 
-    function getInputData() {
-        let user = {
-            name: usernameInput,
-            password: passInput,
-        }
-        props.login(user);
+    function login() {
+        // let user = {
+        //     name: usernameInput,
+        //     password: passInput,
+        // }
+        // props.login(user);
+        auth.signInWithEmailAndPassword(usernameInput, passInput)
+            .then(() => {
+                var user = auth.currentUser;
+                setCurrentUser(user);
+                console.log(user);
+            })
+            .catch(error => console.log(error.message))
+
         setUsernameInput('');
         setPassInput('');
     }
@@ -58,7 +68,7 @@ export default function Login(props) {
         event.preventDefault();
     };
 
-
+    
 
 
     return (
@@ -99,7 +109,7 @@ export default function Login(props) {
                         }
                     />
                 </FormControl>
-                <Button onClick={getInputData} variant="contained" color="primary">Register</Button>
+                <Button onClick={login} variant="contained" color="primary">Login</Button>
             </form>
         </Container>
         </>

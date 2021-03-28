@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CssBaseline, Typography, InputLabel, OutlinedInput, FormControl, Container, TextField, Label, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
+import firebase, { auth } from '../../firebase';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,17 +44,18 @@ export default function Register(props) {
         }
     }
 
-    function getInputData() {
+    function register() {
 
+        auth.createUserWithEmailAndPassword(usernameInput, passInput)
+            .then(() => {
+                var user = auth.currentUser;
+                console.log(user);
+            })
+            .catch(error => console.log(error.message))
 
+        setUsernameInput('');
+        setPassInput('');
 
-        let user = {
-            name: usernameInput,
-            password: passInput,
-            age: Number(ageInput),
-        }
-        console.log('From Register.js: ', user);
-        props.regUser(user);
         setUsernameInput('');
         setPassInput('');
         setRepeatPassInput('');
@@ -141,7 +143,7 @@ export default function Register(props) {
                     variant="outlined"
                     type="number"
                 />
-                <Button onClick={getInputData} variant="contained" color="primary">Register</Button>
+                <Button onClick={register} variant="contained" color="primary">Register</Button>
             </form>
         </Container>
         </>
