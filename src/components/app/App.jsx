@@ -11,6 +11,7 @@ import { CssBaseline } from '@material-ui/core';
 import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import Chat from '../chat/Chat';
+import { users } from '../matches/Matches'
 
 function App() {
 
@@ -65,15 +66,15 @@ function App() {
           </Route> */}
           {/* <ChosenMatch user={user}/> */}
         </Route>
-        <Route path="/matches/:userId">
-            <ChosenMatch user={user}/>
+        <Route path="/matches/:id" children={<ChosenMatch users={users} />}>
+            <ChosenMatch users={users}/>
         </Route>
         <Route exact path='/profile'>
           <Profile />
         </Route>
-        <Route path='*'>
+        {/* <Route path='*'>
           <Redirect to='/' />
-        </Route>
+        </Route> */}
       </Switch>
 
     </main>
