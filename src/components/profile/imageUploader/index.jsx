@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import Fab from '@material-ui/core/Fab';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
+
+import firebase, { storage } from '../../../firebase';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -16,7 +18,7 @@ const useStyles = makeStyles(theme => ({
         '& .MuiFab-root:hover': {
             backgroundColor: '#e66465',
             '& .MuiSvgIcon-root': {
-            color: 'rgb(225,225,225)'
+                color: 'rgb(225,225,225)'
             },
         },
         '& input': {
@@ -43,27 +45,54 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ImageUploaderContainer = ({id}) => {
+const ImageUploaderContainer = ({ id, userId, imgUrl }) => {
     const classes = useStyles();
-    const [image, setImage] = useState('');
 
     const handleUploadClick = (e) => {
         const data = e.target;
         if (data.files && data.files[0]) {
-            var reader = new FileReader();
-            reader.readAsDataURL(data.files[0]);
+            let file = data.files[0];
+            let dotPossition = file.name.lastIndexOf('.');
+            let newFileName = file.name.slice(0, dotPossition) + Date.now();
+            console.log(newFileName);
 
-            reader.onloadend = function (e) {
-                console.log('target', e.target);
-                setImage(reader.result);
-            }
+            const storageRef = firebase.storage().ref();
+            const uploadTask = storageRef.child(`${userId}/${newFileName}`).put(file);
+
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    // Observe state change events such as progress, pause, and resume
+                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload is ' + progress + '% done');
+                    // eslint-disable-next-line default-case
+                    switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            console.log('Upload is paused');
+                            break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                            console.log('Upload is running');
+                            break;
+                    }
+                },
+                (error) => {
+                    console.log('An error occurred on image upload ', error.message);
+                },
+                () => {
+                    // Handle successful uploads on complete
+                    uploadTask.snapshot.ref.getDownloadURL()
+                    .then((downloadURL) => {
+                        console.log('File available at', downloadURL);
+                    });
+                }
+            );
         }
     }
 
     return (
         <>
             <Paper elevation={6} className={classes.paper}>
-                <div className={classes.divImg} style={{ backgroundImage: `url(${image})` }}></div>
+                <div className={classes.divImg} style={{ backgroundImage: `url(${imgUrl})` }}></div>
                 <input
                     accept="image/*"
                     className={classes.input}

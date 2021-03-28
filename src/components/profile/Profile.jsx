@@ -14,6 +14,8 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import ImageUploaderContainer from './imageUploader';
 
+import firebase, { auth, db } from '../../firebase';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '40vw',
@@ -102,6 +104,9 @@ const CssTextField = withStyles({
 })(TextField);
 
 const Profile = () => {
+
+    const user = auth.currentUser;
+
     const classes = useStyles();
 
     const [aboutYou, setAboutYou] = useState('');
@@ -111,7 +116,7 @@ const Profile = () => {
     const [region, setRegion] = useState('');
     const [allCountriesInARegion, setAllCountriesInARegion] = useState([]);
     const [livingIn, setLivingIn] = useState('');
-
+    const [userImages, setUserImages] = useState([]);
 
     const handleAboutYouChange = (e) => {
         setAboutYou(e.target.value);
@@ -139,6 +144,47 @@ const Profile = () => {
             .catch(err => console.log(err))
     }, [region]);
 
+    // useEffect(() => {
+    //     const storageRef = firebase.storage().ref();
+    //     const imagesRef = storageRef.child(`${user.uid}`);
+    //     imagesRef.listAll()
+    //         .then((res) => {
+    //             //folder refs but we don't use them in this case
+    //             // res.prefixes.forEach((folderRef) => {
+    //             //     console.log('folderRef', folderRef);
+    //             // });
+    //             res.items.forEach((itemRef) => {
+    //                 // All the items under imagesRef
+    //                 const imageRef = itemRef;
+    //                 imageRef.getDownloadURL()
+    //                     .then((url) => {
+    //                         setUserImages(prevUserImages => [...prevUserImages, url]);
+    //                     })
+    //                     .catch((error) => {
+    //                         console.log('error', error.message)
+    //                     });
+    //             });
+    //         })
+    //         .catch((error) => {
+    //             console.log('Error on storage refs', error.message)
+    //         });
+    // }, []);
+
+    useEffect(() => {
+        const docRef = db.collection('users').doc(`${user.uid}`);
+
+        docRef.get().then((doc) => {
+            if (doc.exists) {
+                console.log("Document data:", setUserImages(doc.data().images));
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+    }, [user.uid])
+
     return (
         <>
             <CssBaseline />
@@ -161,24 +207,14 @@ const Profile = () => {
                                     style={{ margin: '30px 0', padding: '20px' }}
                                 >
                                     {/* lg={3} md={'auto'} sm={1} */}
-                                    <Grid xs={'auto'} item>
-                                        <ImageUploaderContainer id='1' key='1' />
-                                    </Grid>
-                                    <Grid xs={'auto'} item>
-                                        <ImageUploaderContainer id='2' key='2' />
-                                    </Grid>
-                                    <Grid xs={'auto'} item>
-                                        <ImageUploaderContainer id='3' key='3' />
-                                    </Grid>
-                                    <Grid xs={'auto'} item>
-                                        <ImageUploaderContainer id='4' key='4' />
-                                    </Grid>
-                                    <Grid xs={'auto'} item>
-                                        <ImageUploaderContainer id='5' key='5' />
-                                    </Grid>
-                                    <Grid xs={'auto'} item>
-                                        <ImageUploaderContainer id='6' key='6' />
-                                    </Grid>
+
+                                    {userImages.map((imgUrl, i) => {
+                                        return (
+                                            <Grid xs={'auto'} item>
+                                                <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={imgUrl} />
+                                            </Grid>
+                                        )
+                                    })}
                                 </Grid>
                             </Grid>
                         </Paper>
