@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import Select from '@material-ui/core/Select';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
@@ -15,30 +14,38 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import ImageUploaderContainer from './imageUploader';
 
-const profile = {
-    name: 'PeshoPi4a',
-    age: 19,
-    email: 'pesho@abv.bg',
-    url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg',
-    more: {
-        description: 'Az sum Mega Pi4!1!',
-        socialNetwork: 'IG:peshoPi4a',
-        location: 'Sofeto',
-        hobbies: 'skiing'
-    },
-    infoField: '',
-};
-
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '40vw',
         minWidth: '400px',
         margin: '0 auto',
-
+        '& .MuiSvgIcon-root.MuiSelect-icon ': {
+            color: 'white'
+        },
+        '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+            borderBottomColor: 'white'
+        },
+        '& .MuiInput-underline.Mui-disabled:before': {
+            borderBottom: '1px solid rgb(205,205,205)'
+        },
+        '& .MuiInput-underline:before': {
+            borderBottomColor: 'white',
+        },
+        '&:hover': {
+            borderBottomColor: 'red'
+        },
+        '& input.MuiInputBase-input.MuiInput-input': {
+            color: 'white',
+        },
+        '& div.MuiSelect-select.MuiSelect-selectMenu.MuiInputBase-input.MuiInput-input': {
+            color: 'white',
+        },
     },
     paper: {
         margin: '5px 0',
-        background: 'rgba(255, 255, 255, 0.5)',
+        // background: 'rgba(255, 255, 255, 0.5)',
+        background: 'none',
+        color: 'white',
     },
     item: {
         width: '100%',
@@ -49,23 +56,50 @@ const useStyles = makeStyles((theme) => ({
         background: '#9198e5',
     },
     input: {
-        display: 'none'
-    },
-    box: {
-        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        borderRadius: 3,
-        border: 0,
+        display: 'none',
         color: 'white',
-        padding: '0 30px',
+        '& .MuiInputBase-input': {
+            color: 'white',
+        },
     },
     formControl: {
         '& .MuiSelect-select:focus': {
             background: 'none', // rgba(255, 255,	255, 0.3)
         },
         minWidth: '250px',
-        margin: 0
+        margin: 0,
     },
+
 }));
+
+const CssTextField = withStyles({
+    root: {
+        '& label': {
+            color: 'rgb(225, 225, 225)',
+            // fontFamily: 'Nunito',
+        },
+        '& label.Mui-focused': {
+            color: 'rgb(225, 225, 225)',
+            // fontFamily: 'Nunito',
+        },
+        '& .MuiInput-underline:before': {
+            borderBottomColor: 'white'
+        },
+        '& .MuiInput-underline:after': {
+            borderBottomColor: '#1976d2',
+        },
+        '& .MuiOutlinedInput-root': {
+            color: 'rgb(225, 225, 225)',
+            // fontFamily: 'Nunito',
+            '& fieldset': {
+                borderColor: 'rgb(225, 225, 225)',
+            },
+            '&:hover fieldset': {
+                borderColor: 'rgb(225, 225, 225)',
+            },
+        },
+    },
+})(TextField);
 
 const Profile = () => {
     const classes = useStyles();
@@ -115,10 +149,10 @@ const Profile = () => {
                     direction='column'
                 >
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid container direction='column'>
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>Upload your images</Typography>
+                                    <Typography variant='h4'>Upload your images</Typography>
                                 </Grid>
                                 <Grid
                                     container
@@ -150,17 +184,17 @@ const Profile = () => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>About you</Typography>
+                                    <Typography variant='h4'>About you</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <TextField
+                                    <CssTextField
                                         id="outlined-multiline-flexible"
                                         label="About you"
                                         multiline
@@ -176,17 +210,17 @@ const Profile = () => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>Passions</Typography>
+                                    <Typography variant='h4'>Passions</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <TextField
+                                    <CssTextField
                                         id="outlined-multiline-flexible"
                                         label="Passions"
                                         multiline
@@ -202,14 +236,14 @@ const Profile = () => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>Gender:</Typography>
+                                    <Typography variant='h4'>Gender:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ justifyContent: 'center' }}>
                                     <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={gender} onChange={handleGenderChange}>
@@ -222,14 +256,14 @@ const Profile = () => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>Sexual orientation:</Typography>
+                                    <Typography variant='h4'>Sexual orientation:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} className={classes.item}>
                                     <FormControl className={classes.formControl}>
@@ -255,18 +289,18 @@ const Profile = () => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>Living in:</Typography>
+                                    <Typography variant='h4'>Living in:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} className={classes.item}>
                                     <FormControl className={classes.formControl}>
-                                        <InputLabel >Region</InputLabel>
+                                        <InputLabel style={{ color: 'white' }}>Region</InputLabel>
                                         <Select
                                             variant='standard'
                                             labelId="demo-simple-select-label"
@@ -284,7 +318,7 @@ const Profile = () => {
                                 </Grid>
                                 <Grid item xs={'auto'} className={classes.item}>
                                     <FormControl className={classes.formControl}>
-                                    <InputLabel disabled>Country</InputLabel>
+                                        <InputLabel style={{ color: 'white' }} disabled>Country</InputLabel>
                                         <Select
                                             disabled={!region}
                                             variant='standard'
@@ -301,49 +335,49 @@ const Profile = () => {
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>Job title:</Typography>
+                                    <Typography variant='h4'>Job title:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <TextField id="standard-secondary" label="Job title" fullWidth color="secondary" />
+                                    <CssTextField id="standard-secondary" label="Job title" fullWidth color="secondary" />
                                 </Grid>
                             </Grid>
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>Company:</Typography>
+                                    <Typography variant='h4'>Company:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <TextField id="standard-secondary" label="Company" fullWidth color="secondary" />
+                                    <CssTextField id="standard-secondary" label="Company" fullWidth color="secondary" />
                                 </Grid>
                             </Grid>
                         </Paper>
                     </Grid>
                     <Grid item>
-                        <Paper elevation={20} className={classes.paper}>
+                        <Paper elevation={0} className={classes.paper}>
                             <Grid
                                 container
                                 direction='column'
                                 alignItems='center'
                             >
                                 <Grid item className={classes.item}>
-                                    <Typography variant='h4' color='primary'>College/Uni:</Typography>
+                                    <Typography variant='h4'>College/Uni:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <TextField id="standard-secondary" label="College/Uni" fullWidth color="secondary" />
+                                    <CssTextField id="standard-secondary" label="College/Uni" fullWidth color="secondary" />
                                 </Grid>
                             </Grid>
                         </Paper>

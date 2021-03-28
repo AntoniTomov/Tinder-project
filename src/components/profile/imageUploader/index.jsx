@@ -9,12 +9,15 @@ import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
 const useStyles = makeStyles(theme => ({
     paper: {
         position: 'relative',
-        height: '300px',
-        width: '200px',
+        height: '200px',
+        width: '130px',
         margin: '13px 13px',
         backgroundColor: 'rgba(255,255,255,0.5)',
         '& .MuiFab-root:hover': {
-            backgroundColor: 'snow',
+            backgroundColor: '#e66465',
+            '& .MuiSvgIcon-root': {
+            color: 'rgb(225,225,225)'
+            },
         },
         '& input': {
             display: 'none'
@@ -36,7 +39,7 @@ const useStyles = makeStyles(theme => ({
             width: '25px'
         },
         color: '#e66465',
-        background: '#9198e5',
+        background: 'rgb(225,225,225)',
     },
 }));
 
