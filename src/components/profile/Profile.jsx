@@ -108,6 +108,7 @@ const Profile = () => {
     const user = auth.currentUser;
 
     const classes = useStyles();
+    const numberOfImageContainers = new Array(6);
 
     const [aboutYou, setAboutYou] = useState('');
     const [passions, setPassions] = useState('');
@@ -207,11 +208,13 @@ const Profile = () => {
                                     style={{ margin: '30px 0', padding: '20px' }}
                                 >
                                     {/* lg={3} md={'auto'} sm={1} */}
+                                
+                                    {numberOfImageContainers.map((container, i) => {
 
-                                    {userImages.map((imgUrl, i) => {
                                         return (
                                             <Grid xs={'auto'} item>
-                                                <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={imgUrl} />
+                                                {/* <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={userImages[i] && ''} /> */}
+                                                <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={userImages} />
                                             </Grid>
                                         )
                                     })}
