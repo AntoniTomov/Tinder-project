@@ -2,6 +2,7 @@ import chatClasses from './Chat.module.css';
 import { useState } from "react";
 import  Avatar from '@material-ui/core/Avatar';
 import { CssBaseline, makeStyles } from '@material-ui/core';
+import firebase from '../../firebase';
 
 const useStyles = makeStyles(theme => ({
     head: {
