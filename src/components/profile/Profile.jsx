@@ -145,38 +145,13 @@ const Profile = () => {
             .catch(err => console.log(err))
     }, [region]);
 
-    // useEffect(() => {
-    //     const storageRef = firebase.storage().ref();
-    //     const imagesRef = storageRef.child(`${user.uid}`);
-    //     imagesRef.listAll()
-    //         .then((res) => {
-    //             //folder refs but we don't use them in this case
-    //             // res.prefixes.forEach((folderRef) => {
-    //             //     console.log('folderRef', folderRef);
-    //             // });
-    //             res.items.forEach((itemRef) => {
-    //                 // All the items under imagesRef
-    //                 const imageRef = itemRef;
-    //                 imageRef.getDownloadURL()
-    //                     .then((url) => {
-    //                         setUserImages(prevUserImages => [...prevUserImages, url]);
-    //                     })
-    //                     .catch((error) => {
-    //                         console.log('error', error.message)
-    //                     });
-    //             });
-    //         })
-    //         .catch((error) => {
-    //             console.log('Error on storage refs', error.message)
-    //         });
-    // }, []);
-
     useEffect(() => {
         const docRef = db.collection('users').doc(`${user.uid}`);
 
         docRef.get().then((doc) => {
             if (doc.exists) {
-                console.log("Document data:", setUserImages(doc.data().images));
+                setUserImages(doc.data().images)
+                console.log('snimkite v db',doc.data().images)
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
@@ -184,7 +159,27 @@ const Profile = () => {
         }).catch((error) => {
             console.log("Error getting document:", error);
         });
-    }, [user.uid])
+    }, [user.uid]);
+
+    
+    const updateImages = (imagesArr) => {
+        let userRef = db.collection('users').doc(`${user.uid}`);
+        return userRef.update({
+            images: imagesArr,
+        }).then(() => {
+            console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+            console.error("Error updating document: ", error);
+        });
+    }
+
+    const replaceImgUrl = (index, url) => {
+        const replacedImageUrls = [...userImages];
+        replacedImageUrls[index] = url;
+        setUserImages(replacedImageUrls);
+        return replacedImageUrls;
+    }
 
     return (
         <>
@@ -208,13 +203,11 @@ const Profile = () => {
                                     style={{ margin: '30px 0', padding: '20px' }}
                                 >
                                     {/* lg={3} md={'auto'} sm={1} */}
-                                
-                                    {numberOfImageContainers.map((container, i) => {
 
+                                    {userImages.map((container, i) => {
                                         return (
                                             <Grid xs={'auto'} item>
-                                                {/* <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={userImages[i] && ''} /> */}
-                                                <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={userImages} />
+                                                <ImageUploaderContainer id={i} key={i} userId={user.uid} replaceImgUrl={replaceImgUrl} updateImages={updateImages} imgUrl={userImages[i] || ''} />
                                             </Grid>
                                         )
                                     })}
