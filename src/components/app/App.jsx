@@ -36,6 +36,13 @@ function App() {
     setIsChatOpened(!isChatOpened);
   }
 
+  //is a user still logged in
+  auth.onAuthStateChanged(function(user) {
+    if (user) {
+      setCurrentUser(user);
+    }
+  });
+
   const setCurrentUser = (user) => {
     setUser(user);
   }
@@ -55,16 +62,22 @@ function App() {
           </> : <Redirect to="/login" />}
         </Route>
         <Route exact path='/login'>
-            {user ? 
-            <div>
-              <Redirect to="/" />
-            </div>
-                  : 
-            <Login setCurrentUser={setCurrentUser} />
-            }
+          {user ? 
+          <div>
+            <Redirect to="/" />
+          </div>
+                : 
+          <Login setCurrentUser={setCurrentUser} />
+          }
         </Route>
         <Route exact path='/register'>
-          <Register />
+          {user ? 
+              <div>
+                <Redirect to="/" />
+              </div>
+                    : 
+            <Register setCurrentUser={setCurrentUser}/>
+          }
         </Route>
         <Route exact path='/matches'>
           <Matches users={users}/>

@@ -12,7 +12,7 @@ const reducer = (state = initialState, action) => {
         case 'userLoggedIn':
             return {
                 ...state,
-                userId: action.payload.id,
+                userId: action.payload.uid,
             }
         case 'userLoggedOut':
             return {
