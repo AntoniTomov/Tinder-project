@@ -108,7 +108,7 @@ const Profile = () => {
     const user = auth.currentUser;
 
     const classes = useStyles();
-    const numberOfImageContainers = new Array(6);
+    const numberOfImageContainers = 6;
 
     const [aboutYou, setAboutYou] = useState('');
     const [passions, setPassions] = useState('');
@@ -150,6 +150,7 @@ const Profile = () => {
 
         docRef.get().then((doc) => {
             if (doc.exists) {
+                // doc.data().images.length === numberOfImageContainers ? .... : ... ;
                 setUserImages(doc.data().images)
                 console.log('snimkite v db',doc.data().images)
             } else {
