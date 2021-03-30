@@ -3,6 +3,9 @@ import { CssBaseline, Typography, InputLabel, OutlinedInput, FormControl, Contai
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import firebase, { auth } from '../../firebase';
 
+import { useDispatch, useSelector} from 'react-redux';
+import loginUser from './login-register.actions';
+
 const useStyles = makeStyles((theme) => ({
     root: {
       '& > *': {
@@ -30,6 +33,9 @@ export default function Register(props) {
     const [ageInput, setAgeInput] = useState("");
     const [isPassVisible, setIsPassVisible] = useState(false);
 
+    const dispatch = useDispatch();
+    
+
     function changeInput(ev, field) {
         switch(field) {
             case 'username': setUsernameInput(ev.target.value);
@@ -46,12 +52,18 @@ export default function Register(props) {
 
     function register() {
 
-        auth.createUserWithEmailAndPassword(usernameInput, passInput)
-            .then(() => {
-                var user = auth.currentUser;
-                console.log(user);
-            })
-            .catch(error => console.log(error.message))
+        let user = { id: '69'}
+        dispatch({type: 'userLoggedIn', payload: user});
+
+        // auth.createUserWithEmailAndPassword(usernameInput, passInput)
+        //     .then(() => {
+        //         var user = auth.currentUser;
+        //         console.log(user);
+                
+        //         dispatch(loginUser(user));
+
+        //     })
+        //     .catch(error => console.log(error.message))
 
         setUsernameInput('');
         setPassInput('');
@@ -70,9 +82,6 @@ export default function Register(props) {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
-
-
-
 
     return (
         <>
