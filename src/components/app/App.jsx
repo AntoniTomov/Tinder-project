@@ -105,9 +105,9 @@ function App() {
           <Route exact path='/profile'>
             { user ? <Profile /> : <Redirect to='/profile' />}
           </Route>
-          {/* <Route path='*'>
-          <Redirect to='/' />
-        </Route> */}
+          <Route path='*'>
+            <Redirect to='/' />
+          </Route>
         </Switch>
 
       </main>

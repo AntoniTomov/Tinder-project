@@ -100,13 +100,13 @@ export default function MenuAppBar() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem component={Link} to='/home'>Home</MenuItem>
+              <MenuItem component={Link} to='/'>Home</MenuItem>
               {
                 user ?
                   <div>
                     <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
                     <MenuItem component={Link} to='/profile'>Profile</MenuItem>
-                    <MenuItem component={Link} to='/login' onClick={() => {logout()}} to='/home'>Logout</MenuItem>
+                    <MenuItem component={Link} to='/' onClick={() => {logout()}} >Logout</MenuItem>
                   </div>
                   :
                   <div>
