@@ -1,8 +1,9 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import reducer from '../components/login-register/login-register.reducer'
+import userReducer from '../components/login-register/login-register.reducer'
+
 const rootReducer = combineReducers({
 
-    currentUser: reducer,
+    currentUser: userReducer,
 
 });
 

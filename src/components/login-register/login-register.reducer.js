@@ -1,26 +1,18 @@
-const initialState = {
-    userEmail: '',
-    userId: '',
-    userProfilePic: '',
-    userFullName: '',
-};
+const initialState = null;
 
-const reducer = (state = initialState, action) => {
+const userReducer = (state = initialState, action) => {
 
     switch (action.type){
         // nice!!!
         case 'userLoggedIn':
             return {
                 ...state,
-                userId: action.payload.uid,
+                user: action.payload,
             }
         case 'userLoggedOut':
-            return {
-                ...state,
-                userId: ''
-            }
+            return null
         default:
             return state;
     }
 }
-export default reducer;
+export default userReducer;

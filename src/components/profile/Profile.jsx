@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import ImageUploaderContainer from './imageUploader';
 
 import firebase, { auth, db } from '../../firebase';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -105,7 +106,8 @@ const CssTextField = withStyles({
 
 const Profile = () => {
 
-    const user = auth.currentUser;
+    const user = useSelector(state => state.currentUser.user);
+    console.log('user from redux', user);
 
     const classes = useStyles();
     const numberOfImageContainers = 6;
@@ -146,9 +148,12 @@ const Profile = () => {
     }, [region]);
 
     useEffect(() => {
-        const docRef = db.collection('users').doc(`${user.uid}`);
 
+        const docRef = db.collection('users').doc(`${user.uid}`);
+        console.log(user.uid, 'ot profile')
         docRef.get().then((doc) => {
+        console.log(doc, 'ot profile pak')
+
             if (doc.exists) {
 
                 const imagesArraySet = setImagesArrLengthAndFill(doc.data().images, numberOfImageContainers);
@@ -163,7 +168,7 @@ const Profile = () => {
         }).catch((error) => {
             console.log("Error getting document:", error);
         });
-    }, [user.uid]);
+    }, [user]);
 
     
     const updateImages = (imagesArr) => {

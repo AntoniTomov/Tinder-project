@@ -18,6 +18,8 @@ import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import firebase, { auth } from '../../firebase';
 
+import { useDispatch, useSelector } from 'react-redux'
+
 
 import logo from './dinderTrans2.png'
 
@@ -48,10 +50,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MenuAppBar({ user, setCurrentUser }) {
+export default function MenuAppBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.currentUser);
 
 
   const handleMenu = (event) => {
@@ -64,7 +68,7 @@ export default function MenuAppBar({ user, setCurrentUser }) {
 
   const logout = () => {
     auth.signOut()
-    .then(setCurrentUser(null))
+    .then(dispatch({type: 'userLoggedOut'}))
     .catch(error => console.log(error.message))
   }
 

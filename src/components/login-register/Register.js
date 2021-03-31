@@ -57,7 +57,7 @@ export default function Register({ setCurrentUser }) {
     }
 
     function register() {
-        auth.setPersistence('local')
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() => {
             return auth.createUserWithEmailAndPassword(emailInput, passInput)})
             .then(() => {
@@ -65,7 +65,7 @@ export default function Register({ setCurrentUser }) {
                 console.log(user);
                 let fullName = `${firstNameInput[0]}${firstNameInput.slice(1)} ${lastNameInput[0]}${lastNameInput.slice(1)}`;
                 console.log(fullName);
-                createUserInDb(fullName, emailInput, passInput);
+                // createUserInDb(fullName, emailInput, passInput);
                 let userId = user.uid;
                 let userInDb = {
                     name: '',
@@ -82,7 +82,8 @@ export default function Register({ setCurrentUser }) {
                     mediaProfiles: [],
                     sexualOrientation: '',
                     youtubeSong: '',
-                    passions: []
+                    passions: [],
+                    chats: []
                 }
 
                 dispatch({ type: 'userLoggedIn', payload: user });
