@@ -122,7 +122,7 @@ function HomePage () {
           <div className="containerCardView">
             <div className="containerCardView">
               {characters.map((user) =>
-                <Card elevation={20} className="asd" key={user.uid} >
+                <Card elevation={20} className="root" key={user.uid} >
                   <CardActionArea>
                     <CardMedia
                       className="media"
@@ -131,7 +131,7 @@ function HomePage () {
                     />
                     <CardContent>
                     <Typography className="colorBlack" gutterBottom variant="h5" component="h2">
-                      {user.name} {user.age}
+                      {user.name.split(' ')[0]} {user.age}
                     </Typography>
                     {/* <Typography variant="body2" color="textSecondary" component="p">
                       {user.description ? user.description : `From ${user.location}`}
