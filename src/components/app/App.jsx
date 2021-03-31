@@ -12,7 +12,7 @@ import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import Chat from '../chat/Chat';
 import { users } from '../matches/Matches';
-import firebase, { auth } from '../../firebase';
+import firebase, { auth, db } from '../../firebase';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -39,16 +39,22 @@ function App() {
     setIsChatOpened(!isChatOpened);
   }
 
-  const user = useSelector(state => state.currentUser)
+  const user = useSelector(state => state.currentUser);
+  
+  console.log('Kolko puti se rendnah?!?!?');
 
   //is a user still logged in
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
       if (user) {
-        dispatch({
-          type: 'userLoggedIn',
-          payload: user
-        });
+
+        db.collection('users').doc(user.uid).get().then(res => {
+          dispatch({
+            type: 'userLoggedIn',
+            payload: res.data()
+          });
+        })
+
         console.log('ima lognat ')
       } else {
         dispatch({
@@ -57,6 +63,22 @@ function App() {
         console.log('nqma lognat uj...')
       }
     });
+    
+  }, [])
+
+  useEffect(() => {
+    db.collection('users').get().then(res => {
+      let users = [];
+
+      res.forEach(element => {
+        users.push(element.data());
+      });
+      console.log('Users from App.jsx: ', users);
+      dispatch({
+        type: 'getAllUsers',
+        payload: users,
+      });
+  })
   }, [])
 
 

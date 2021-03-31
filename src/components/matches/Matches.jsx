@@ -99,7 +99,7 @@ export default function Matches({ users }) {
                     Dislike
                     </Button>
                 </CardActions>
-                    <Button className={styles.asd} onClick={() => manageCards(user.id)}>{moreDetailsCardKey === user.id ? btnMessage : 'Show more'}</Button>
+                    <Button className={styles.btnStyle} onClick={() => manageCards(user.id)}>{moreDetailsCardKey === user.id ? btnMessage : 'Show more'}</Button>
             </Card>
         )}
         
