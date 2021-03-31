@@ -108,14 +108,14 @@ const Profile = () => {
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.currentUser.user);
-    console.log('user from redux', user);
+    const userRef = db.collection('users').doc(user.uid);
 
     const classes = useStyles();
     const numberOfImageContainers = 6;
 
-    const [aboutYou, setAboutYou] = useState('');
+    const [aboutYou, setAboutYou] = useState(user.aboutYou);
     const [passions, setPassions] = useState('');
-    const [gender, setGender] = useState('female');
+    const [gender, setGender] = useState(user.gender);
     const [orientation, setOrientation] = useState('');
     const [region, setRegion] = useState('');
     const [allCountriesInARegion, setAllCountriesInARegion] = useState([]);
@@ -123,13 +123,44 @@ const Profile = () => {
     const [userImages, setUserImages] = useState([]);
 
     const handleAboutYouChange = (e) => {
-        setAboutYou(e.target.value);
+            setAboutYou(e.target.value);
     }
+    const handleAboutYou = (e) => {
+        if (user.aboutYou !== aboutYou) {
+            console.log('na blyr promenihme neshto');
+            dispatch({
+                type: 'userChangedAboutYou',
+                payload: e.target.value
+            });
+            
+            /* TUKA PRAVIM PROMQNA NA USERa v DB !*/
+            // userRef.update({aboutYou: e.target.value})
+            //     .then(() => {
+            //         console.log('updated successfully')
+            //     })
+            //     .catch(error => {
+            //         console.log('Error updating', error)
+            //     })
+        }
+    }
+
     const handlePassionsChange = e => {
         setPassions(e.target.value)
     }
     const handleGenderChange = e => {
-        setGender(e.target.value)
+        // setGender(e.target.value);
+        dispatch({
+            type: 'userChangedGender',
+            payload: e.target.value
+        })
+        /* TUKA PRAVIM PROMQNA NA USERa v DB !*/
+            // userRef.update({gender: e.target.value})
+            //     .then(() => {
+            //         console.log('updated successfully')
+            //     })
+            //     .catch(error => {
+            //         console.log('Error updating', error)
+            //     })
     }
     const handleOrientationChange = e => {
         setOrientation(e.target.value);
@@ -167,7 +198,7 @@ const Profile = () => {
         }).catch((error) => {
             console.log("Error getting document:", error);
         });
-    }, [user]);
+    }, []);
 
 
     const updateImages = (imagesArr) => {
@@ -255,6 +286,7 @@ const Profile = () => {
                                         fullWidth
                                         value={aboutYou}
                                         onChange={handleAboutYouChange}
+                                        onBlur={handleAboutYou}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -298,7 +330,7 @@ const Profile = () => {
                                     <Typography variant='h4'>Gender:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ justifyContent: 'center' }}>
-                                    <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={gender} onChange={handleGenderChange}>
+                                    <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={user.gender} onChange={handleGenderChange}>
                                         <FormControlLabel className={classes.radio} value="female" control={<Radio color='secondary' />} label="Female" />
                                         <FormControlLabel value="male" control={<Radio color='primary' />} label="Male" />
                                         <FormControlLabel value="other" control={<Radio color='default' />} label="Other" />
