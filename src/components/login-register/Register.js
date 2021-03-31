@@ -66,8 +66,8 @@ export default function Register({ setCurrentUser }) {
                 console.log(user);
                 let fullName = `${firstNameInput[0]}${firstNameInput.slice(1)} ${lastNameInput[0]}${lastNameInput.slice(1)}`;
                 console.log(fullName);
-                let userId = user.uid;
                 let userInDb = {
+                    uid: user.uid,
                     name: fullName,
                     email: emailInput,
                     aboutYou: '',
@@ -89,7 +89,7 @@ export default function Register({ setCurrentUser }) {
                     disliked: [],
                 }
 
-                createUserInDb(userId, userInDb);
+                createUserInDb(user.uid, userInDb);
 
                 dispatch({ type: 'userLoggedIn', payload: user });
             })
@@ -152,6 +152,7 @@ export default function Register({ setCurrentUser }) {
             .then((res) => {
                 console.log('logvane s google ', res);
                 let userInDb = {
+                    uid: res.user.uid,
                     name: res.user.displayName,
                     email: emailInput,
                     aboutYou: '',
