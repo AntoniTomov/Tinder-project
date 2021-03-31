@@ -58,20 +58,20 @@ export default function Register({ setCurrentUser }) {
 
     function register() {
         auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-        .then(() => {
-            return auth.createUserWithEmailAndPassword(emailInput, passInput)})
+            .then(() => {
+                return auth.createUserWithEmailAndPassword(emailInput, passInput)
+            })
             .then(() => {
                 var user = auth.currentUser;
                 console.log(user);
                 let fullName = `${firstNameInput[0]}${firstNameInput.slice(1)} ${lastNameInput[0]}${lastNameInput.slice(1)}`;
                 console.log(fullName);
-                // createUserInDb(fullName, emailInput, passInput);
                 let userId = user.uid;
                 let userInDb = {
-                    name: '',
-                    email: `${emailInput}`,
+                    name: fullName,
+                    email: emailInput,
                     aboutYou: '',
-                    age: 18,
+                    age: ageInput,
                     collageOrUni: '',
                     company: '',
                     country: '',
@@ -83,8 +83,13 @@ export default function Register({ setCurrentUser }) {
                     sexualOrientation: '',
                     youtubeSong: '',
                     passions: [],
-                    chats: []
+                    chats: [],
+                    isOnline: true,
+                    liked: [],
+                    disliked: [],
                 }
+
+                createUserInDb(userId, userInDb);
 
                 dispatch({ type: 'userLoggedIn', payload: user });
             })
@@ -104,21 +109,39 @@ export default function Register({ setCurrentUser }) {
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
-    };
 
-    const createUserInDb = (name, email, password = '') => {
-        db.collection("currentUser").doc(email).set({
-            name: name,
-            email: email,
-            password: password,
-        })
+    };
+    const createUserInDb = (userId, obj) => {
+        db.collection("users").doc(`${userId}`).set(obj)
             .then(() => {
                 console.log("Document successfully written!");
             })
             .catch((error) => {
                 console.error("Error writing document: ", error);
             });
-        setCurrentUser(auth.currentUser)
+    }
+
+    const createUpdateGoogleUserInDb = (userId, obj) => {
+        var userRef = db.collection("users").doc(userId);
+
+        userRef.get().then((doc) => {
+            if (!doc.exists) {
+                console.log('nqma takyv potrebirel')
+                return userRef.set(obj)
+                    .then(() => {
+                        console.log("Document successfully updated! // syzdadoh takyv potrebitel");
+                    })
+                    .catch((error) => {
+                        console.error("Error updating document: ", error);
+                    });
+            } else {
+                console.log('IVA VECHE takyv potrebirel, ne promenqm bazata')
+            }
+        })
+            .catch((error) => {
+                console.log("Error getting document:", error);
+            });
+
     }
 
 
@@ -127,7 +150,29 @@ export default function Register({ setCurrentUser }) {
         auth
             .signInWithPopup(provider)
             .then((res) => {
-                createUserInDb(res.user.displayName, res.user.email);
+                console.log('logvane s google ', res);
+                let userInDb = {
+                    name: res.user.displayName,
+                    email: emailInput,
+                    aboutYou: '',
+                    age: 18,
+                    collageOrUni: '',
+                    company: '',
+                    country: '',
+                    city: '',
+                    gender: '',
+                    jobTitle: '',
+                    images: [res.additionalUserInfo.profile.picture],
+                    mediaProfiles: [],
+                    sexualOrientation: '',
+                    youtubeSong: '',
+                    passions: [],
+                    chats: [],
+                    isOnline: true,
+                    liked: [],
+                    disliked: [],
+                }
+                createUpdateGoogleUserInDb(res.user.uid, userInDb);
             }).catch((error) => {
                 console.log(error.message)
             })

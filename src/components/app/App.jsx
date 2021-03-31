@@ -12,7 +12,7 @@ import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import Chat from '../chat/Chat';
 import { users } from '../matches/Matches';
-import firebase, { auth } from '../../firebase';
+import firebase, { db, auth } from '../../firebase';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -45,10 +45,13 @@ function App() {
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
       if (user) {
-        dispatch({
-          type: 'userLoggedIn',
-          payload: user
-        });
+
+        db.collection('users').doc(user.uid).get().then(res => {
+          dispatch({
+            type: 'userLoggedIn',
+            payload: res.data()
+          });
+        })
         console.log('ima lognat ')
       } else {
         dispatch({
