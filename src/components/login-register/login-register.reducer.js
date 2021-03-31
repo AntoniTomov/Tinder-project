@@ -11,6 +11,14 @@ const userReducer = (state = initialState, action) => {
             }
         case 'userLoggedOut':
             return null
+        case 'userChangedProfilePic':
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    images: action.payload,
+                }
+            }
         default:
             return state;
     }

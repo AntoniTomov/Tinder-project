@@ -15,7 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import ImageUploaderContainer from './imageUploader';
 
 import firebase, { auth, db } from '../../firebase';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -106,6 +106,7 @@ const CssTextField = withStyles({
 
 const Profile = () => {
 
+    const dispatch = useDispatch();
     const user = useSelector(state => state.currentUser.user);
     console.log('user from redux', user);
 
@@ -150,16 +151,14 @@ const Profile = () => {
     useEffect(() => {
 
         const docRef = db.collection('users').doc(`${user.uid}`);
-        console.log(user.uid, 'ot profile')
         docRef.get().then((doc) => {
-        console.log(doc, 'ot profile pak')
 
             if (doc.exists) {
 
                 const imagesArraySet = setImagesArrLengthAndFill(doc.data().images, numberOfImageContainers);
 
                 setUserImages(imagesArraySet)
-                console.log('snimkite v db',doc.data().images)
+                console.log('snimkite v db', doc.data().images)
                 console.log('imagesArraySet', imagesArraySet)
             } else {
                 // doc.data() will be undefined in this case
@@ -170,15 +169,14 @@ const Profile = () => {
         });
     }, [user]);
 
-    
+
     const updateImages = (imagesArr) => {
         let userRef = db.collection('users').doc(`${user.uid}`);
         return userRef.update({
             images: imagesArr,
         }).then(() => {
             console.log("Document successfully updated!");
-        })
-        .catch((error) => {
+        }).catch((error) => {
             console.error("Error updating document: ", error);
         });
     }
@@ -187,6 +185,10 @@ const Profile = () => {
         const replacedImageUrls = [...userImages];
         replacedImageUrls[index] = url;
         setUserImages(replacedImageUrls);
+        dispatch({
+            type: 'userChangedProfilePic',
+            payload: replacedImageUrls,
+        })
         return replacedImageUrls;
     }
 
