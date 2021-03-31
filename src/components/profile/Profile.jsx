@@ -150,9 +150,12 @@ const Profile = () => {
 
         docRef.get().then((doc) => {
             if (doc.exists) {
-                // doc.data().images.length === numberOfImageContainers ? .... : ... ;
-                setUserImages(doc.data().images)
+
+                const imagesArraySet = setImagesArrLengthAndFill(doc.data().images, numberOfImageContainers);
+
+                setUserImages(imagesArraySet)
                 console.log('snimkite v db',doc.data().images)
+                console.log('imagesArraySet', imagesArraySet)
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
@@ -180,6 +183,15 @@ const Profile = () => {
         replacedImageUrls[index] = url;
         setUserImages(replacedImageUrls);
         return replacedImageUrls;
+    }
+
+    const setImagesArrLengthAndFill = (imagesArr, maxSize) => {
+        let resultArr = [...imagesArr]
+        resultArr.length = maxSize;
+        if (imagesArr.length < maxSize) {
+            resultArr.fill('', imagesArr.length);
+        }
+        return resultArr;
     }
 
     return (
