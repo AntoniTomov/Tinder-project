@@ -2,6 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -58,6 +59,9 @@ export default function Matches({ users }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [btnMessage, setBtnMessage] = useState('Show more');
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
+
+    const matches = useSelector(state => state.currentUser.user.matches);
+    console.log('matches: ', matches)
 
     const manageCards = (id) => {
         isExpanded ? setMoreDetailsCardKey(-1) : setMoreDetailsCardKey(id);

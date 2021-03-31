@@ -6,47 +6,53 @@ import './HomePage.css';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import { useSelector } from 'react-redux';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
-const fakeUsers = [
-    {
-      name: 'Pesho',
-      age: 19,
-      url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg',
-      more: {
-        description: 'Az sum Mega Pi4!1!',
-        socialNetwork: 'IG:peshoPi4a',
-        location: 'Sofeto',
-      },
-      infoField: '',
-    },
-    {
-      name: 'SlaTkata93',
-      age: 19,
-      url: 'https://www.tiktok.com/api/img/?itemId=6917677726480551174&location=1&aid=1988',
-      more: {
-        description: 'Slatka sum.',
-        socialNetwork: 'IG:slatkata93',
-        location: 'Sofeto',
-      },
-      infoField: '',
-    },
-    {
-      name: 'Genata',
-      age: 39,
-      url: 'https://pbs.twimg.com/media/A9Hb3hdCIAMteGN.jpg',
-      more: {
-        description: 'Karam koolo',
-        socialNetwork: '',
-        location: 'Sofeto',
-      },
-      infoField: '',
-    }
-  ];
+// const fakeUsers = [
+//     {
+//       name: 'Pesho',
+//       age: 19,
+//       url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg',
+//       more: {
+//         description: 'Az sum Mega Pi4!1!',
+//         socialNetwork: 'IG:peshoPi4a',
+//         location: 'Sofeto',
+//       },
+//       infoField: '',
+//     },
+//     {
+//       name: 'SlaTkata93',
+//       age: 19,
+//       url: 'https://www.tiktok.com/api/img/?itemId=6917677726480551174&location=1&aid=1988',
+//       more: {
+//         description: 'Slatka sum.',
+//         socialNetwork: 'IG:slatkata93',
+//         location: 'Sofeto',
+//       },
+//       infoField: '',
+//     },
+//     {
+//       name: 'Genata',
+//       age: 39,
+//       url: 'https://pbs.twimg.com/media/A9Hb3hdCIAMteGN.jpg',
+//       more: {
+//         description: 'Karam koolo',
+//         socialNetwork: '',
+//         location: 'Sofeto',
+//       },
+//       infoField: '',
+//     }
+//   ];
 
 const alreadyRemoved = [];
-
-
-
 
 function HomePage () {
   const users = useSelector(state => state.allUsers.allUsers);
@@ -89,7 +95,7 @@ function HomePage () {
   return (
     <div>
       {isSwipeView ? (
-        <div style={{width: '60%', margin: '0 auto'}}>
+        <div style={{width: '85%', margin: '0 auto'}}>
           <ViewModuleIcon onClick={changeViewState}/>
           <link href='https://fonts.googleapis.com/css?family=Damion&display=swap' rel='stylesheet' />
           <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
@@ -111,8 +117,39 @@ function HomePage () {
 
         </div>
       ) : (
-        <div style={{width: '60%', margin: '0 auto'}}>
-            <TouchAppIcon onClick={changeViewState}/>
+        <div>
+          <TouchAppIcon onClick={changeViewState}/>
+          <div className="containerCardView">
+            <div className="containerCardView">
+              {characters.map((user) =>
+                <Card elevation={20} className="asd" key={user.uid} >
+                  <CardActionArea>
+                    <CardMedia
+                      className="media"
+                      image={user.images[0]}
+                      title={user.name}
+                    />
+                    <CardContent>
+                    <Typography className="colorBlack" gutterBottom variant="h5" component="h2">
+                      {user.name} {user.age}
+                    </Typography>
+                    {/* <Typography variant="body2" color="textSecondary" component="p">
+                      {user.description ? user.description : `From ${user.location}`}
+                    </Typography> */}
+                    </CardContent>
+                  </CardActionArea>
+                  <CardActions className="btnContainer">
+                    <Button size="small" color="primary">
+                    Dislike
+                    </Button>
+                    <Button size="small" color="primary">
+                    Like
+                    </Button>
+                  </CardActions>
+                </Card>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -87,9 +87,9 @@ export default function MenuAppBar() {
             </Paper>
           </Grid>
           <Grid item xs={10}>
-            <Typography variant="h4" className={classes.title}>
+            {/* <Typography variant="h4" className={classes.title}>
               DINDER!
-                        </Typography>
+            </Typography> */}
           </Grid>
           <Grid container xs={1} justify='flex-end'>
             <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
