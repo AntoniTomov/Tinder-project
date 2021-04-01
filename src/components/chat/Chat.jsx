@@ -4,6 +4,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import firebase, { db } from '../../firebase';
 import { useSelector } from 'react-redux';
+import ChatHead from './chatHead';
 
 
 const useStyles = makeStyles(theme => ({
@@ -19,41 +20,54 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Chat({ users }) {
+    const styles = useStyles();
     const user = useSelector(state => state.currentUser.user);
 
     const [formValue, setFormValue] = useState('');
     const [isPersonActive, setisPersonActive] = useState(false);
     const [allMessages, setAllMessages] = useState([]);
-    const styles = useStyles();
+    const [allChats, setAllChats] = useState([]);
+    const [targetChat, setTargetChat] = useState(null);
+    const chat = null;
 
-    const messagesRef = db.collection('chatRooms').doc('allMessages').collection('uid123');
+    // const messagesRef = db.collection('chatRooms').doc('allMessages').collection('uid123');
 
     useEffect(() => {
-
-        messagesRef.onSnapshot(snapShot => {
+        /* samo pri zarejdane vzimame ref kym vsichki chatove kydeto uchastva current user-a */
+        const chatroomsRef = db.collection('chatRooms').where('users', 'array-contains', 'iRAJrtLOEtO92cbkP4ZYOC0nNMv2');
+        /* pylnim state-a na allChats, za da moje da gi polzvame */
+        chatroomsRef.get().then(data => {
+            data.forEach(el => {
+                let chat = { id: el.id, messages: el.data().messages }
+                setAllChats(prev => [...prev, chat])
+            });
+            setTargetChat(allChats[0]);
+        })
+        /* gledame za promeni v qnkoi ot tezi documenti */
+        chatroomsRef.onSnapshot(snapShot => {
             snapShot.docChanges().forEach(change => {
-                // console.log(change.doc.data())
-                setAllMessages(prev => [...prev, change.doc.data()])
+                console.log('ima promqna v document s ID-> ', change.doc.get('messages'))
             })
         })
-
     }, [])
+
+    useEffect(() => {
+        // const targetChatRef = db.collection('chatRooms').doc(targetChat);
+        
+    }, [targetChat])
 
 
     const sendMessage = async (e) => {
         e.preventDefault();
-        await messagesRef.add({
-            message: formValue,
-            sendAt: Date.now()
-        })
+        // await currentChatRef.update({
+        //     messages: firebase.firestore.FieldValue.arrayUnion({ message: formValue, sender: 'boK' })
+        // })
         setFormValue('');
     }
-
-
-    const toggleClass = (ev) => {
-        console.log(ev.target);
-        ev.target.className === 'active' ? ev.target.className = '' : ev.target.className = 'active';
-        console.log(ev.target);
+    
+    const selectTargetChat = (id) => {
+        const chat = allChats.find(chat => chat.id === id);
+        setTargetChat(chat);
     }
 
     return (
@@ -61,23 +75,27 @@ export default function Chat({ users }) {
             <div className={chatClasses.chatContainer}>
                 <div className={chatClasses.profilesInChat}>
                     <div className={chatClasses.innerDivChat}>
-                        {users.map(user =>
-                            <span key={user.id} className={chatClasses.missedMsg} onClick={(ev) => toggleClass(ev)}>
-                                <Avatar className={styles.head} alt={user.name} src={user.url} />
-                                {user.name}
-                            </span>
-                        )}
+                        {   
+                            allChats.map(chat => {
+                                return (<ChatHead id={chat.id} selectTargetChat={selectTargetChat} />)
+                            })
+                        }
                     </div>
                 </div>
                 <main className={chatClasses.chat}>
                     <div className={chatClasses.messageContainer}>
-                        
-                        {allMessages.map((message, i) =>
+
+                        {
+                            targetChat &&
+                            targetChat.messages.map(message => (<p>{message.message}</p>))
+                        }
+
+                        {/* {allMessages.map((message, i) =>
                             <div key={i} className={[`${chatClasses.message} ${chatClasses.received}`]}>
                                 <p>{message.message}</p>
                                 <span>{new Date(message.sendAt).toDateString()}</span>
                             </div>
-                        )}
+                        )} */}
 
                     </div>
                     <form className={chatClasses.chatForm} onSubmit={(e) => sendMessage(e)}>
