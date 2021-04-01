@@ -15,7 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import ImageUploaderContainer from './imageUploader';
 
 import firebase, { auth, db } from '../../firebase';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -106,15 +106,16 @@ const CssTextField = withStyles({
 
 const Profile = () => {
 
+    const dispatch = useDispatch();
     const user = useSelector(state => state.currentUser.user);
-    console.log('user from redux', user);
+    const userRef = db.collection('users').doc(user.uid);
 
     const classes = useStyles();
     const numberOfImageContainers = 6;
 
-    const [aboutYou, setAboutYou] = useState('');
+    const [aboutYou, setAboutYou] = useState(user.aboutYou);
     const [passions, setPassions] = useState('');
-    const [gender, setGender] = useState('female');
+    const [gender, setGender] = useState(user.gender);
     const [orientation, setOrientation] = useState('');
     const [region, setRegion] = useState('');
     const [allCountriesInARegion, setAllCountriesInARegion] = useState([]);
@@ -122,13 +123,44 @@ const Profile = () => {
     const [userImages, setUserImages] = useState([]);
 
     const handleAboutYouChange = (e) => {
-        setAboutYou(e.target.value);
+            setAboutYou(e.target.value);
     }
+    const handleAboutYou = (e) => {
+        if (user.aboutYou !== aboutYou) {
+            console.log('na blyr promenihme neshto');
+            dispatch({
+                type: 'userChangedAboutYou',
+                payload: e.target.value
+            });
+            
+            /* TUKA PRAVIM PROMQNA NA USERa v DB !*/
+            // userRef.update({aboutYou: e.target.value})
+            //     .then(() => {
+            //         console.log('updated successfully')
+            //     })
+            //     .catch(error => {
+            //         console.log('Error updating', error)
+            //     })
+        }
+    }
+
     const handlePassionsChange = e => {
         setPassions(e.target.value)
     }
     const handleGenderChange = e => {
-        setGender(e.target.value)
+        // setGender(e.target.value);
+        dispatch({
+            type: 'userChangedGender',
+            payload: e.target.value
+        })
+        /* TUKA PRAVIM PROMQNA NA USERa v DB !*/
+            // userRef.update({gender: e.target.value})
+            //     .then(() => {
+            //         console.log('updated successfully')
+            //     })
+            //     .catch(error => {
+            //         console.log('Error updating', error)
+            //     })
     }
     const handleOrientationChange = e => {
         setOrientation(e.target.value);
@@ -150,16 +182,14 @@ const Profile = () => {
     useEffect(() => {
 
         const docRef = db.collection('users').doc(`${user.uid}`);
-        console.log(user.uid, 'ot profile')
         docRef.get().then((doc) => {
-        console.log(doc, 'ot profile pak')
 
             if (doc.exists) {
 
                 const imagesArraySet = setImagesArrLengthAndFill(doc.data().images, numberOfImageContainers);
 
                 setUserImages(imagesArraySet)
-                console.log('snimkite v db',doc.data().images)
+                console.log('snimkite v db', doc.data().images)
                 console.log('imagesArraySet', imagesArraySet)
             } else {
                 // doc.data() will be undefined in this case
@@ -168,17 +198,16 @@ const Profile = () => {
         }).catch((error) => {
             console.log("Error getting document:", error);
         });
-    }, [user]);
+    }, []);
 
-    
+
     const updateImages = (imagesArr) => {
         let userRef = db.collection('users').doc(`${user.uid}`);
         return userRef.update({
             images: imagesArr,
         }).then(() => {
             console.log("Document successfully updated!");
-        })
-        .catch((error) => {
+        }).catch((error) => {
             console.error("Error updating document: ", error);
         });
     }
@@ -187,6 +216,10 @@ const Profile = () => {
         const replacedImageUrls = [...userImages];
         replacedImageUrls[index] = url;
         setUserImages(replacedImageUrls);
+        dispatch({
+            type: 'userChangedProfilePic',
+            payload: replacedImageUrls,
+        })
         return replacedImageUrls;
     }
 
@@ -253,6 +286,7 @@ const Profile = () => {
                                         fullWidth
                                         value={aboutYou}
                                         onChange={handleAboutYouChange}
+                                        onBlur={handleAboutYou}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -296,7 +330,7 @@ const Profile = () => {
                                     <Typography variant='h4'>Gender:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ justifyContent: 'center' }}>
-                                    <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={gender} onChange={handleGenderChange}>
+                                    <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={user.gender} onChange={handleGenderChange}>
                                         <FormControlLabel className={classes.radio} value="female" control={<Radio color='secondary' />} label="Female" />
                                         <FormControlLabel value="male" control={<Radio color='primary' />} label="Male" />
                                         <FormControlLabel value="other" control={<Radio color='default' />} label="Other" />
