@@ -107,7 +107,7 @@ const CssTextField = withStyles({
 const Profile = () => {
 
     const user = useSelector(state => state.currentUser.user);
-    console.log('user from redux', user);
+    // console.log('user from redux', user);
 
     const classes = useStyles();
     const numberOfImageContainers = 6;
@@ -150,17 +150,17 @@ const Profile = () => {
     useEffect(() => {
 
         const docRef = db.collection('users').doc(`${user.uid}`);
-        console.log(user.uid, 'ot profile')
+        // console.log(user.uid, 'ot profile')
         docRef.get().then((doc) => {
-        console.log(doc, 'ot profile pak')
+        // console.log(doc, 'ot profile pak')
 
             if (doc.exists) {
 
                 const imagesArraySet = setImagesArrLengthAndFill(doc.data().images, numberOfImageContainers);
 
                 setUserImages(imagesArraySet)
-                console.log('snimkite v db',doc.data().images)
-                console.log('imagesArraySet', imagesArraySet)
+                // console.log('snimkite v db',doc.data().images)
+                // console.log('imagesArraySet', imagesArraySet)
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");

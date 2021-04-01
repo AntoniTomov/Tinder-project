@@ -84,3 +84,6 @@ actions:
 
 */
 
+
+-------------------------------
+collection('chatRooms').doc('chatRoomUID').collection('messages') -> pylna s dokumenti
