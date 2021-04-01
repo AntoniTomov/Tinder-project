@@ -18,6 +18,8 @@ import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import firebase, { auth } from '../../firebase';
 
+import { useDispatch, useSelector } from 'react-redux'
+
 
 import logo from './dinderTrans2.png'
 
@@ -48,10 +50,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function MenuAppBar({ user, setCurrentUser }) {
+export default function MenuAppBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.currentUser);
 
 
   const handleMenu = (event) => {
@@ -64,7 +68,7 @@ export default function MenuAppBar({ user, setCurrentUser }) {
 
   const logout = () => {
     auth.signOut()
-    .then(setCurrentUser(null))
+    .then(dispatch({type: 'userLoggedOut'}))
     .catch(error => console.log(error.message))
   }
 
@@ -83,9 +87,9 @@ export default function MenuAppBar({ user, setCurrentUser }) {
             </Paper>
           </Grid>
           <Grid item xs={10}>
-            <Typography variant="h4" className={classes.title}>
+            {/* <Typography variant="h4" className={classes.title}>
               DINDER!
-                        </Typography>
+            </Typography> */}
           </Grid>
           <Grid container xs={1} justify='flex-end'>
             <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
@@ -96,13 +100,13 @@ export default function MenuAppBar({ user, setCurrentUser }) {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem component={Link} to='/home'>Home</MenuItem>
+              <MenuItem component={Link} to='/'>Home</MenuItem>
               {
                 user ?
                   <div>
                     <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
                     <MenuItem component={Link} to='/profile'>Profile</MenuItem>
-                    <MenuItem component={Link} to='/login' onClick={() => {logout()}} to='/home'>Logout</MenuItem>
+                    <MenuItem component={Link} to='/' onClick={() => {logout()}} >Logout</MenuItem>
                   </div>
                   :
                   <div>

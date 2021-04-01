@@ -15,6 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import ImageUploaderContainer from './imageUploader';
 
 import firebase, { auth, db } from '../../firebase';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -105,10 +106,11 @@ const CssTextField = withStyles({
 
 const Profile = () => {
 
-    const user = auth.currentUser;
+    const user = useSelector(state => state.currentUser.user);
+    console.log('user from redux', user);
 
     const classes = useStyles();
-    const numberOfImageContainers = new Array(6);
+    const numberOfImageContainers = 6;
 
     const [aboutYou, setAboutYou] = useState('');
     const [passions, setPassions] = useState('');
@@ -145,38 +147,20 @@ const Profile = () => {
             .catch(err => console.log(err))
     }, [region]);
 
-    // useEffect(() => {
-    //     const storageRef = firebase.storage().ref();
-    //     const imagesRef = storageRef.child(`${user.uid}`);
-    //     imagesRef.listAll()
-    //         .then((res) => {
-    //             //folder refs but we don't use them in this case
-    //             // res.prefixes.forEach((folderRef) => {
-    //             //     console.log('folderRef', folderRef);
-    //             // });
-    //             res.items.forEach((itemRef) => {
-    //                 // All the items under imagesRef
-    //                 const imageRef = itemRef;
-    //                 imageRef.getDownloadURL()
-    //                     .then((url) => {
-    //                         setUserImages(prevUserImages => [...prevUserImages, url]);
-    //                     })
-    //                     .catch((error) => {
-    //                         console.log('error', error.message)
-    //                     });
-    //             });
-    //         })
-    //         .catch((error) => {
-    //             console.log('Error on storage refs', error.message)
-    //         });
-    // }, []);
-
     useEffect(() => {
-        const docRef = db.collection('users').doc(`${user.uid}`);
 
+        const docRef = db.collection('users').doc(`${user.uid}`);
+        console.log(user.uid, 'ot profile')
         docRef.get().then((doc) => {
+        console.log(doc, 'ot profile pak')
+
             if (doc.exists) {
-                console.log("Document data:", setUserImages(doc.data().images));
+
+                const imagesArraySet = setImagesArrLengthAndFill(doc.data().images, numberOfImageContainers);
+
+                setUserImages(imagesArraySet)
+                console.log('snimkite v db',doc.data().images)
+                console.log('imagesArraySet', imagesArraySet)
             } else {
                 // doc.data() will be undefined in this case
                 console.log("No such document!");
@@ -184,7 +168,36 @@ const Profile = () => {
         }).catch((error) => {
             console.log("Error getting document:", error);
         });
-    }, [user.uid])
+    }, [user]);
+
+    
+    const updateImages = (imagesArr) => {
+        let userRef = db.collection('users').doc(`${user.uid}`);
+        return userRef.update({
+            images: imagesArr,
+        }).then(() => {
+            console.log("Document successfully updated!");
+        })
+        .catch((error) => {
+            console.error("Error updating document: ", error);
+        });
+    }
+
+    const replaceImgUrl = (index, url) => {
+        const replacedImageUrls = [...userImages];
+        replacedImageUrls[index] = url;
+        setUserImages(replacedImageUrls);
+        return replacedImageUrls;
+    }
+
+    const setImagesArrLengthAndFill = (imagesArr, maxSize) => {
+        let resultArr = [...imagesArr]
+        resultArr.length = maxSize;
+        if (imagesArr.length < maxSize) {
+            resultArr.fill('', imagesArr.length);
+        }
+        return resultArr;
+    }
 
     return (
         <>
@@ -208,13 +221,11 @@ const Profile = () => {
                                     style={{ margin: '30px 0', padding: '20px' }}
                                 >
                                     {/* lg={3} md={'auto'} sm={1} */}
-                                
-                                    {numberOfImageContainers.map((container, i) => {
 
+                                    {userImages.map((container, i) => {
                                         return (
                                             <Grid xs={'auto'} item>
-                                                {/* <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={userImages[i] && ''} /> */}
-                                                <ImageUploaderContainer id={i} key={i} userId={user.uid} imgUrl={userImages} />
+                                                <ImageUploaderContainer id={i} key={i} userId={user.uid} replaceImgUrl={replaceImgUrl} updateImages={updateImages} imgUrl={userImages[i] || ''} />
                                             </Grid>
                                         )
                                     })}

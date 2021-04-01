@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const ImageUploaderContainer = ({ id, userId, imgUrl }) => {
+const ImageUploaderContainer = ({ id, userId, imgUrl, replaceImgUrl, updateImages }) => {
     const classes = useStyles();
 
     const handleUploadClick = (e) => {
@@ -58,13 +58,7 @@ const ImageUploaderContainer = ({ id, userId, imgUrl }) => {
 
             const storageRef = firebase.storage().ref();
             const uploadTask = storageRef.child(`${userId}/${newFileName}`).put(file);
-
-
-            const updateProfile = () => {
-               
-            }
-
-
+            
             uploadTask.on('state_changed',
                 (snapshot) => {
                     // Observe state change events such as progress, pause, and resume
@@ -89,7 +83,8 @@ const ImageUploaderContainer = ({ id, userId, imgUrl }) => {
                     uploadTask.snapshot.ref.getDownloadURL()
                     .then((downloadURL) => {
                         console.log('File available at', downloadURL);
-
+                        const newImagesArr = async () => await replaceImgUrl(id, downloadURL);
+                        newImagesArr().then((images) => updateImages(images));
                     });
                 }
             );
@@ -99,7 +94,7 @@ const ImageUploaderContainer = ({ id, userId, imgUrl }) => {
     return (
         <>
             <Paper elevation={6} className={classes.paper}>
-                <div className={classes.divImg} style={{imgUrl} && {backgroundImage: `url(${imgUrl})` }}></div>
+                <div className={classes.divImg} style={{backgroundImage: `url(${imgUrl})`}}></div>
                 <input
                     accept="image/*"
                     className={classes.input}

@@ -10,7 +10,9 @@ h2 {
     margin: 0 auto;
     width: 60vw;
     max-width: 260px;
+    border-radius: 20px;
     height: 300px;
+    box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.30);
 }
 
 .card {
@@ -19,7 +21,6 @@ h2 {
     width: 80vw;
     max-width: 260px;
     height: 300px;
-    box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.30);
     border-radius: 20px;
     background-size: cover;
     background-position: center;
@@ -98,4 +99,47 @@ h2 {
     100% {
         transform: scale(1, 1)
     }
+}
+
+.containerCardView {
+    width: 85%;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.item {
+}
+
+.item:hover {
+    box-shadow: 0 3px 5px 2px rgba(255, 105, 135, .3);
+}
+.containerCardView .root {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.4);
+    width: 250px;
+    height: 350px;
+    margin: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.media {
+    height: 240px;
+}
+
+.colorBlack {
+    color: 'black';
+}
+
+.btnContainer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
 }
