@@ -12,6 +12,7 @@ body {
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
+  padding-bottom: 3rem;
   /* background: linear-gradient(#fff, #999); */
   background: linear-gradient(to right, rgba(204, 83, 51, 0.6), rgba(35, 7, 77, 0.6));
 }

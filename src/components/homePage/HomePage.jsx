@@ -5,7 +5,7 @@ import TinderCard from 'react-tinder-card';
 import './HomePage.css';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
@@ -15,6 +15,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { db } from '../../firebase';
 
 // const fakeUsers = [
 //     {
@@ -54,37 +55,95 @@ import Typography from '@material-ui/core/Typography';
 
 const alreadyRemoved = [];
 
+
 function HomePage () {
+  // const users = useSelector(state => state.allUsers.allUsers);
+
+  // Filtering the users from liked/disliked/matches
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.currentUser.user);
   const users = useSelector(state => state.allUsers.allUsers);
-  let charactersState = users;
-  const [characters, setCharacters] = useState(users);
-  console.log("Characters from homePage: ", characters)
+  let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
+
+  // useEffect(() => {
+  //   filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
+  //   console.log('FilteredUsers from homePage', filteredUsers)
+  //   console.log('currentUser from homePage', currentUser)
+  // }, [currentUser])
+
+  
+  let charactersState = filteredUsers;
+  const [characters, setCharacters] = useState(filteredUsers);
   const [lastDirection, setLastDirection] = useState();
   const [isSwipeView, setIsSwipeView] = useState(true);
+  const childRefs = useMemo(() => Array(filteredUsers.length).fill(0).map(i => React.createRef()), []); 
 
-  const childRefs = useMemo(() => Array(users.length).fill(0).map(i => React.createRef()), []);
-
-  // setCharacters(users);
-
-  const swiped = (direction, nameToDelete) => {
-    console.log('removing: ' + nameToDelete);
+  const swiped = (direction, nameToDelete, userIdToBeAdded) => {
+    // console.log('removing: ' + nameToDelete);
+    let arrProp = direction === 'left' ? 'disliked' : 'liked';
+    updateDB(arrProp, userIdToBeAdded);
     setLastDirection(direction);
     alreadyRemoved.push(nameToDelete);
   }
 
   const outOfFrame = (name) => {
-    console.log(name + ' left the screen!');
+    // console.log(name + ' left the screen!');
+    // updateDB(arrProp, userIdToBeAdded);
     charactersState = charactersState.filter(character => character.name !== name);
     setCharacters(charactersState);
+  }
+
+  const updateProfileMatches = (userOneId, userTwoId) => {
+    const userOneMathces = users.find(user => user.uid === userOneId).matches;
+    const userTwoMathces = users.find(user => user.uid === userTwoId).matches;
+    db.collection('users').doc(userOneId).update({
+      matches: [...userOneMathces, userTwoId],
+    }).then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userOneId))
+    db.collection('users').doc(userTwoId).update({
+      matches: [...userTwoMathces, userOneId],
+    }).then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userTwoId))
+  }
+
+  const updateDB = (arrProp, userIdToBeAdded) => {
+    
+    db.collection('users').doc(currentUser.uid).update({
+      [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
+    })
+    .then(() => {
+      currentUser[arrProp].push(userIdToBeAdded);
+      dispatch({ type: 'userLoggedIn', payload: currentUser})
+      console.log('Updated currentUser liked Array: ', currentUser[arrProp], ' with: ', userIdToBeAdded)
+    })
+    .catch((error) => {
+      console.error("Error updating document: ", error);
+    });
+    setCharacters(charactersState);
+    console.log('characters: ', characters, ' sa setnati na ', charactersState, ' a filteredUsers sa ', filteredUsers)
+    arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
+      .then(doc => {
+        if (doc.data().liked.includes(currentUser.uid)) {
+          // We are updating the matches of currentUser and lokedUser
+          updateProfileMatches(currentUser.uid, userIdToBeAdded)
+        }
+      })
+    // console.log("Gledaj tuk :   ", daliNiEHaresal);
   }
 
   const swipe = (dir) => {
     const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name));
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].name; // Find the card object to be removed
-      const index = users.map(person => person.name).indexOf(toBeRemoved); // Find the index of which to make the reference to
+      const index = filteredUsers.map(person => person.name).indexOf(toBeRemoved); // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
       childRefs[index].current.swipe(dir); // Swipe the card!
+
+      charactersState = charactersState.filter(character => character.name !== toBeRemoved);
+      // setCharacters(charactersState);
+
+      // const userIdToBeAdded = cardsLeft[cardsLeft.length - 1].uid;
+      // const arrProp = dir === 'right' ? 'liked' : 'disliked';
+
+      // updateDB(arrProp, userIdToBeAdded);
     }
   }
 
@@ -93,7 +152,17 @@ function HomePage () {
   }
 
   return (
-    <div>
+    <div> 
+      <button onClick={() => {
+        let refs = db.collection('users').where('liked', 'array-contains', 'iRAJrtLOEtO92cbkP4ZYOC0nNMv2'); //!important
+        refs.get().then((querySnapshot) => {
+          // console.log(querySnapshot)
+            querySnapshot.forEach((doc) => {
+                // console.log(doc.id, ' => ', doc.data());
+            });
+        });
+      }}>find who liked me</button>
+
       {isSwipeView ? (
         <div style={{width: '85%', margin: '0 auto'}}>
           <ViewModuleIcon onClick={changeViewState}/>
@@ -102,7 +171,9 @@ function HomePage () {
           <h1>React Tinder Card</h1>
           <div className='cardContainer'>
             {characters.map((character, index) =>
-              <TinderCard ref={childRefs[index]} className='swipe' key={character.uid} onSwipe={(dir) => swiped(dir, character.name)} onCardLeftScreen={() => outOfFrame(character.name)}>
+              <TinderCard ref={childRefs[index]} className='swipe' key={character.uid} onSwipe={(dir) => {
+                swiped(dir, character.name, character.uid);
+                }} onCardLeftScreen={() => outOfFrame(character.name, character.uid)}>
                 <div style={{ backgroundImage: 'url(' + character.images[0] + ')' }} className='card'>
                   <h3>{character.name}</h3>
                 </div>
@@ -139,10 +210,10 @@ function HomePage () {
                     </CardContent>
                   </CardActionArea>
                   <CardActions className="btnContainer">
-                    <Button size="small" color="primary">
+                    <Button size="small" color="primary" onClick={() => updateDB('disliked', user.uid)}>
                     Dislike
                     </Button>
-                    <Button size="small" color="primary">
+                    <Button size="small" color="primary" onClick={() => updateDB('liked', user.uid)}>
                     Like
                     </Button>
                   </CardActions>

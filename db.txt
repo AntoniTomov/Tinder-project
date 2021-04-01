@@ -84,3 +84,6 @@ actions:
 
 */
 
+
+~~~~~~
+kogato stane match, se poqvqva tozi user v matches masiva i na dvata potrebitelq! I momentalno se syzdava dov document v chatRooms s id "po-malkoto_po-golqmoto";
