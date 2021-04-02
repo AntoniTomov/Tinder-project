@@ -114,16 +114,24 @@ function App() {
               <Register />
             }
           </Route>
-          <Route exact path='/matches'>
-            <Matches />
-            {/* <Route exact path='/chosenMatch'>
-            <ChosenMatch user={user}/>
-          </Route> */}
-            {/* <ChosenMatch user={user}/> */}
-          </Route>
-          <Route path="/matches/:id" children={<ChosenMatch />}>
-            <ChosenMatch />
-          </Route>
+          {user ?
+            <Route exact path='/matches'>
+              <Matches />
+              {/* <Route exact path='/chosenMatch'>
+              <ChosenMatch user={user}/>
+            </Route> */}
+              {/* <ChosenMatch user={user}/> */}
+            </Route>
+          :
+            <Register />
+          }
+          {user ?
+            <Route path="/matches/:id" children={<ChosenMatch />}>
+              <ChosenMatch />
+            </Route>
+          :
+            <Register />
+          }
           <Route exact path='/profile'>
             { user ? <Profile /> : <Redirect to='/profile' />}
           </Route>

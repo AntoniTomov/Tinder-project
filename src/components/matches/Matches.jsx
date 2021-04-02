@@ -11,8 +11,20 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Matches.module.css';
+import { db } from '../../firebase';
 
 const useStyles = makeStyles(theme => ({
+    flexColumn: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    title: {
+        fontSize: '2rem',
+        width: 'max-content',
+    },
     container: {
         width: '60%',
         position: 'relative',
@@ -20,6 +32,7 @@ const useStyles = makeStyles(theme => ({
         // padding: theme.spacing(0, 10, 2),
         justifyContent: "center",
         alignItems: "center",
+        marginTop: '1rem',
     },
     item: {
         margin: `${theme.spacing(2)}px`,
@@ -56,35 +69,64 @@ const useStyles = makeStyles(theme => ({
 
 export default function Matches() {
     const classes = useStyles();
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [btnMessage, setBtnMessage] = useState('Show more');
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
-    const users = useSelector(state => state.allUsers.allUsers);
+    const [matches, setMatches] = useState([]);
+    const currentUser = useSelector(state => state.currentUser.user);
+    const allUsers = useSelector(state => state.allUsers.allUsers);
+    
+    const matchesIds = useSelector(state => state.currentUser.user.matches);
 
-    // const matches = useSelector(state => state.currentUser.user.matches);
-    // console.log('matches: ', matches)
+    useEffect(() => {
+        let currentMatches = allUsers.filter(user => currentUser.matches.includes(user.uid));
+        setMatches(currentMatches);
+    }, [])
 
-    const manageCards = (id) => {
-        isExpanded ? setMoreDetailsCardKey(-1) : setMoreDetailsCardKey(id);
-        setIsExpanded(!isExpanded);
-        btnMessage === 'Show more' ? setBtnMessage('Show less') : setBtnMessage('Show more');
+    console.log('matches: ', matches);
+
+    const manageCards = (uid) => {
+        moreDetailsCardKey === uid ? setMoreDetailsCardKey(-1) : setMoreDetailsCardKey(uid);
     }
 
     const showProfile = (id) => {
         
     }
 
+    const dislikeUser = (userId) => {
+        console.log(userId)
+        const currUserMatchesIds = currentUser.matches.filter(user => user !== userId);
+        const currUserLikedProfilesIds = currentUser.liked.filter(user => user !== userId);
+        const removedUser = allUsers.find(user => user.uid === userId)
+        const removedUserMatches = removedUser.matches.filter(user => user !== currentUser.uid);
+        console.log('currUserMatches', currUserMatchesIds);
+        console.log('currUserLikedProfiles', currUserLikedProfilesIds);
+        console.log('currUserLikedProfiles sus removedUser: ', currentUser.liked);
+        console.log('removedUser', removedUser);
+        console.log('removedUserMatches', removedUserMatches);
+
+        db.collection('users').doc(currentUser.uid).update({
+            matches: [...currUserMatchesIds],
+            liked: [...currUserLikedProfilesIds],
+        });
+        db.collection('users').doc(userId).update({
+            matches: [...removedUserMatches],
+        })
+        let currentMatches = allUsers.filter(user => currUserMatchesIds.includes(user.uid));
+        setMatches(currentMatches);
+    }
+
     return (
+        <div className={classes.flexColumn}>
+        <Typography className={classes.title}>Your matches</Typography>
         <Grid
             container
             className={classes.container}
         >
-        {users.map((user) =>
-            <Card elevation={20} className={moreDetailsCardKey === user.id ? [classes.root, classes.expanded] : classes.root} key={user.id} onClick={() => showProfile(user.id)}>
-                <CardActionArea component={Link} to={'/matches/' + user.id}>
+        {matches.map((user) =>
+            <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => showProfile(user.uid)}>
+                <CardActionArea component={Link} to={'/matches/' + user.uid}>
                     <CardMedia
                     className={classes.media}
-                    image={user.url}
+                    image={user.images && user.images[0] || 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'}
                     title={user.name}
                     />
                     <CardContent>
@@ -100,14 +142,15 @@ export default function Matches() {
                     <Button size="small" color="primary">
                     Chat
                     </Button>
-                    <Button size="small" color="primary">
+                    <Button size="small" color="primary" onClick={() => dislikeUser(user.uid)}>
                     Dislike
                     </Button>
                 </CardActions>
-                    <Button className={styles.btnStyle} onClick={() => manageCards(user.id)}>{moreDetailsCardKey === user.id ? btnMessage : 'Show more'}</Button>
+                    <Button className={styles.btnStyle} onClick={() => manageCards(user.uid)}>{moreDetailsCardKey === user.uid ? 'Show less' : 'Show more'}</Button>
             </Card>
         )}
         
         </Grid>
+        </div>
     );
 }
