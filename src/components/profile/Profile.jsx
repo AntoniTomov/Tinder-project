@@ -108,6 +108,7 @@ const Profile = () => {
 
     const dispatch = useDispatch();
     const user = useSelector(state => state.currentUser.user);
+
     const userRef = db.collection('users').doc(user.uid);
 
     const classes = useStyles();
@@ -182,7 +183,9 @@ const Profile = () => {
     useEffect(() => {
 
         const docRef = db.collection('users').doc(`${user.uid}`);
+        // console.log(user.uid, 'ot profile')
         docRef.get().then((doc) => {
+        // console.log(doc, 'ot profile pak')
 
             if (doc.exists) {
 
