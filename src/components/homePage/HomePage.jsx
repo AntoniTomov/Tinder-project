@@ -64,7 +64,8 @@ function HomePage () {
   const currentUser = useSelector(state => state.currentUser.user);
   let users = useSelector(state => state.allUsers.allUsers);
   let tempUsers = [...users];
-  let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
+  // let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
+  const filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
 
   // useEffect(() => {
   //   filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CssBaseline, Typography, InputLabel, OutlinedInput, FormControl, Container, TextField, Label, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import firebase from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -28,15 +28,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Login({ setCurrentUser }) {
+export default function Login() {
     const classes = useStyles();
     const [usernameInput, setUsernameInput] = useState("");
     const [passInput, setPassInput] = useState("");
     const [isPassVisible, setIsPassVisible] = useState(false);
 
     const dispatch = useDispatch();
-    const userInRedux = useSelector(state => state.currentUser)
-
 
     function changeUsernameInput(ev) {
         setUsernameInput(ev.target.value);
@@ -47,20 +45,10 @@ export default function Login({ setCurrentUser }) {
     }
 
     function login() {
-        // let user = {
-        //     name: usernameInput,
-        //     password: passInput,
-        // }
-        // props.login(user);
+
         auth.setPersistence('session')
             .then(() => {
                 return auth.signInWithEmailAndPassword(usernameInput, passInput)
-            })
-            .then(() => {
-                var user = auth.currentUser;
-                console.log(user);
-                dispatch({ type: 'userLoggedIn', payload: user });
-
             })
             .catch(error => console.log(error.message))
 

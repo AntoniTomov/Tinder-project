@@ -47,7 +47,6 @@ function App() {
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
       if (user) {
-
         db.collection('users').doc(user.uid).get().then(res => {
           dispatch({
             type: 'userLoggedIn',
