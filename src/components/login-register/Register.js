@@ -87,11 +87,12 @@ export default function Register({ setCurrentUser }) {
                     isOnline: true,
                     liked: [],
                     disliked: [],
+                    matches: []
                 }
 
                 createUserInDb(user.uid, userInDb);
 
-                dispatch({ type: 'userLoggedIn', payload: user });
+                // dispatch({ type: 'userLoggedIn', payload: user });
             })
             .catch(error => console.log(error.message))
 
@@ -115,6 +116,7 @@ export default function Register({ setCurrentUser }) {
         db.collection("users").doc(`${userId}`).set(obj)
             .then(() => {
                 console.log("Document successfully written!");
+                dispatch({ type: 'userLoggedIn', payload: obj });
             })
             .catch((error) => {
                 console.error("Error writing document: ", error);
@@ -172,6 +174,7 @@ export default function Register({ setCurrentUser }) {
                     isOnline: true,
                     liked: [],
                     disliked: [],
+                    matches: [],
                 }
                 createUpdateGoogleUserInDb(res.user.uid, userInDb);
             }).catch((error) => {
