@@ -28,7 +28,8 @@ export default function ChatHead({ id, selectTargetChat }) {
     const currentUserId = useSelector(state => state.currentUser.user.uid)
     const targetUserId  = id.split('_').filter(id => id !== currentUserId).join('');
     // let targetUserId  = id.replaceAll(/_{0,1}(iRAJrtLOEtO92cbkP4ZYOC0nNMv2)_{0,1}/g, '');
-    const [targetUser, setTargetUser] = useState(allUsers.find(user => user.uid === targetUserId));
+    // const [targetUser, setTargetUser] = useState(allUsers.find(user => user.uid === targetUserId));
+    const targetUser = allUsers.find(user => user.uid === targetUserId);
 
     const handleChatOnClick = (e) => {
         toggleClass(e);

@@ -1,10 +1,12 @@
 import chatClasses from './Chat.module.css';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Avatar from '@material-ui/core/Avatar';
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import firebase, { db } from '../../firebase';
 import { useSelector } from 'react-redux';
 import ChatHead from './chatHead';
+import { sentMessage } from './chatService';
+import Message from './Message';
 
 
 const useStyles = makeStyles(theme => ({
@@ -24,58 +26,72 @@ export default function Chat({ users }) {
     const user = useSelector(state => state.currentUser.user);
 
     const [formValue, setFormValue] = useState('');
-    const [isPersonActive, setisPersonActive] = useState(false);
-    const [allMessages, setAllMessages] = useState([]);
     const [allChats, setAllChats] = useState([]);
-    const [targetChat, setTargetChat] = useState(null);
-    const chat = null;
+    const [targetChatId, setTargetChatId] = useState('');
+    const dummyDiv = useRef();
 
-    // const messagesRef = db.collection('chatRooms').doc('allMessages').collection('uid123');
+    const chatRoomsRef = db.collection('chatRooms').where('users', 'array-contains', user.uid);
 
     useEffect(() => {
-        /* samo pri zarejdane vzimame ref kym vsichki chatove kydeto uchastva current user-a */
-        const chatroomsRef = db.collection('chatRooms').where('users', 'array-contains', 'iRAJrtLOEtO92cbkP4ZYOC0nNMv2');
-        /* pylnim state-a na allChats, za da moje da gi polzvame */
-        chatroomsRef.get().then(data => {
-            data.forEach(el => {
-                let chat = { id: el.id, messages: el.data().messages }
-                setAllChats(prev => [...prev, chat])
-            });
-            setTargetChat(allChats[0]);
-        })
         /* gledame za promeni v qnkoi ot tezi documenti */
-        chatroomsRef.onSnapshot(snapShot => {
-            snapShot.docChanges().forEach(change => {
-                console.log('ima promqna v document s ID-> ', change.doc.get('messages'))
+        chatRoomsRef.onSnapshot(snapShot => {
+            console.log('snapshot=> ', snapShot)
+            const tempAllChats = []
+            snapShot.forEach(doc => {
+                console.log()
+                const data = doc.data();
+                let chat = { id: doc.id, messages: data.messages }
+                // сорт бъ тиместамп
+                tempAllChats.push(chat)
+                // setAllChats(prev => [...prev, chat])
+
+                //     // snapShot.docChanges().forEach(change => {
+                //     //     const chatMessagesArr = change.doc.get('messages');
+                //     //     const chatMessageId = change.doc.id;
+                //     //     // console.log('ima promqna v document s ID-> ', change.doc.id, 'messages:', change.doc.get('messages'));
+                //     //     // updateAChat(allChats, chatMessageId, chatMessagesArr); ??
+                //     // 
             })
+
+            const sortedByTimeChats = tempAllChats.sort((a, b) => a.lastMessageTimestamp - b.lastMessageTimestamp);
+
+            setAllChats(sortedByTimeChats)
+            // setTargetChatId(tempAllChats[0])
         })
     }, [])
 
-    useEffect(() => {
-        // const targetChatRef = db.collection('chatRooms').doc(targetChat);
-        
-    }, [targetChat])
 
 
     const sendMessage = async (e) => {
         e.preventDefault();
-        // await currentChatRef.update({
-        //     messages: firebase.firestore.FieldValue.arrayUnion({ message: formValue, sender: 'boK' })
-        // })
+
+        await sentMessage(targetChatId, user.uid, formValue);
+        console.log('izpratih ei tui: ', formValue, 'v chata: ', targetChatId, 'ot: ', user.uid);
         setFormValue('');
+
+        // scroll to bottom -> useRef()
+        dummyDiv.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "start"
+          });
     }
-    
+
     const selectTargetChat = (id) => {
-        const chat = allChats.find(chat => chat.id === id);
-        setTargetChat(chat);
+        setTargetChatId(id);
     }
+
+    const currentChat = useMemo(() => {
+        const id = allChats.findIndex(chat => chat.id === targetChatId);
+        return allChats[id];
+    }, [targetChatId, allChats])
 
     return (
         <CssBaseline>
             <div className={chatClasses.chatContainer}>
                 <div className={chatClasses.profilesInChat}>
                     <div className={chatClasses.innerDivChat}>
-                        {   
+                        {
                             allChats.map(chat => {
                                 return (<ChatHead id={chat.id} selectTargetChat={selectTargetChat} />)
                             })
@@ -86,19 +102,15 @@ export default function Chat({ users }) {
                     <div className={chatClasses.messageContainer}>
 
                         {
-                            targetChat &&
-                            targetChat.messages.map(message => (<p>{message.message}</p>))
+                            currentChat &&
+                            currentChat.messages.map(message => {
+                                return <Message message={message}/> 
+                            })
                         }
 
-                        {/* {allMessages.map((message, i) =>
-                            <div key={i} className={[`${chatClasses.message} ${chatClasses.received}`]}>
-                                <p>{message.message}</p>
-                                <span>{new Date(message.sendAt).toDateString()}</span>
-                            </div>
-                        )} */}
-
+                        <div ref={dummyDiv} styles={{height: '100px'}}></div>
                     </div>
-                    <form className={chatClasses.chatForm} onSubmit={(e) => sendMessage(e)}>
+                    <form className={chatClasses.chatForm} onSubmit={sendMessage}>
                         <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
                         <button type="submit" disabled={!formValue}>💕</button>
                     </form>
