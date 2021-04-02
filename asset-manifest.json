@@ -1,24 +1,26 @@
 {
   "files": {
-    "main.css": "/Tinder-project/static/css/main.ebf1e93b.chunk.css",
-    "main.js": "/Tinder-project/static/js/main.edfd067b.chunk.js",
-    "main.js.map": "/Tinder-project/static/js/main.edfd067b.chunk.js.map",
+    "main.css": "/Tinder-project/static/css/main.bc29a8b9.chunk.css",
+    "main.js": "/Tinder-project/static/js/main.a6ea082d.chunk.js",
+    "main.js.map": "/Tinder-project/static/js/main.a6ea082d.chunk.js.map",
     "runtime-main.js": "/Tinder-project/static/js/runtime-main.549904c0.js",
     "runtime-main.js.map": "/Tinder-project/static/js/runtime-main.549904c0.js.map",
     "static/css/2.db2f0a09.chunk.css": "/Tinder-project/static/css/2.db2f0a09.chunk.css",
-    "static/js/2.21d44c0a.chunk.js": "/Tinder-project/static/js/2.21d44c0a.chunk.js",
-    "static/js/2.21d44c0a.chunk.js.map": "/Tinder-project/static/js/2.21d44c0a.chunk.js.map",
+    "static/js/2.caa352a5.chunk.js": "/Tinder-project/static/js/2.caa352a5.chunk.js",
+    "static/js/2.caa352a5.chunk.js.map": "/Tinder-project/static/js/2.caa352a5.chunk.js.map",
     "index.html": "/Tinder-project/index.html",
     "static/css/2.db2f0a09.chunk.css.map": "/Tinder-project/static/css/2.db2f0a09.chunk.css.map",
-    "static/css/main.ebf1e93b.chunk.css.map": "/Tinder-project/static/css/main.ebf1e93b.chunk.css.map",
-    "static/js/2.21d44c0a.chunk.js.LICENSE.txt": "/Tinder-project/static/js/2.21d44c0a.chunk.js.LICENSE.txt",
+    "static/css/main.bc29a8b9.chunk.css.map": "/Tinder-project/static/css/main.bc29a8b9.chunk.css.map",
+    "static/js/2.caa352a5.chunk.js.LICENSE.txt": "/Tinder-project/static/js/2.caa352a5.chunk.js.LICENSE.txt",
+    "static/js/main.a6ea082d.chunk.js.LICENSE.txt": "/Tinder-project/static/js/main.a6ea082d.chunk.js.LICENSE.txt",
+    "static/media/dinderTrans2.19d7ad87.png": "/Tinder-project/static/media/dinderTrans2.19d7ad87.png",
     "static/media/index.css": "/Tinder-project/static/media/roboto-vietnamese-400-normal.52cebac0.woff2"
   },
   "entrypoints": [
     "static/js/runtime-main.549904c0.js",
     "static/css/2.db2f0a09.chunk.css",
-    "static/js/2.21d44c0a.chunk.js",
-    "static/css/main.ebf1e93b.chunk.css",
-    "static/js/main.edfd067b.chunk.js"
+    "static/js/2.caa352a5.chunk.js",
+    "static/css/main.bc29a8b9.chunk.css",
+    "static/js/main.a6ea082d.chunk.js"
   ]
 }
