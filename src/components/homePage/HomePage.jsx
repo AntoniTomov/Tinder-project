@@ -100,6 +100,15 @@ function HomePage () {
     db.collection('users').doc(userOneId).update({
       matches: [...userOneMathces, userTwoId],
     })
+    // Tuk pravim i novite chatRoomove!
+    const chatRoomDocId = userOneId > userTwoId ? `${userTwoId}_${userOneId}` : `${userOneId}_${userTwoId}`;
+    db.collection('chatRooms').doc(chatRoomDocId).set({
+      messages: [],
+      users: [userOneId, userTwoId],
+      isTyping: false, 
+    })
+      .then(() => console.log("Successfully created chatRoom with users: ", [userOneId, userTwoId]))
+      .catch((error) => console.log("Error on chatRoom creation: ", error.message))
     // .then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userOneId))
     db.collection('users').doc(userTwoId).update({
       matches: [...userTwoMathces, userOneId],
@@ -152,7 +161,7 @@ function HomePage () {
     const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name));
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].name; // Find the card object to be removed
-      const index = filteredUsers.map(person => person.name).indexOf(toBeRemoved); // Find the index of which to make the reference to
+      const index = characters.map(person => person.name).indexOf(toBeRemoved); // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
       childRefs[index].current.swipe(dir); // Swipe the card!
 
