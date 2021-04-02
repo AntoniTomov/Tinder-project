@@ -62,7 +62,8 @@ function HomePage () {
   // Filtering the users from liked/disliked/matches
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.currentUser.user);
-  const users = useSelector(state => state.allUsers.allUsers);
+  let users = useSelector(state => state.allUsers.allUsers);
+  let tempUsers = [...users];
   let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
 
   // useEffect(() => {
@@ -86,10 +87,10 @@ function HomePage () {
     alreadyRemoved.push(nameToDelete);
   }
 
-  const outOfFrame = (name) => {
+  const outOfFrame = (userId) => {
     // console.log(name + ' left the screen!');
     // updateDB(arrProp, userIdToBeAdded);
-    charactersState = charactersState.filter(character => character.name !== name);
+    charactersState = charactersState.filter(character => character.uid !== userId);
     setCharacters(charactersState);
   }
 
@@ -98,11 +99,28 @@ function HomePage () {
     const userTwoMathces = users.find(user => user.uid === userTwoId).matches;
     db.collection('users').doc(userOneId).update({
       matches: [...userOneMathces, userTwoId],
-    }).then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userOneId))
+    })
+    // .then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userOneId))
     db.collection('users').doc(userTwoId).update({
       matches: [...userTwoMathces, userOneId],
-    }).then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userTwoId))
+    })
+    // .then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userTwoId));
+    users = users.map(user => {
+      if(user.uid === userOneId) {
+        user.matches = [...user.matches, userTwoId];
+      } else if (user.uid === userTwoId) {
+        user.matches = [...user.matches, userOneId];
+      }
+      return user;
+    });
+    console.log('users after matching: ', users)
+    dispatch({
+      type: 'getAllUsers',
+      payload: users,
+    })
   }
+
+  // TODO: да се зареждат картичките, които не се движат, иначе покажа и тези, които летят още...
 
   const updateDB = (arrProp, userIdToBeAdded) => {
     
@@ -117,7 +135,9 @@ function HomePage () {
     .catch((error) => {
       console.error("Error updating document: ", error);
     });
-    setCharacters(charactersState);
+
+    outOfFrame(userIdToBeAdded)
+
     console.log('characters: ', characters, ' sa setnati na ', charactersState, ' a filteredUsers sa ', filteredUsers)
     arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
@@ -126,7 +146,6 @@ function HomePage () {
           updateProfileMatches(currentUser.uid, userIdToBeAdded)
         }
       })
-    // console.log("Gledaj tuk :   ", daliNiEHaresal);
   }
 
   const swipe = (dir) => {
@@ -173,7 +192,7 @@ function HomePage () {
             {characters.map((character, index) =>
               <TinderCard ref={childRefs[index]} className='swipe' key={character.uid} onSwipe={(dir) => {
                 swiped(dir, character.name, character.uid);
-                }} onCardLeftScreen={() => outOfFrame(character.name, character.uid)}>
+                }} onCardLeftScreen={() => outOfFrame(character.uid)}>
                 <div style={{ backgroundImage: 'url(' + character.images[0] + ')' }} className='card'>
                   <h3>{character.name}</h3>
                 </div>
