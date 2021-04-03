@@ -38,28 +38,29 @@ export default function Chat({ users }) {
             console.log('snapshot=> ', snapShot)
             const tempAllChats = []
             snapShot.forEach(doc => {
-                console.log()
                 const data = doc.data();
-                let chat = { id: doc.id, messages: data.messages }
+                let chat = { ...data, id: doc.id}
                 // сорт бъ тиместамп
                 tempAllChats.push(chat)
-                // setAllChats(prev => [...prev, chat])
-
-                //     // snapShot.docChanges().forEach(change => {
-                //     //     const chatMessagesArr = change.doc.get('messages');
-                //     //     const chatMessageId = change.doc.id;
-                //     //     // console.log('ima promqna v document s ID-> ', change.doc.id, 'messages:', change.doc.get('messages'));
-                //     //     // updateAChat(allChats, chatMessageId, chatMessagesArr); ??
-                //     // 
             })
-
-            const sortedByTimeChats = tempAllChats.sort((a, b) => a.lastMessageTimestamp - b.lastMessageTimestamp);
+            
+            const sortedByTimeChats = tempAllChats.sort((a, b) => b.lastMessageTimestamp - a.lastMessageTimestamp);
 
             setAllChats(sortedByTimeChats)
             // setTargetChatId(tempAllChats[0])
         })
     }, [])
 
+
+    useEffect(() => {
+        console.log('Ref: ', dummyDiv);
+
+        dummyDiv.current.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "start"
+        });
+    }, [allChats, dummyDiv])
 
 
     const sendMessage = async (e) => {
@@ -74,7 +75,7 @@ export default function Chat({ users }) {
             behavior: "smooth",
             block: "nearest",
             inline: "start"
-          });
+        });
     }
 
     const selectTargetChat = (id) => {
@@ -104,11 +105,11 @@ export default function Chat({ users }) {
                         {
                             currentChat &&
                             currentChat.messages.map(message => {
-                                return <Message message={message}/> 
+                                return <Message message={message} />
                             })
                         }
 
-                        <div ref={dummyDiv} styles={{height: '100px'}}></div>
+                        <div ref={dummyDiv}/>
                     </div>
                     <form className={chatClasses.chatForm} onSubmit={sendMessage}>
                         <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
