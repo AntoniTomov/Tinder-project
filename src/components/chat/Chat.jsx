@@ -87,6 +87,7 @@ export default function Chat({ users }) {
         return allChats[id];
     }, [targetChatId, allChats])
 
+    console.log('currentChat =>>> ',currentChat)
     return (
         <CssBaseline>
             <div className={chatClasses.chatContainer}>
@@ -94,7 +95,7 @@ export default function Chat({ users }) {
                     <div className={chatClasses.innerDivChat}>
                         {
                             allChats.map(chat => {
-                                return (<ChatHead id={chat.id} selectTargetChat={selectTargetChat} />)
+                                return (<ChatHead id={chat.id} chat={chat} selectTargetChat={selectTargetChat} targetChatId={targetChatId} />)
                             })
                         }
                     </div>
@@ -108,12 +109,11 @@ export default function Chat({ users }) {
                                 return <Message message={message} />
                             })
                         }
-
                         <div ref={dummyDiv}/>
                     </div>
                     <form className={chatClasses.chatForm} onSubmit={sendMessage}>
                         <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
-                        <button type="submit" disabled={!formValue}>💕</button>
+                        <button type="submit" disabled={!currentChat || !formValue}>💕</button>
                     </form>
                 </main>
             </div>

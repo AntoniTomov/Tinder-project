@@ -140,7 +140,7 @@ function App() {
         </Switch>
 
       </main>
-      {isChatOpened && <Chat />}
+      {user && isChatOpened && <Chat />}
       {user && <InsertCommentIcon fontSize='large' className='chatIcon' onClick={showChat} />}
     </>
   );
