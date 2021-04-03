@@ -91,9 +91,9 @@ function HomePage () {
       break;
       case 'right' : arrProp = 'liked';
       break;
-      case 'top' : arrProp = 'matches';
+      case 'up' : arrProp = 'matches';
       break;
-      case 'bottom' : arrProp = 'disliked';
+      case 'down' : arrProp = 'disliked';
       break;
       default: break;
     }
@@ -155,6 +155,7 @@ function HomePage () {
 
   const updateDB = (arrProp, userIdToBeAdded) => {
     
+
     db.collection('users').doc(currentUser.uid).update({
       [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
     })
