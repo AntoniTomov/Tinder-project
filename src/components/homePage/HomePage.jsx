@@ -17,44 +17,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { db } from '../../firebase';
 
-// const fakeUsers = [
-//     {
-//       name: 'Pesho',
-//       age: 19,
-//       url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg',
-//       more: {
-//         description: 'Az sum Mega Pi4!1!',
-//         socialNetwork: 'IG:peshoPi4a',
-//         location: 'Sofeto',
-//       },
-//       infoField: '',
-//     },
-//     {
-//       name: 'SlaTkata93',
-//       age: 19,
-//       url: 'https://www.tiktok.com/api/img/?itemId=6917677726480551174&location=1&aid=1988',
-//       more: {
-//         description: 'Slatka sum.',
-//         socialNetwork: 'IG:slatkata93',
-//         location: 'Sofeto',
-//       },
-//       infoField: '',
-//     },
-//     {
-//       name: 'Genata',
-//       age: 39,
-//       url: 'https://pbs.twimg.com/media/A9Hb3hdCIAMteGN.jpg',
-//       more: {
-//         description: 'Karam koolo',
-//         socialNetwork: '',
-//         location: 'Sofeto',
-//       },
-//       infoField: '',
-//     }
-//   ];
-
 const alreadyRemoved = [];
-
 
 function HomePage () {
   // const users = useSelector(state => state.allUsers);
@@ -64,26 +27,28 @@ function HomePage () {
   const currentUser = useSelector(state => state.currentUser);
   let users = useSelector(state => state.allUsers);
   // let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
-  const filteredUsers = filterProfiles(users, currentUser);
-
-  // useEffect(() => {
-  //   filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
-  //   console.log('FilteredUsers from homePage', filteredUsers)
-  //   console.log('currentUser from homePage', currentUser)
-  // }, [currentUser])
-
   
-  let charactersState = filteredUsers;
-  const [characters, setCharacters] = useState(filteredUsers);
+  // const filteredUsers = filterProfiles(users, currentUser);
+
+  const [characters, setCharacters] = useState([]);
   const [lastDirection, setLastDirection] = useState();
   const [isSwipeView, setIsSwipeView] = useState(true);
-  const childRefs = useMemo(() => Array(filteredUsers.length).fill(0).map(i => React.createRef()), []); 
+  
+  
+  useEffect(() => {
+    const filteredUsers = filterProfiles(users, currentUser);
+    setCharacters(filteredUsers);
+  }, [])
 
+  let charactersState = characters;
+
+  const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
+  
   function filterProfiles (allProfiles, currentUser) {
     return allProfiles.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid)
   }
 
-  const swiped = (direction, nameToDelete, userIdToBeAdded) => {
+  const swiped = (direction, userIdToBeAdded, nameToDelete) => {
     // console.log('removing: ' + nameToDelete);
     let arrProp = '';
     switch(direction){
@@ -99,14 +64,14 @@ function HomePage () {
     }
     updateDB(arrProp, userIdToBeAdded);
     setLastDirection(direction);
-    alreadyRemoved.push(nameToDelete);
+    alreadyRemoved.push(userIdToBeAdded);
   }
 
   const outOfFrame = (userId) => {
     // console.log(name + ' left the screen!');
     // updateDB(arrProp, userIdToBeAdded);
-    charactersState = charactersState.filter(character => character.uid !== userId);
-    setCharacters(charactersState);
+    // charactersState = charactersState.filter(character => character.uid !== userId);
+    // setCharacters(charactersState);
   }
 
   const updateProfileMatches = (userOneId, userTwoId) => {
@@ -155,7 +120,7 @@ function HomePage () {
 
   const updateDB = (arrProp, userIdToBeAdded) => {
     
-
+    console.log('arrProp', arrProp)
     db.collection('users').doc(currentUser.uid).update({
       [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
     })
@@ -171,7 +136,7 @@ function HomePage () {
 
     outOfFrame(userIdToBeAdded)
 
-    console.log('characters: ', characters, ' sa setnati na ', charactersState, ' a filteredUsers sa ', filteredUsers)
+    console.log('characters: ', characters, ' sa setnati na ', charactersState, ' a filteredUsers sa ', characters)
     arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
@@ -180,21 +145,25 @@ function HomePage () {
         }
       })
     arrProp === 'matches' && db.collection('users').doc(userIdToBeAdded).get()
-    .then(() => {
+      .then(() => {
         // We are updating the matches of currentUser and lokedUser
         updateProfileMatches(currentUser.uid, userIdToBeAdded)
       })
   }
 
   const swipe = (dir) => {
-    const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.name));
+    const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.uid));
     if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].name; // Find the card object to be removed
-      const index = characters.map(person => person.name).indexOf(toBeRemoved); // Find the index of which to make the reference to
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].uid; // Find the card object to be removed
+      const index = characters.map(person => person.uid).indexOf(toBeRemoved); // Find the index of which to make the reference to
       alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      console.log('!!!!!!!!!!!Index: ', index)
+      console.log('!!!!!!!!!!!childRefs: ', childRefs)
+      console.log('!!!!!!!!!!!alreadyRemoved: ', alreadyRemoved)
+      console.log('!!!!!!!!!!!characters: ', characters)
       childRefs[index].current.swipe(dir); // Swipe the card!
 
-      charactersState = charactersState.filter(character => character.name !== toBeRemoved);
+      // charactersState = charactersState.filter(character => character.uid !== toBeRemoved);
       // setCharacters(charactersState);
 
       // const userIdToBeAdded = cardsLeft[cardsLeft.length - 1].uid;
@@ -233,7 +202,7 @@ function HomePage () {
           <div className='cardContainer'>
             {characters.map((character, index) =>
               <TinderCard ref={childRefs[index]} className='swipe' key={character.uid} onSwipe={(dir) => {
-                swiped(dir, character.name, character.uid);
+                swiped(dir, character.uid, character.name);
                 }} onCardLeftScreen={() => outOfFrame(character.uid)}>
                 <div style={{ backgroundImage: 'url(' + character.images[0] + ')' }} className='card'>
                   <h3>{character.name}</h3>
