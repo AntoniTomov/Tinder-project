@@ -50,6 +50,15 @@ export default function Login() {
             .then(() => {
                 return auth.signInWithEmailAndPassword(usernameInput, passInput)
             })
+            .then((authToken) => {
+                db.collection('users').doc(authToken.user.uid).get().then(res => {
+                    console.log('=====>',res.data())
+                    dispatch({
+                      type: 'userLoggedIn',
+                      payload: res.data()
+                    });
+                  })
+            })
             .catch(error => console.log(error.message))
 
         setUsernameInput('');
@@ -64,9 +73,6 @@ export default function Login() {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
-
-
-
 
     return (
         <>
