@@ -76,7 +76,6 @@ function App() {
         type: 'getAllUsers',
         payload: users,
       });
-      // console.log('Users from App.jsx: ', users)
   })
   }, [])
 

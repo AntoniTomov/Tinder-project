@@ -16,6 +16,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { db } from '../../firebase';
+import { DesktopAccessDisabled } from '@material-ui/icons';
 
 const alreadyRemoved = [];
 
@@ -40,7 +41,7 @@ function HomePage () {
     setCharacters(filteredUsers);
   }, [])
 
-  let charactersState = characters;
+  // let charactersState = characters;
 
   const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
   
@@ -68,10 +69,8 @@ function HomePage () {
   }
 
   const outOfFrame = (userId) => {
-    // console.log(name + ' left the screen!');
+    console.log(userId + ' left the screen!!@#@!$!%@!$%#@^&#%&*@!$&^');
     // updateDB(arrProp, userIdToBeAdded);
-    // charactersState = charactersState.filter(character => character.uid !== userId);
-    // setCharacters(charactersState);
   }
 
   const updateProfileMatches = (userOneId, userTwoId) => {
@@ -101,6 +100,7 @@ function HomePage () {
     updateDataBase( 'getAllUsers', users);
   }
 
+  // To be moved to Service file:
   function createChatRoom(userOneId, userTwoId) {
     const chatRoomDocId = userOneId > userTwoId ? `${userTwoId}_${userOneId}` : `${userOneId}_${userTwoId}`;
     db.collection('chatRooms').doc(chatRoomDocId).set({
@@ -136,7 +136,7 @@ function HomePage () {
 
     outOfFrame(userIdToBeAdded)
 
-    console.log('characters: ', characters, ' sa setnati na ', charactersState, ' a filteredUsers sa ', characters)
+    // console.log('characters: ', characters, ' sa setnati na ', charactersState, ' a filteredUsers sa ', characters)
     arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
@@ -173,7 +173,40 @@ function HomePage () {
     }
   }
 
-  const resetCurrentUser = () => (
+  const cardViewSwipe = (arrProp, userIdToBeAdded) => {
+    
+    console.log('arrProp', arrProp)
+    db.collection('users').doc(currentUser.uid).update({
+      [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
+    })
+    .then(() => {
+      currentUser[arrProp].push(userIdToBeAdded);
+      updateDataBase('userLoggedIn', currentUser)
+      // dispatch({ type: 'userLoggedIn', payload: currentUser})
+      // console.log('Updated currentUser liked Array: ', currentUser[arrProp], ' with: ', userIdToBeAdded)
+    })
+    .catch((error) => {
+      console.error("Error updating document: ", error);
+    });
+
+    arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
+      .then(doc => {
+        if (doc.data().liked.includes(currentUser.uid)) {
+          // We are updating the matches of currentUser and lokedUser
+          updateProfileMatches(currentUser.uid, userIdToBeAdded)
+        }
+      })
+    arrProp === 'matches' && db.collection('users').doc(userIdToBeAdded).get()
+      .then(() => {
+        // We are updating the matches of currentUser and lokedUser
+        updateProfileMatches(currentUser.uid, userIdToBeAdded)
+      })
+      const usersToPrint = filterProfiles(users, currentUser).filter(user => user.uid !== userIdToBeAdded);
+
+      setCharacters(usersToPrint);
+  }
+
+  const resetCurrentUser = () => {
     db.collection('users').doc(currentUser.uid).update({
       liked: [],
       disliked: [],
@@ -182,8 +215,31 @@ function HomePage () {
       dispatch({ type: 'userLoggedIn', payload: {...currentUser, liked: [], disliked: [], matches: []} })
       console.log('Successfully reset currentUser: ', currentUser)
     })
+    // db.collection('chatRooms').get()
+    // .then(res => res.forEach(doc => {
+    //   if(doc.id.includes(currentUser.uid)) {
+    //     db.collection('chatRooms').doc(doc.id).delete()
+    //       .then(() => console.log('Successfully deleted the chatRooms for user: ', currentUser))
+    //   }
+    // }))
+  }
 
-  )
+  const resetAllUser = () => {
+    db.collection('users').get()
+    .then(res => res.forEach(doc => {
+      doc.ref.update({
+        liked: [],
+        disliked: [],
+        matches: [],
+      })
+    }))
+    .then(() => {
+      dispatch({ type: 'userLoggedIn', payload: {...users, liked: [], disliked: [], matches: []} });
+      console.log('Successfully reset users: ', users);
+    })
+    // Here we are deleting ALL chats
+    // db.collection('chatRooms').set({});
+  }
 
   const changeViewState = () => {
     setIsSwipeView(!isSwipeView);
@@ -192,6 +248,7 @@ function HomePage () {
   return (
     <div> 
       <button onClick={resetCurrentUser}>Reset currentUser</button>
+      <button onClick={resetAllUser}>Reset all users</button>
 
       {isSwipeView ? (
         <div style={{width: '85%', margin: '0 auto'}}>
@@ -240,10 +297,10 @@ function HomePage () {
                     </CardContent>
                   </CardActionArea>
                   <CardActions className="btnContainer">
-                    <Button size="small" color="primary" onClick={() => updateDB('disliked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('disliked', user.uid)}>
                     Dislike
                     </Button>
-                    <Button size="small" color="primary" onClick={() => updateDB('liked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('liked', user.uid)}>
                     Like
                     </Button>
                   </CardActions>
