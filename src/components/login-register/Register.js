@@ -91,8 +91,6 @@ export default function Register({ setCurrentUser }) {
                 }
 
                 createUserInDb(user.uid, userInDb);
-
-                dispatch({ type: 'userLoggedIn', payload: user });
             })
             .catch(error => console.log(error.message))
 
@@ -139,6 +137,7 @@ export default function Register({ setCurrentUser }) {
             } else {
                 console.log('IVA VECHE takyv potrebirel, ne promenqm bazata')
             }
+            dispatch({ type: 'userLoggedIn', payload: obj });
         })
             .catch((error) => {
                 console.log("Error getting document:", error);
