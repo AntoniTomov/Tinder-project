@@ -71,10 +71,10 @@ export default function Matches() {
     const classes = useStyles();
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
     const [matches, setMatches] = useState([]);
-    const currentUser = useSelector(state => state.currentUser.user);
-    const allUsers = useSelector(state => state.allUsers.allUsers);
+    const currentUser = useSelector(state => state.currentUser);
+    const allUsers = useSelector(state => state.allUsers);
     
-    const matchesIds = useSelector(state => state.currentUser.user.matches);
+    const matchesIds = useSelector(state => state.currentUser.matches);
 
     useEffect(() => {
         let currentMatches = allUsers.filter(user => currentUser.matches.includes(user.uid));

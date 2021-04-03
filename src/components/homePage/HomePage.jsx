@@ -57,12 +57,12 @@ const alreadyRemoved = [];
 
 
 function HomePage () {
-  // const users = useSelector(state => state.allUsers.allUsers);
+  // const users = useSelector(state => state.allUsers);
 
   // Filtering the users from liked/disliked/matches
   const dispatch = useDispatch();
-  const currentUser = useSelector(state => state.currentUser.user);
-  let users = useSelector(state => state.allUsers.allUsers);
+  const currentUser = useSelector(state => state.currentUser);
+  let users = useSelector(state => state.allUsers);
   // let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
   const filteredUsers = filterProfiles(users, currentUser);
 

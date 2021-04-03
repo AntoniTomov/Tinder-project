@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Chat({ users }) {
     const styles = useStyles();
-    const user = useSelector(state => state.currentUser.user);
+    const user = useSelector(state => state.currentUser);
 
     const [formValue, setFormValue] = useState('');
     const [allChats, setAllChats] = useState([]);

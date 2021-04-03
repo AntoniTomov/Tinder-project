@@ -107,7 +107,7 @@ const CssTextField = withStyles({
 const Profile = () => {
 
     const dispatch = useDispatch();
-    const user = useSelector(state => state.currentUser.user);
+    const user = useSelector(state => state.currentUser);
 
     const userRef = db.collection('users').doc(user.uid);
 

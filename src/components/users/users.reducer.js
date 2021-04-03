@@ -1,12 +1,11 @@
-const initialState = null;
+const initialState = [];
 
 const allUsersReducer = (state = initialState, action) => {
     switch (action.type){
         case 'getAllUsers':
-            return {
-                ...state,
-                allUsers: action.payload,
-            }
+            return [
+                ...action.payload,
+            ]
         default:
             return state;
     }
