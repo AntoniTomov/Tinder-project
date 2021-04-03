@@ -110,12 +110,17 @@ export default function Matches() {
         db.collection('users').doc(userId).update({
             matches: [...removedUserMatches],
         })
-        let chatRoomDocId = userId > currentUser.uid ? `${currentUser.uid}_${userId}` : `${userId}_${currentUser.uid}`;
-        db.collection('chatRooms').doc(chatRoomDocId).delete()
-            .then(() => console.log("Successfully deleted the chatRoom for users: ", currentUser.uid, userId))
-            .catch((err) => console.log("Error on chatRoom deleting: ", err))
+        deleteChatRoom(userId, currentUser.uid)
         let currentMatches = allUsers.filter(user => currUserMatchesIds.includes(user.uid));
         setMatches(currentMatches);
+    }
+
+    // To be moved to a Service file:
+    function deleteChatRoom(selectedUserId, currentUserId) {
+        let chatRoomDocId = selectedUserId > currentUserId ? `${currentUserId}_${selectedUserId}` : `${selectedUserId}_${currentUserId}`;
+        db.collection('chatRooms').doc(chatRoomDocId).delete()
+            .then(() => console.log("Successfully deleted the chatRoom for users: ", currentUserId, selectedUserId))
+            .catch((err) => console.log("Error on chatRoom deleting: ", err))
     }
 
     return (

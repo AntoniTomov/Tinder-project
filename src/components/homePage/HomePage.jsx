@@ -63,9 +63,8 @@ function HomePage () {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.currentUser.user);
   let users = useSelector(state => state.allUsers.allUsers);
-  let tempUsers = [...users];
   // let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
-  const filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
+  const filteredUsers = filterProfiles(users, currentUser);
 
   // useEffect(() => {
   //   filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
@@ -80,9 +79,24 @@ function HomePage () {
   const [isSwipeView, setIsSwipeView] = useState(true);
   const childRefs = useMemo(() => Array(filteredUsers.length).fill(0).map(i => React.createRef()), []); 
 
+  function filterProfiles (allProfiles, currentUser) {
+    return allProfiles.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid)
+  }
+
   const swiped = (direction, nameToDelete, userIdToBeAdded) => {
     // console.log('removing: ' + nameToDelete);
-    let arrProp = direction === 'left' ? 'disliked' : 'liked';
+    let arrProp = '';
+    switch(direction){
+      case 'left' : arrProp = 'disliked';
+      break;
+      case 'right' : arrProp = 'liked';
+      break;
+      case 'top' : arrProp = 'matches';
+      break;
+      case 'bottom' : arrProp = 'disliked';
+      break;
+      default: break;
+    }
     updateDB(arrProp, userIdToBeAdded);
     setLastDirection(direction);
     alreadyRemoved.push(nameToDelete);
@@ -96,12 +110,33 @@ function HomePage () {
   }
 
   const updateProfileMatches = (userOneId, userTwoId) => {
-    const userOneMathces = users.find(user => user.uid === userOneId).matches;
-    const userTwoMathces = users.find(user => user.uid === userTwoId).matches;
+    const userOneMatches = users.find(user => user.uid === userOneId).matches;
+    const userTwoMatches = users.find(user => user.uid === userTwoId).matches;
     db.collection('users').doc(userOneId).update({
-      matches: [...userOneMathces, userTwoId],
+      matches: [...userOneMatches, userTwoId],
     })
-    // Tuk pravim i novite chatRoomove!
+
+    // Here we are creating the new chatRooms!
+    createChatRoom(userOneId, userTwoId);
+
+    db.collection('users').doc(userTwoId).update({
+      matches: [...userTwoMatches, userOneId],
+    })
+
+    users = users.map(user => {
+      if(user.uid === userOneId) {
+        if(!user.matches.includes(userTwoId)) {
+          user.matches = [...user.matches, userTwoId];
+        }
+      } else if (user.uid === userTwoId) {
+        user.matches = [...user.matches, userOneId];
+      }
+      return user;
+    });
+    updateDataBase( 'getAllUsers', users);
+  }
+
+  function createChatRoom(userOneId, userTwoId) {
     const chatRoomDocId = userOneId > userTwoId ? `${userTwoId}_${userOneId}` : `${userOneId}_${userTwoId}`;
     db.collection('chatRooms').doc(chatRoomDocId).set({
       messages: [],
@@ -110,27 +145,13 @@ function HomePage () {
     })
       .then(() => console.log("Successfully created chatRoom with users: ", [userOneId, userTwoId]))
       .catch((error) => console.log("Error on chatRoom creation: ", error.message))
-    // .then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userOneId))
-    db.collection('users').doc(userTwoId).update({
-      matches: [...userTwoMathces, userOneId],
-    })
-    // .then(console.log('VVVV updateProfileMatches sme i update-nahme uspeshno matches na: ', userTwoId));
-    users = users.map(user => {
-      if(user.uid === userOneId) {
-        user.matches = [...user.matches, userTwoId];
-      } else if (user.uid === userTwoId) {
-        user.matches = [...user.matches, userOneId];
-      }
-      return user;
-    });
-    console.log('users after matching: ', users)
-    dispatch({
-      type: 'getAllUsers',
-      payload: users,
-    })
   }
 
   // TODO: да се зареждат картичките, които не се движат, иначе покажа и тези, които летят още...
+
+  function updateDataBase(type, payload) {
+    dispatch({ type: type, payload: payload});
+  }
 
   const updateDB = (arrProp, userIdToBeAdded) => {
     
@@ -139,8 +160,9 @@ function HomePage () {
     })
     .then(() => {
       currentUser[arrProp].push(userIdToBeAdded);
-      dispatch({ type: 'userLoggedIn', payload: currentUser})
-      console.log('Updated currentUser liked Array: ', currentUser[arrProp], ' with: ', userIdToBeAdded)
+      updateDataBase('userLoggedIn', currentUser)
+      // dispatch({ type: 'userLoggedIn', payload: currentUser})
+      // console.log('Updated currentUser liked Array: ', currentUser[arrProp], ' with: ', userIdToBeAdded)
     })
     .catch((error) => {
       console.error("Error updating document: ", error);
@@ -155,6 +177,11 @@ function HomePage () {
           // We are updating the matches of currentUser and lokedUser
           updateProfileMatches(currentUser.uid, userIdToBeAdded)
         }
+      })
+    arrProp === 'matches' && db.collection('users').doc(userIdToBeAdded).get()
+    .then(() => {
+        // We are updating the matches of currentUser and lokedUser
+        updateProfileMatches(currentUser.uid, userIdToBeAdded)
       })
   }
 
@@ -176,21 +203,25 @@ function HomePage () {
     }
   }
 
+  const resetCurrentUser = () => (
+    db.collection('users').doc(currentUser.uid).update({
+      liked: [],
+      disliked: [],
+      matches: [],
+    }).then(() => {
+      dispatch({ type: 'userLoggedIn', payload: {...currentUser, liked: [], disliked: [], matches: []} })
+      console.log('Successfully reset currentUser: ', currentUser)
+    })
+
+  )
+
   const changeViewState = () => {
     setIsSwipeView(!isSwipeView);
   }
 
   return (
     <div> 
-      <button onClick={() => {
-        let refs = db.collection('users').where('liked', 'array-contains', 'iRAJrtLOEtO92cbkP4ZYOC0nNMv2'); //!important
-        refs.get().then((querySnapshot) => {
-          // console.log(querySnapshot)
-            querySnapshot.forEach((doc) => {
-                // console.log(doc.id, ' => ', doc.data());
-            });
-        });
-      }}>find who liked me</button>
+      <button onClick={resetCurrentUser}>Reset currentUser</button>
 
       {isSwipeView ? (
         <div style={{width: '85%', margin: '0 auto'}}>
