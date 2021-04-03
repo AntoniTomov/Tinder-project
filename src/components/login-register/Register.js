@@ -92,7 +92,7 @@ export default function Register({ setCurrentUser }) {
 
                 createUserInDb(user.uid, userInDb);
 
-                // dispatch({ type: 'userLoggedIn', payload: user });
+                dispatch({ type: 'userLoggedIn', payload: user });
             })
             .catch(error => console.log(error.message))
 

@@ -6,8 +6,7 @@ const userReducer = (state = initialState, action) => {
         // nice!!!
         case 'userLoggedIn':
             return {
-                ...state,
-                user: action.payload,
+                ...action.payload
             }
         case 'userLoggedOut':
             return null
