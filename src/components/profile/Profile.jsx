@@ -161,13 +161,15 @@ const Profile = () => {
     }
     const handleAboutYou = (e) => {
         if (user.aboutYou !== aboutYou) {
-            dispatch({
-                type: 'userChangedAboutYou',
-                payload: e.target.value
-            });
+            
             userRef.update({ aboutYou: e.target.value })
                 .then(() => {
                     console.log('Updated successfully')
+                    dispatch({
+                        type: 'userChangedAboutYou',
+                        payload: e.target.value
+                    });
+                    
                 })
                 .catch(error => {
                     console.log('Error updating', error)

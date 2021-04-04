@@ -63,9 +63,7 @@ export default function Register({ setCurrentUser }) {
             })
             .then(() => {
                 var user = auth.currentUser;
-                console.log(user);
                 let fullName = `${firstNameInput[0]}${firstNameInput.slice(1)} ${lastNameInput[0]}${lastNameInput.slice(1)}`;
-                console.log(fullName);
                 let userInDb = {
                     uid: user.uid,
                     name: fullName,
@@ -152,6 +150,7 @@ export default function Register({ setCurrentUser }) {
             .signInWithPopup(provider)
             .then((res) => {
                 console.log('logvane s google ', res);
+                console.log('dokato zarejda dali e lognat')
                 let userInDb = {
                     uid: res.user.uid,
                     name: res.user.displayName,

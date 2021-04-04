@@ -1,4 +1,26 @@
-const initialState = null;
+const initialState = {
+    uid: '',
+    name: '',
+    email: '',
+    aboutYou: '',
+    age: null,
+    collageOrUni: '',
+    company: '',
+    country: '',
+    city: '',
+    gender: '',
+    jobTitle: '',
+    images: [],
+    mediaProfiles: [],
+    sexualOrientation: '',
+    youtubeSong: '',
+    passions: [],
+    chats: [],
+    isOnline: false,
+    liked: [],
+    disliked: [],
+    matches: []
+}
 
 const userReducer = (state = initialState, action) => {
 
@@ -6,10 +28,10 @@ const userReducer = (state = initialState, action) => {
         // nice!!!
         case 'userLoggedIn':
             return {
-                ...action.payload
+                ...action.payload,
             }
         case 'userLoggedOut':
-            return null
+            return initialState;
         case 'userChangedProfilePic':
             return {
                 ...state,

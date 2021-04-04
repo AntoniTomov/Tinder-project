@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import  Avatar from '@material-ui/core/Avatar';
 import { CssBaseline, makeStyles, Grid, GridList, GridListTile, Typography  } from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
-import SimpleImageSlider from "react-simple-image-slider";
+// import SimpleImageSlider from "react-simple-image-slider";
 import FbImageLibrary from 'react-fb-image-grid';
 import { useSelector } from 'react-redux';
 import './ChosenMatch.module.css'
