@@ -74,6 +74,7 @@ export default function Matches({ getChosenMatchId }) {
     const currentUser = useSelector(state => state.currentUser);
     const allUsers = useSelector(state => state.allUsers);
     const matchesIds = useSelector(state => state.currentUser.matches);
+    const defaultProfilePic = 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg';
 
 
     useEffect(() => {
@@ -135,7 +136,7 @@ export default function Matches({ getChosenMatchId }) {
                 <CardActionArea component={Link} to={'/matches/' + user.uid}>
                     <CardMedia
                     className={classes.media}
-                    image={user.images && user.images[0] || 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'}
+                    image={user.images && user.images[0] || defaultProfilePic}
                     title={user.name}
                     />
                     <CardContent>

@@ -76,7 +76,7 @@ function App() {
   }
 
   if (isLoading) {
-    return <div style={{margin: 'calc(50vh - 100px) auto'}}>
+    return <div style={{ margin: 'calc(50vh - 100px) auto' }}>
       <CircularProgress size={100} />
     </div>
   }

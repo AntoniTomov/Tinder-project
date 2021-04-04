@@ -6,6 +6,8 @@ import firebase, { db, auth } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import loginUser from './login-register.actions';
 
+const defaultProfilePicUrl = 'https://firebasestorage.googleapis.com/v0/b/fir-project-d9b09.appspot.com/o/profilePics%2Fdefault-profile-pic.jpg?alt=media&token=12bd0268-84bd-47ee-9bf7-5ca4269f87d5';
+
 const useStyles = makeStyles((theme) => ({
     root: {
         '& > *': {
@@ -76,7 +78,7 @@ export default function Register({ setCurrentUser }) {
                     city: '',
                     gender: '',
                     jobTitle: '',
-                    images: [],
+                    images: [defaultProfilePicUrl],
                     mediaProfiles: [],
                     sexualOrientation: '',
                     youtubeSong: '',
@@ -163,7 +165,7 @@ export default function Register({ setCurrentUser }) {
                     city: '',
                     gender: '',
                     jobTitle: '',
-                    images: [res.additionalUserInfo.profile.picture],
+                    images: [res.additionalUserInfo.profile.picture || defaultProfilePicUrl],
                     mediaProfiles: [],
                     sexualOrientation: '',
                     youtubeSong: '',

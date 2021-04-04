@@ -20,7 +20,8 @@ const useStyles = makeStyles({
         marginBottom: '3rem',
     },
     textField: {
-        fontSize: '1.5rem',
+        fontSize: '1.2rem',
+        color: 'rgb(225,225,225)',
         margin: '0 auto',
         width: '100%',
         padding: '0 5rem',
@@ -56,7 +57,7 @@ export default function ChosenMatch({ chosenProfileId }) {
                 <h2 className={styles.name}>{chosenUser?.name}</h2>
                 <FbImageLibrary
                 images={images}
-                width={310}
+                width={300}
                 // countFrom={1}
                 renderOverlay={() => <div style={{fontSize: '2rem'}}>Show</div>}
                 overlayBackgroundColor="tomato"
