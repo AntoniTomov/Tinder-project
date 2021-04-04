@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function Chat({ users }) {
+export default function Chat() {
     const styles = useStyles();
     const user = useSelector(state => state.currentUser);
 
@@ -29,38 +29,41 @@ export default function Chat({ users }) {
     const [allChats, setAllChats] = useState([]);
     const [targetChatId, setTargetChatId] = useState('');
     const dummyDiv = useRef();
+    // const [lastChatChangedId, setLastChatChangedId] = useState('');
+    // const [updatedChats, setUpdatedChats] = useState([]);
 
     const chatRoomsRef = db.collection('chatRooms').where('users', 'array-contains', user.uid);
 
+    // Fetch all chat rooms
     useEffect(() => {
         /* gledame za promeni v qnkoi ot tezi documenti */
         chatRoomsRef.onSnapshot(snapShot => {
-            console.log('snapshot=> ', snapShot)
+            // console.log('snapshot=> ', snapShot)
             const tempAllChats = []
             snapShot.forEach(doc => {
                 const data = doc.data();
-                let chat = { ...data, id: doc.id}
-                // сорт бъ тиместамп
-                tempAllChats.push(chat)
+                let chat = { ...data, id: doc.id }
+                
+                // tempAllChats.push(chat);
+                chat.messages.length !== 0 ? tempAllChats.unshift(chat) : tempAllChats.push(chat);
             })
-            
-            const sortedByTimeChats = tempAllChats.sort((a, b) => b.lastMessageTimestamp - a.lastMessageTimestamp);
 
+            const sortedByTimeChats = tempAllChats.sort((a, b) => b.lastMessageTimestamp - a.lastMessageTimestamp);
             setAllChats(sortedByTimeChats)
-            // setTargetChatId(tempAllChats[0])
+
+            // if(sortedByTimeChats.length > 0) {
+            //     setTargetChatId(sortedByTimeChats[0].id)
+            // }
         })
     }, [])
 
-
     useEffect(() => {
-        console.log('Ref: ', dummyDiv);
-
         dummyDiv.current.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
             inline: "start"
         });
-    }, [allChats, dummyDiv])
+    }, [allChats, dummyDiv, targetChatId])
 
 
     const sendMessage = async (e) => {
@@ -87,7 +90,7 @@ export default function Chat({ users }) {
         return allChats[id];
     }, [targetChatId, allChats])
 
-    console.log('currentChat =>>> ',currentChat)
+    // console.log('currentChat =>>> ', currentChat)
     return (
         <CssBaseline>
             <div className={chatClasses.chatContainer}>
@@ -95,7 +98,12 @@ export default function Chat({ users }) {
                     <div className={chatClasses.innerDivChat}>
                         {
                             allChats.map(chat => {
-                                return (<ChatHead id={chat.id} chat={chat} selectTargetChat={selectTargetChat} targetChatId={targetChatId} />)
+                                return (<ChatHead 
+                                    chat={chat}
+                                    isActive={targetChatId === chat.id}
+                                    selectTargetChat={selectTargetChat}
+                                    key={chat.id}
+                                    />)
                             })
                         }
                     </div>
@@ -106,10 +114,10 @@ export default function Chat({ users }) {
                         {
                             currentChat &&
                             currentChat.messages.map(message => {
-                                return <Message message={message} />
+                                return <Message message={message} key={message.createdAt} />
                             })
                         }
-                        <div ref={dummyDiv}/>
+                        <div ref={dummyDiv} />
                     </div>
                     <form className={chatClasses.chatForm} onSubmit={sendMessage}>
                         <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" />
