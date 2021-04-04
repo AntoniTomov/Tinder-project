@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    marginTop: '100px',
+    marginTop: '50px',
     fontFamily: 'Nunito',
   },
   logoPaper: {
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100px',
   },
   appBar: {
+    zIndex: '0',
     background: 'none',
     padding: `0 ${theme.spacing(3)}px`
   },

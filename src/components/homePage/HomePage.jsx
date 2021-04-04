@@ -17,44 +17,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { db } from '../../firebase';
 
-// const fakeUsers = [
-//     {
-//       name: 'Pesho',
-//       age: 19,
-//       url: 'https://pbs.twimg.com/profile_images/3780134937/491446ab9cc343e3a7200c621bb749b1.jpeg',
-//       more: {
-//         description: 'Az sum Mega Pi4!1!',
-//         socialNetwork: 'IG:peshoPi4a',
-//         location: 'Sofeto',
-//       },
-//       infoField: '',
-//     },
-//     {
-//       name: 'SlaTkata93',
-//       age: 19,
-//       url: 'https://www.tiktok.com/api/img/?itemId=6917677726480551174&location=1&aid=1988',
-//       more: {
-//         description: 'Slatka sum.',
-//         socialNetwork: 'IG:slatkata93',
-//         location: 'Sofeto',
-//       },
-//       infoField: '',
-//     },
-//     {
-//       name: 'Genata',
-//       age: 39,
-//       url: 'https://pbs.twimg.com/media/A9Hb3hdCIAMteGN.jpg',
-//       more: {
-//         description: 'Karam koolo',
-//         socialNetwork: '',
-//         location: 'Sofeto',
-//       },
-//       infoField: '',
-//     }
-//   ];
-
 const alreadyRemoved = [];
-
 
 function HomePage () {
   // const users = useSelector(state => state.allUsers);
