@@ -106,7 +106,7 @@ export default function MenuAppBar() {
             >
               <MenuItem noOutline component={Link} to='/'>Home</MenuItem>
               {
-                user ?
+                user.uid ?
                   <div>
                     <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
                     <MenuItem component={Link} to='/profile'>Profile</MenuItem>

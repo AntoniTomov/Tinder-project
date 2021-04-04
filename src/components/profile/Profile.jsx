@@ -139,17 +139,13 @@ const Profile = () => {
     useEffect(() => {
         const docRef = db.collection('users').doc(`${user.uid}`);
         docRef.get().then((doc) => {
-
             if (doc.exists) {
 
                 const imagesArraySet = setImagesArrLengthAndFill(doc.data().images, numberOfImageContainers);
 
                 setUserImages(imagesArraySet)
-                console.log('snimkite v db', doc.data().images)
-                console.log('imagesArraySet', imagesArraySet)
             } else {
                 // doc.data() will be undefined in this case
-                console.log("No such document!");
             }
         }).catch((error) => {
             console.log("Error getting document:", error);
@@ -161,87 +157,86 @@ const Profile = () => {
     }
     const handleAboutYou = (e) => {
         if (user.aboutYou !== aboutYou) {
-            dispatch({
-                type: 'userChangedAboutYou',
-                payload: e.target.value
-            });
+
             userRef.update({ aboutYou: e.target.value })
                 .then(() => {
-                    console.log('Updated successfully')
+                    console.log('Updated successfully');
+                    dispatch({
+                        type: 'userChangedAboutYou',
+                        payload: e.target.value
+                    });
+
                 })
                 .catch(error => {
-                    console.log('Error updating', error)
+                    console.log('Error updating', error);
                 })
         }
     }
 
     const handlePassionsChange = e => {
-        setPassions(e.target.value)
+        setPassions(e.target.value);
     }
 
     const handlePassions = (e) => {
         let value = passions.split(', ');
         if (user.passions.join(', ') !== value) {
-            dispatch({
-                type: 'userChangedPassions',
-                payload: value
-            });
             userRef.update({ passions: value })
                 .then(() => {
                     console.log('Updated successfully')
+                    dispatch({
+                        type: 'userChangedPassions',
+                        payload: value
+                    });
                 })
                 .catch(error => {
-                    console.log('Error updating', error)
+                    console.log('Error updating', error);
                 })
         }
     }
 
     const handleGenderChange = e => {
         setGender(e.target.value);
-        dispatch({
-            type: 'userChangedGender',
-            payload: e.target.value
-        })
-        
         userRef.update({ gender: e.target.value })
             .then(() => {
-                console.log('updated successfully')
+                console.log('updated successfully');
+                dispatch({
+                    type: 'userChangedGender',
+                    payload: e.target.value
+                })
             })
             .catch(error => {
-                console.log('Error updating', error)
+                console.log('Error updating', error);
             })
     }
 
     const handleOrientationChange = e => {
         setOrientation(e.target.value);
-
-        dispatch({
-            type: 'userChangedOrientation',
-            payload: e.target.value
-        })
-        
         userRef.update({ sexualOrientation: e.target.value })
             .then(() => {
-                console.log('updated successfully')
+                console.log('updated successfully');
+                dispatch({
+                    type: 'userChangedOrientation',
+                    payload: e.target.value
+                })
             })
             .catch(error => {
-                console.log('Error updating', error)
+                console.log('Error updating', error);
             })
 
     }
 
     const handleLivingInChange = e => {
         setLivingIn(e.target.value);
-        dispatch({
-            type: 'userChangedLivingIn',
-            payload: `${region} ${e.target.value}`
-        });
-        userRef.update({ country: `${region} ${e.target.value}`})
+        userRef.update({ country: `${region} ${e.target.value}` })
             .then(() => {
-                console.log('updated successfully')
+                console.log('updated successfully');
+                dispatch({
+                    type: 'userChangedLivingIn',
+                    payload: `${region} ${e.target.value}`
+                });
             })
             .catch(error => {
-                console.log('Error updating', error)
+                console.log('Error updating', error);
             })
     }
     const handleRegion = (e) => {
@@ -254,16 +249,16 @@ const Profile = () => {
 
     const handleJobTitle = (e) => {
         if (user.jobTitle !== e.target.value) {
-            dispatch({
-                type: 'userChangedJobTitle',
-                payload: e.target.value
-            });
             userRef.update({ jobTitle: e.target.value })
                 .then(() => {
-                    console.log('Updated successfully')
+                    console.log('Updated successfully');
+                    dispatch({
+                        type: 'userChangedJobTitle',
+                        payload: e.target.value
+                    });
                 })
                 .catch(error => {
-                    console.log('Error updating', error)
+                    console.log('Error updating', error);
                 })
         }
     }
@@ -273,16 +268,16 @@ const Profile = () => {
     }
     const handleCompany = (e) => {
         if (user.company !== e.target.value) {
-            dispatch({
-                type: 'userChangedCompany',
-                payload: e.target.value
-            });
             userRef.update({ company: e.target.value })
                 .then(() => {
-                    console.log('Updated successfully')
+                    console.log('Updated successfully');
+                    dispatch({
+                        type: 'userChangedCompany',
+                        payload: e.target.value
+                    });
                 })
                 .catch(error => {
-                    console.log('Error updating', error)
+                    console.log('Error updating', error);
                 })
         }
     }
@@ -291,16 +286,16 @@ const Profile = () => {
     }
     const handleCollegeOrUni = (e) => {
         if (user.collageOrUni !== e.target.value) {
-            dispatch({
-                type: 'userChangedCollegeOrUni',
-                payload: e.target.value
-            });
             userRef.update({ collageOrUni: e.target.value })
                 .then(() => {
-                    console.log('Updated successfully')
+                    console.log('Updated successfully');
+                    dispatch({
+                        type: 'userChangedCollegeOrUni',
+                        payload: e.target.value
+                    });
                 })
                 .catch(error => {
-                    console.log('Error updating', error)
+                    console.log('Error updating', error);
                 })
         }
     }
@@ -357,8 +352,6 @@ const Profile = () => {
                                     wrap='wrap'
                                     style={{ margin: '30px 0', padding: '20px' }}
                                 >
-                                    {/* lg={3} md={'auto'} sm={1} */}
-
                                     {userImages.map((container, i) => {
                                         return (
                                             <Grid xs={'auto'} item>
@@ -535,12 +528,12 @@ const Profile = () => {
                                     <Typography variant='h4'>Job title:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <CssTextField id="standard-secondary"label="Job title"
-                                    fullWidth
-                                    color="secondary"
-                                    value={jobTitle} 
-                                    onChange={handleJobTitleChange}
-                                    onBlur={handleJobTitle}
+                                    <CssTextField id="standard-secondary" label="Job title"
+                                        fullWidth
+                                        color="secondary"
+                                        value={jobTitle}
+                                        onChange={handleJobTitleChange}
+                                        onBlur={handleJobTitle}
                                     />
                                 </Grid>
                             </Grid>
@@ -558,11 +551,11 @@ const Profile = () => {
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
                                     <CssTextField id="standard-secondary" label="Company"
-                                    fullWidth
-                                    color="secondary"
-                                    value={company}
-                                    onChange={handleCompanyChange}
-                                    onBlur={handleCompany}
+                                        fullWidth
+                                        color="secondary"
+                                        value={company}
+                                        onChange={handleCompanyChange}
+                                        onBlur={handleCompany}
                                     />
                                 </Grid>
                             </Grid>
@@ -580,11 +573,11 @@ const Profile = () => {
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
                                     <CssTextField id="standard-secondary" label="College/Uni"
-                                    fullWidth
-                                    color="secondary"
-                                    value={collegeOrUni}
-                                    onChange={handleCollegeOrUniChange}
-                                    onBlur={handleCollegeOrUni}
+                                        fullWidth
+                                        color="secondary"
+                                        value={collegeOrUni}
+                                        onChange={handleCollegeOrUniChange}
+                                        onBlur={handleCollegeOrUni}
                                     />
                                 </Grid>
                             </Grid>
