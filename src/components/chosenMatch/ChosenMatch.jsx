@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import  Avatar from '@material-ui/core/Avatar';
 import { CssBaseline, makeStyles, Grid, GridList, GridListTile  } from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
-import SimpleImageSlider from "react-simple-image-slider";
+// import SimpleImageSlider from "react-simple-image-slider";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -42,13 +42,13 @@ export default function ChosenMatch({users}) {
         <CssBaseline>
                 <Grid container direction='column' alignItems='center' xs={4} spacing={2}>
                     <Grid item>
-                        <SimpleImageSlider
+                        {/* <SimpleImageSlider
                             showNavs={true}
                             showBullets={true}
                             width={350}
                             height={250}
                             images={images}
-                        />
+                        /> */}
                     </Grid>
                     <Grid item>{chosenUser.name} {chosenUser.age}</Grid>
                     <Grid item>{chosenUser.description}</Grid>

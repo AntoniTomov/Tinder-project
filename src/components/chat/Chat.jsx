@@ -30,10 +30,11 @@ export default function Chat() {
     const [targetChatId, setTargetChatId] = useState('');
     const dummyDiv = useRef();
     // const [lastChatChangedId, setLastChatChangedId] = useState('');
-    const [updatedChats, setUpdatedChats] = useState([]);
+    // const [updatedChats, setUpdatedChats] = useState([]);
 
     const chatRoomsRef = db.collection('chatRooms').where('users', 'array-contains', user.uid);
 
+    // Fetch all chat rooms
     useEffect(() => {
         /* gledame za promeni v qnkoi ot tezi documenti */
         chatRoomsRef.onSnapshot(snapShot => {
@@ -49,31 +50,12 @@ export default function Chat() {
             const sortedByTimeChats = tempAllChats.sort((a, b) => b.lastMessageTimestamp - a.lastMessageTimestamp);
 
             setAllChats(sortedByTimeChats)
-            // setTargetChatId(tempAllChats[0].id)
+
+            // if(sortedByTimeChats.length > 0) {
+            //     setTargetChatId(sortedByTimeChats[0].id)
+            // }
         })
     }, [])
-
-
-    useEffect(() => {
-        chatRoomsRef.onSnapshot(snapShot => {
-            snapShot.docChanges().forEach(change => {
-                let chatId = change.doc.id;
-                let messagesArr = change.doc.data().messages;
-                let senderId = messagesArr[messagesArr.length - 1].sender;
-                // if (change.type === 'modified' && chatId !== targetChatId) {
-                if (change.type === 'modified' && senderId !== user.uid) {
-                    console.log('============> modified', senderId, user.uid)
-                    setUpdatedChats([...updatedChats, chatId]); /// ????
-                }
-            })
-        })
-    }, [])
-
-    const updateUpdatedChats = (chatId) => {
-        const updated = updatedChats.filter(id => id !== chatId);
-        setUpdatedChats(updated) ///????
-    }
-
 
     useEffect(() => {
         dummyDiv.current.scrollIntoView({
@@ -116,11 +98,11 @@ export default function Chat() {
                     <div className={chatClasses.innerDivChat}>
                         {
                             allChats.map(chat => {
-                                return (<ChatHead chat={chat}
-                                    updatedChats={updatedChats}
+                                return (<ChatHead 
+                                    chat={chat}
+                                    isActive={targetChatId === chat.id}
                                     selectTargetChat={selectTargetChat}
-                                    targetChatId={targetChatId}
-                                    updateUpdatedChats={updateUpdatedChats}
+                                    key={chat.id}
                                     />)
                             })
                         }

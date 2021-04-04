@@ -23,47 +23,47 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const toggleClass = (ev) => {
-    ev.target.className === 'active' ? ev.target.className = '' : ev.target.className = 'active';
-}
-
-export default function ChatHead({ selectTargetChat, targetChatId, chat, updatedChats, updateUpdatedChats }) {
+export default function ChatHead({ selectTargetChat,  chat, isActive  }) {
     const styles = useStyles();
     const allUsers = useSelector(state => state.allUsers);
     const currentUserId = useSelector(state => state.currentUser.uid)
     const targetUserId  = chat.id.split('_').filter(id => id !== currentUserId).join('');
-    // let targetUserId  = id.replaceAll(/_{0,1}(iRAJrtLOEtO92cbkP4ZYOC0nNMv2)_{0,1}/g, '');
     const targetUser = allUsers.find(user => user.uid === targetUserId);
-    const activeStyle = chat.id === targetChatId ? 'active' : '';
-    const [missedMessageStyle, setMissedMessageStyle] = useState(false);
-    
-    
-    // useEffect(() => {
-    //     const isInUpdatedChats = updatedChats.includes(chat.id);
-    //     setMissedMessageStyle(isInUpdatedChats);
-    // }, [updatedChats])
-    
+
+
+    const [currentChat, setCurrentChat] = useState(chat);
+    const [isTyping, setIsTyping] = useState(false);
+
+    const [hasMissedMessages, setHasMissedMessages] = useState(false);
+
+
+
+    // Shte se podkara kogato chat ot propsa se promeni!!!
     useEffect(() => {
-        if (chat.messages.length !== 0) {
-            const lastMessage = chat.messages[chat.messages.length - 1];
-            const isInUpdatedChats = updatedChats.includes(chat.id);
-            // setMissedMessageStyle(isInUpdatedChats);
-            console.log(`isInUpdatedChats:${isInUpdatedChats}  `)
-            if (lastMessage.sender !== currentUserId && chat.id !== targetChatId && isInUpdatedChats) { 
-                setMissedMessageStyle(true);
+        if (chat.messages.length > 0) {
+            let lastMessageSender = chat.messages[chat.messages.length - 1].sender;
+            if(currentChat.messages.length !== chat.messages.length && lastMessageSender !== currentUserId && !isActive) {
+                setHasMissedMessages(true);
+                setCurrentChat(chat);
+            }
+            if(isActive) {
+                setHasMissedMessages(false);
             }
         }
-    }, [updatedChats])
+        // if(chat.isTyping.includes(targetUserId)) {
+        //     setIsTyping(true)
+        // } else {
+        //     setIsTyping(false)
+        // }
+    }, [chat, isActive, currentChat.messages.length])
+    
 
-    const handleChatOnClick = (e) => {
-        // toggleClass(e);
-        setMissedMessageStyle(false);
-        updateUpdatedChats(chat.id);
+    const handleChatOnClick = () => {
         selectTargetChat(chat.id);
     }
 
     return (
-        <span key={targetUser.id} style={missedMessageStyle ? {border: '2px solid red'} : {}} className={styles[activeStyle]} onClick={e => handleChatOnClick(e)}>
+        <span key={targetUser.id} style={hasMissedMessages ? {border: '2px solid red'} : {}} className={isActive ? styles['active'] : ''} onClick={e => handleChatOnClick(e)}>
             <Avatar className={styles.head} alt={targetUser.name} src={targetUser.images[0]} />
             {targetUser.name}
         </span>
