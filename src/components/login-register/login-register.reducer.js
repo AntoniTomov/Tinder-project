@@ -56,6 +56,12 @@ const userReducer = (state = initialState, action) => {
                 company: action.payload
             }
         }
+        case 'userChangedCollegeOrUni': {
+            return {
+                ...state,
+                company: action.payload
+            }
+        }
         default:
             return state;
     }
