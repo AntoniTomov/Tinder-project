@@ -63,14 +63,15 @@ export default function Chat() {
                 // if (change.type === 'modified' && chatId !== targetChatId) {
                 if (change.type === 'modified' && senderId !== user.uid) {
                     console.log('============> modified', senderId, user.uid)
-                    setUpdatedChats(prev => [...prev, chatId]);
+                    setUpdatedChats([...updatedChats, chatId]); /// ????
                 }
             })
         })
     }, [])
 
     const updateUpdatedChats = (chatId) => {
-        setUpdatedChats(prev => prev.filter(id => id !== chatId))
+        const updated = updatedChats.filter(id => id !== chatId);
+        setUpdatedChats(updated) ///????
     }
 
 
