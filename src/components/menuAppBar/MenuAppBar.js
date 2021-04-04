@@ -48,7 +48,10 @@ const useStyles = makeStyles((theme) => ({
   },
   menu: {
     fontSize: '35px'
-  }
+  },
+  noOutline: {
+    outline: 'none!important',
+  },
 }));
 
 export default function MenuAppBar() {
@@ -101,7 +104,7 @@ export default function MenuAppBar() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem component={Link} to='/'>Home</MenuItem>
+              <MenuItem noOutline component={Link} to='/'>Home</MenuItem>
               {
                 user ?
                   <div>
