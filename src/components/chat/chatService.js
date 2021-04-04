@@ -8,3 +8,5 @@ export const sentMessage = (chatId, userId, message) => {
             // timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
         })
 }
+
+// export const updateIsTyping 
