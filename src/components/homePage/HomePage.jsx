@@ -16,6 +16,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import firebase, { db } from '../../firebase';
+import { spacing } from '@material-ui/system';
 
 const alreadyRemoved = [];
 
@@ -239,16 +240,16 @@ function HomePage () {
   }
 
   return (
-    <div> 
-      <button onClick={resetCurrentUser}>Reset currentUser</button>
-      <button onClick={resetAllUser}>Reset all users</button>
+    <div style={{minWidth: '450px', color: 'white'}}> 
+      <Button onClick={resetCurrentUser} variant='contained' className={'resetButton'}>Reset currentUser</Button>
+      <Button onClick={resetAllUser} variant='contained' className={'resetButton'}>Reset all users</Button>
 
       {isSwipeView ? (
         <div style={{width: '85%', margin: '0 auto'}}>
-          <ViewModuleIcon onClick={changeViewState}/>
+          <ViewModuleIcon onClick={changeViewState} fontSize='large' style={{marginTop: '20px'}} />
           <link href='https://fonts.googleapis.com/css?family=Damion&display=swap' rel='stylesheet' />
           <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
-          <h1>React Tinder Card</h1>
+          <h1 className={'homeTitle'}>React Tinder Card</h1>
           <div className='cardContainer'>
             {characters.map((character, index) =>
               <TinderCard ref={childRefs[index]} className='swipe' key={character.uid} onSwipe={(dir) => {
@@ -269,7 +270,7 @@ function HomePage () {
         </div>
       ) : (
         <div>
-          <TouchAppIcon onClick={changeViewState}/>
+          <TouchAppIcon onClick={changeViewState} fontSize='large' style={{marginTop: '20px'}} />
           <div className="containerCardView">
             <div className="containerCardView">
               {characters.map((user) =>
