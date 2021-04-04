@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Avatar from '@material-ui/core/Avatar';
-import { CssBaseline, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import chatClasses from './Chat.module.css';
 
@@ -13,23 +13,39 @@ const useStyles = makeStyles(theme => ({
     timestamp: {
         color: 'gray',
         fontSize: '8px',
+    },
+    active : {
+        background: 'rgba(255, 255, 255, 0.3)',
+        borderRadius: '2rem 0 0 2rem',
+    },
+    missed : {
+        background: 'red',
     }
 }));
 
 const toggleClass = (ev) => {
-    console.log(ev.target);
     ev.target.className === 'active' ? ev.target.className = '' : ev.target.className = 'active';
-    console.log(ev.target);
 }
 
-export default function ChatHead({ id, selectTargetChat }) {
+export default function ChatHead({ id, selectTargetChat, targetChatId, chat }) {
     const styles = useStyles();
     const allUsers = useSelector(state => state.allUsers);
     const currentUserId = useSelector(state => state.currentUser.uid)
     const targetUserId  = id.split('_').filter(id => id !== currentUserId).join('');
     // let targetUserId  = id.replaceAll(/_{0,1}(iRAJrtLOEtO92cbkP4ZYOC0nNMv2)_{0,1}/g, '');
-    // const [targetUser, setTargetUser] = useState(allUsers.find(user => user.uid === targetUserId));
     const targetUser = allUsers.find(user => user.uid === targetUserId);
+    const activeStyle = id === targetChatId ? 'active' : '';
+    const [missedMessageStyle, setMissedMessageStyle] = useState(false);
+
+    useEffect(() => {
+        if (chat.messages.length) {
+            const lastMessageSender = chat.messages[chat.messages.length - 1].sender;
+            console.log(lastMessageSender);
+            if (lastMessageSender !== currentUserId) {
+                setMissedMessageStyle(true);
+            }
+        }
+    }, [])
 
     const handleChatOnClick = (e) => {
         toggleClass(e);
@@ -37,7 +53,7 @@ export default function ChatHead({ id, selectTargetChat }) {
     }
 
     return (
-        <span key={targetUser.id} className={chatClasses.missedMsg} onClick={e => handleChatOnClick(e)}>
+        <span key={targetUser.id} styles={missedMessageStyle && {borderColor: 'green'}} className={styles[activeStyle]} onClick={e => handleChatOnClick(e)}>
             <Avatar className={styles.head} alt={targetUser.name} src={targetUser.images[0]} />
             {targetUser.name}
         </span>

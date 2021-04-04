@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
 export default function ChatHead({ message }) {
     const styles = useStyles();
     const allUsers = useSelector(state => state.allUsers);
-    const user = useSelector(state => state.currentUser.user);
+    const user = useSelector(state => state.currentUser);
     const messageStyle = message.sender === user.uid ? 'sent' : 'received';
     const userImage = allUsers.find(user => user.uid === message.sender)?.images[0];
 
