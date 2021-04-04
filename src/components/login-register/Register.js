@@ -155,7 +155,7 @@ export default function Register({ setCurrentUser }) {
                 let userInDb = {
                     uid: res.user.uid,
                     name: res.user.displayName,
-                    email: emailInput,
+                    email: res.user.email,
                     aboutYou: '',
                     age: 18,
                     collageOrUni: '',
