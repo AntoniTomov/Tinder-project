@@ -115,63 +115,19 @@ const Profile = () => {
     const numberOfImageContainers = 6;
 
     const [aboutYou, setAboutYou] = useState(user.aboutYou);
-    const [passions, setPassions] = useState('');
+    const passionsFromDb = user.passions.join(', ');
+    const [passions, setPassions] = useState(passionsFromDb);
     const [gender, setGender] = useState(user.gender);
-    const [orientation, setOrientation] = useState('');
-    const [region, setRegion] = useState('');
+    const [orientation, setOrientation] = useState(user.sexualOrientation);
+    const regionFromDb = user.country.split(' ')[0];
+    const countryFromDb = user.country.split(' ')[1];
+    const [region, setRegion] = useState(regionFromDb);
     const [allCountriesInARegion, setAllCountriesInARegion] = useState([]);
-    const [livingIn, setLivingIn] = useState('');
+    const [livingIn, setLivingIn] = useState(countryFromDb);
     const [userImages, setUserImages] = useState([]);
-
-    const handleAboutYouChange = (e) => {
-            setAboutYou(e.target.value);
-    }
-    const handleAboutYou = (e) => {
-        if (user.aboutYou !== aboutYou) {
-            console.log('na blyr promenihme neshto');
-            dispatch({
-                type: 'userChangedAboutYou',
-                payload: e.target.value
-            });
-            
-            /* TUKA PRAVIM PROMQNA NA USERa v DB !*/
-            // userRef.update({aboutYou: e.target.value})
-            //     .then(() => {
-            //         console.log('updated successfully')
-            //     })
-            //     .catch(error => {
-            //         console.log('Error updating', error)
-            //     })
-        }
-    }
-
-    const handlePassionsChange = e => {
-        setPassions(e.target.value)
-    }
-    const handleGenderChange = e => {
-        // setGender(e.target.value);
-        dispatch({
-            type: 'userChangedGender',
-            payload: e.target.value
-        })
-        /* TUKA PRAVIM PROMQNA NA USERa v DB !*/
-            // userRef.update({gender: e.target.value})
-            //     .then(() => {
-            //         console.log('updated successfully')
-            //     })
-            //     .catch(error => {
-            //         console.log('Error updating', error)
-            //     })
-    }
-    const handleOrientationChange = e => {
-        setOrientation(e.target.value);
-    }
-    const handleLivingInChange = e => {
-        setLivingIn(e.target.value);
-    }
-    const handleRegion = (e) => {
-        setRegion(e.target.value);
-    }
+    const [jobTitle, setJobTitle] = useState(user.jobTitle);
+    const [company, setCompany] = useState(user.company);
+    const [collegeOrUni, setCollegeOrUni] = useState(user.collageOrUni);
 
     useEffect(() => {
         region && fetch(`https://restcountries.eu/rest/v2/region/` + region)
@@ -181,11 +137,8 @@ const Profile = () => {
     }, [region]);
 
     useEffect(() => {
-
         const docRef = db.collection('users').doc(`${user.uid}`);
-        // console.log(user.uid, 'ot profile')
         docRef.get().then((doc) => {
-        // console.log(doc, 'ot profile pak')
 
             if (doc.exists) {
 
@@ -203,6 +156,154 @@ const Profile = () => {
         });
     }, []);
 
+    const handleAboutYouChange = (e) => {
+        setAboutYou(e.target.value);
+    }
+    const handleAboutYou = (e) => {
+        if (user.aboutYou !== aboutYou) {
+            dispatch({
+                type: 'userChangedAboutYou',
+                payload: e.target.value
+            });
+            userRef.update({ aboutYou: e.target.value })
+                .then(() => {
+                    console.log('Updated successfully')
+                })
+                .catch(error => {
+                    console.log('Error updating', error)
+                })
+        }
+    }
+
+    const handlePassionsChange = e => {
+        setPassions(e.target.value)
+    }
+
+    const handlePassions = (e) => {
+        let value = passions.split(', ');
+        if (user.passions.join(', ') !== value) {
+            dispatch({
+                type: 'userChangedPassions',
+                payload: value
+            });
+            userRef.update({ passions: value })
+                .then(() => {
+                    console.log('Updated successfully')
+                })
+                .catch(error => {
+                    console.log('Error updating', error)
+                })
+        }
+    }
+
+    const handleGenderChange = e => {
+        setGender(e.target.value);
+        dispatch({
+            type: 'userChangedGender',
+            payload: e.target.value
+        })
+        
+        userRef.update({ gender: e.target.value })
+            .then(() => {
+                console.log('updated successfully')
+            })
+            .catch(error => {
+                console.log('Error updating', error)
+            })
+    }
+
+    const handleOrientationChange = e => {
+        setOrientation(e.target.value);
+
+        dispatch({
+            type: 'userChangedOrientation',
+            payload: e.target.value
+        })
+        
+        userRef.update({ sexualOrientation: e.target.value })
+            .then(() => {
+                console.log('updated successfully')
+            })
+            .catch(error => {
+                console.log('Error updating', error)
+            })
+
+    }
+
+    const handleLivingInChange = e => {
+        setLivingIn(e.target.value);
+        dispatch({
+            type: 'userChangedLivingIn',
+            payload: `${region} ${e.target.value}`
+        });
+        userRef.update({ country: `${region} ${e.target.value}`})
+            .then(() => {
+                console.log('updated successfully')
+            })
+            .catch(error => {
+                console.log('Error updating', error)
+            })
+    }
+    const handleRegion = (e) => {
+        setRegion(e.target.value);
+    }
+
+    const handleJobTitleChange = (e) => {
+        setJobTitle(e.target.value);
+    }
+
+    const handleJobTitle = (e) => {
+        if (user.jobTitle !== e.target.value) {
+            dispatch({
+                type: 'userChangedJobTitle',
+                payload: e.target.value
+            });
+            userRef.update({ jobTitle: e.target.value })
+                .then(() => {
+                    console.log('Updated successfully')
+                })
+                .catch(error => {
+                    console.log('Error updating', error)
+                })
+        }
+    }
+
+    const handleCompanyChange = (e) => {
+        setCompany(e.target.value);
+    }
+    const handleCompany = (e) => {
+        if (user.company !== e.target.value) {
+            dispatch({
+                type: 'userChangedCompany',
+                payload: e.target.value
+            });
+            userRef.update({ company: e.target.value })
+                .then(() => {
+                    console.log('Updated successfully')
+                })
+                .catch(error => {
+                    console.log('Error updating', error)
+                })
+        }
+    }
+    const handleCollegeOrUniChange = (e) => {
+        setCollegeOrUni(e.target.value);
+    }
+    const handleCollegeOrUni = (e) => {
+        if (user.collageOrUni !== e.target.value) {
+            dispatch({
+                type: 'userChangedCompany',
+                payload: e.target.value
+            });
+            userRef.update({ collageOrUni: e.target.value })
+                .then(() => {
+                    console.log('Updated successfully')
+                })
+                .catch(error => {
+                    console.log('Error updating', error)
+                })
+        }
+    }
 
     const updateImages = (imagesArr) => {
         let userRef = db.collection('users').doc(`${user.uid}`);
@@ -316,7 +417,9 @@ const Profile = () => {
                                         fullWidth
                                         value={passions}
                                         onChange={handlePassionsChange}
+                                        onBlur={handlePassions}
                                         variant="outlined"
+                                        placeholder='Separate them by ", "'
                                     />
                                 </Grid>
                             </Grid>
@@ -333,7 +436,7 @@ const Profile = () => {
                                     <Typography variant='h4'>Gender:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ justifyContent: 'center' }}>
-                                    <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={user.gender} onChange={handleGenderChange}>
+                                    <RadioGroup style={{ margin: '0 auto' }} row aria-flowto='right' aria-label="gender" name="gender1" value={gender} onChange={handleGenderChange}>
                                         <FormControlLabel className={classes.radio} value="female" control={<Radio color='secondary' />} label="Female" />
                                         <FormControlLabel value="male" control={<Radio color='primary' />} label="Male" />
                                         <FormControlLabel value="other" control={<Radio color='default' />} label="Other" />
@@ -410,7 +513,7 @@ const Profile = () => {
                                             disabled={!region}
                                             variant='standard'
                                             labelId="demo-simple-select-label"
-                                            id='sexualOrientation-select'
+                                            id='country'
                                             value={livingIn}
                                             onChange={handleLivingInChange}
                                         >
@@ -432,7 +535,10 @@ const Profile = () => {
                                     <Typography variant='h4'>Job title:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <CssTextField id="standard-secondary" label="Job title" fullWidth color="secondary" />
+                                    <CssTextField id="standard-secondary" label="Job title"
+                                    fullWidth
+                                    color="secondary"
+                                    value={jobTitle} />
                                 </Grid>
                             </Grid>
                         </Paper>
@@ -448,7 +554,11 @@ const Profile = () => {
                                     <Typography variant='h4'>Company:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <CssTextField id="standard-secondary" label="Company" fullWidth color="secondary" />
+                                    <CssTextField id="standard-secondary" label="Company"
+                                    fullWidth
+                                    color="secondary"
+                                    value={company}
+                                    />
                                 </Grid>
                             </Grid>
                         </Paper>
@@ -464,7 +574,11 @@ const Profile = () => {
                                     <Typography variant='h4'>College/Uni:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <CssTextField id="standard-secondary" label="College/Uni" fullWidth color="secondary" />
+                                    <CssTextField id="standard-secondary" label="College/Uni"
+                                    fullWidth
+                                    color="secondary"
+                                    value={collegeOrUni}
+                                     />
                                 </Grid>
                             </Grid>
                         </Paper>
