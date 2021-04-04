@@ -292,7 +292,7 @@ const Profile = () => {
     const handleCollegeOrUni = (e) => {
         if (user.collageOrUni !== e.target.value) {
             dispatch({
-                type: 'userChangedCompany',
+                type: 'userChangedCollegeOrUni',
                 payload: e.target.value
             });
             userRef.update({ collageOrUni: e.target.value })
@@ -535,10 +535,13 @@ const Profile = () => {
                                     <Typography variant='h4'>Job title:</Typography>
                                 </Grid>
                                 <Grid item xs={'auto'} style={{ width: '80%', marginBottom: '30px' }}>
-                                    <CssTextField id="standard-secondary" label="Job title"
+                                    <CssTextField id="standard-secondary"label="Job title"
                                     fullWidth
                                     color="secondary"
-                                    value={jobTitle} />
+                                    value={jobTitle} 
+                                    onChange={handleJobTitleChange}
+                                    onBlur={handleJobTitle}
+                                    />
                                 </Grid>
                             </Grid>
                         </Paper>
@@ -558,6 +561,8 @@ const Profile = () => {
                                     fullWidth
                                     color="secondary"
                                     value={company}
+                                    onChange={handleCompanyChange}
+                                    onBlur={handleCompany}
                                     />
                                 </Grid>
                             </Grid>
@@ -578,7 +583,9 @@ const Profile = () => {
                                     fullWidth
                                     color="secondary"
                                     value={collegeOrUni}
-                                     />
+                                    onChange={handleCollegeOrUniChange}
+                                    onBlur={handleCollegeOrUni}
+                                    />
                                 </Grid>
                             </Grid>
                         </Paper>
