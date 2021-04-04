@@ -12,7 +12,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Matches.module.css';
 import { db } from '../../firebase';
-
+import ChosenMatch from '../chosenMatch/ChosenMatch';
 const useStyles = makeStyles(theme => ({
     flexColumn: {
         display: 'flex',
@@ -67,14 +67,14 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Matches() {
+export default function Matches({ getChosenMatchId }) {
     const classes = useStyles();
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
     const [matches, setMatches] = useState([]);
     const currentUser = useSelector(state => state.currentUser);
     const allUsers = useSelector(state => state.allUsers);
-    
     const matchesIds = useSelector(state => state.currentUser.matches);
+
 
     useEffect(() => {
         let currentMatches = allUsers.filter(user => currentUser.matches.includes(user.uid));
@@ -87,8 +87,8 @@ export default function Matches() {
         moreDetailsCardKey === uid ? setMoreDetailsCardKey(-1) : setMoreDetailsCardKey(uid);
     }
 
-    const showProfile = (id) => {
-        
+    const showProfile = (chosenId) => {
+        getChosenMatchId(chosenId);
     }
 
     const dislikeUser = (userId) => {

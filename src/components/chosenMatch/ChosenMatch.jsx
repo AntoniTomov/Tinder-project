@@ -1,68 +1,105 @@
-import { useState } from "react";
-import { useParams } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom';
 import  Avatar from '@material-ui/core/Avatar';
-import { CssBaseline, makeStyles, Grid, GridList, GridListTile  } from '@material-ui/core';
+import { CssBaseline, makeStyles, Grid, GridList, GridListTile, Typography  } from '@material-ui/core';
 import CardMedia from '@material-ui/core/CardMedia';
 import SimpleImageSlider from "react-simple-image-slider";
+import FbImageLibrary from 'react-fb-image-grid';
+import { useSelector } from 'react-redux';
+import './ChosenMatch.module.css'
 
-const useStyles = makeStyles(theme => ({
+
+const useStyles = makeStyles({
     container: {
-        display: 'flex',
-
+        width: '40vw',
+        alignItems: 'center',
+        textAlign: 'center',
+        color: 'white',
     },
-    head: {
-            width: theme.spacing(4),
-            height: theme.spacing(4),
-            margin: theme.spacing(1),
-        },
-    }));
+    name: {
+        marginBottom: '3rem',
+    },
+    textField: {
+        fontSize: '1.5rem',
+        margin: '0 auto',
+        width: '100%',
+        padding: '0 5rem',
+        textAlign: 'center',
+    },
+});
 
     
-export default function ChosenMatch({users}) {
-
-    
+export default function ChosenMatch({ chosenProfileId }) {
+    console.log('chosenProfileId', chosenProfileId);
     const styles = useStyles();
+    const users = useSelector(state => state.allUsers);
+    const [chosenUser, setChosenUser] = useState(null);
+    const [images, setImages] = useState([]);
+
+    useEffect(() => {
+        const focusedUser = users.find(user => user.uid === chosenProfileId);
+        setChosenUser(focusedUser);
+        console.log('chosenUser from useEffect: ', chosenUser);
+        console.log('chosenProfileId from useEffect: ', chosenProfileId);
+    }, [users])
+
+    useEffect(() => {
+        const imagesToDisplay = chosenUser?.images.filter(image => image !== '');
+        setImages(imagesToDisplay);
+    }, [chosenUser])
     
-    const { id } = useParams();
-    const images = [
-        { url: "https://images.ctfassets.net/hrltx12pl8hq/3MbF54EhWUhsXunc5Keueb/60774fbbff86e6bf6776f1e17a8016b4/04-nature_721703848.jpg?fit=fill&w=480&h=270" },
-        { url: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MXx8aHVtYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&w=1000&q=80" },
-        { url: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg" },
-        { url: "https://static.toiimg.com/photo/72975551.cms" },
-        { url: "https://images.ctfassets.net/hrltx12pl8hq/4plHDVeTkWuFMihxQnzBSb/aea2f06d675c3d710d095306e377382f/shutterstock_554314555_copy.jpg" },
-    ];
-
-    const chosenUser = users.find(user => user.id === parseInt(id));
-
-    console.log('Type of ID: ', id, typeof id);
-    console.log(users);
-    console.log('User: ', chosenUser);
-        
+    console.log('chosenUser', chosenUser);
+    console.log('images', images);
     return (
         <CssBaseline>
-                <Grid container direction='column' alignItems='center' xs={4} spacing={2}>
-                    <Grid item>
-                        <SimpleImageSlider
-                            showNavs={true}
-                            showBullets={true}
-                            width={350}
-                            height={250}
-                            images={images}
-                        />
-                    </Grid>
-                    <Grid item>{chosenUser.name} {chosenUser.age}</Grid>
-                    <Grid item>{chosenUser.description}</Grid>
-                    <Grid item>{chosenUser.location}</Grid>
-                    <Grid item></Grid>
-                    <Grid item></Grid>
-                    <Grid item></Grid>
-                </Grid>
-                {/* <GridList cellHeight={200} spacing={1}>
-                    <GridListTile>
-
-                    </GridListTile>
-
-                </GridList> */}
+            <div className={styles.container}>
+                <h2 className={styles.name}>{chosenUser?.name}</h2>
+                <FbImageLibrary
+                images={images}
+                width={310}
+                // countFrom={1}
+                renderOverlay={() => <div style={{fontSize: '2rem'}}>Show</div>}
+                overlayBackgroundColor="tomato"
+                />
+                <h3>About me</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.aboutYou}
+                </div>
+                <hr />
+                <h3>Passions</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.passions.join(', ')}
+                </div>
+                <hr />
+                <h3>Gender</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.gender}
+                </div>
+                <hr />
+                <h3>Sexual orientation</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.sexualOrientation}
+                </div>
+                <hr />
+                <h3>Living in</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.country}
+                </div>
+                <hr />
+                <h3>Job title</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.jobTitle}
+                </div>
+                <hr />
+                <h3>Company</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.company}
+                </div>
+                <hr />
+                <h3>College</h3>
+                <div className={styles.textField}>
+                    {chosenUser?.collageOrUni}
+                </div>
+            </div>
         </CssBaseline>
-    )
-}
+    )}

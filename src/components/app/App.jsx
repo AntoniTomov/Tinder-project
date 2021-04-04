@@ -40,6 +40,7 @@ function App() {
   }
 
   const user = useSelector(state => state.currentUser);
+  const [chosenProfileId, setChosenProfileId] = useState(null);
   
   console.log('Kolko puti se rendnah?!?!?');
 
@@ -80,6 +81,10 @@ function App() {
   })
   }, [])
 
+  const getChosenMatchId = (id) => {
+    setChosenProfileId(id);
+  }
+
 
   return (
     <>
@@ -115,7 +120,7 @@ function App() {
           </Route>
           {user ?
             <Route exact path='/matches'>
-              <Matches />
+              <Matches getChosenMatchId={(id) => getChosenMatchId(id)}/>
               {/* <Route exact path='/chosenMatch'>
               <ChosenMatch user={user}/>
             </Route> */}
@@ -125,8 +130,8 @@ function App() {
             <Register />
           }
           {user ?
-            <Route path="/matches/:id" children={<ChosenMatch />}>
-              <ChosenMatch />
+            chosenProfileId && <Route path="/matches/:id">
+              <ChosenMatch chosenProfileId={chosenProfileId}/>
             </Route>
           :
             <Register />
