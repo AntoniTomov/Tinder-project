@@ -8,9 +8,11 @@ import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
 import { CssBaseline } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import Chat from '../chat/Chat';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { users } from '../matches/Matches';
 import firebase, { auth, db } from '../../firebase';
 
@@ -30,7 +32,7 @@ function App() {
 
   const user = useSelector(state => state.currentUser);
   const [chosenProfileId, setChosenProfileId] = useState(null);
-  
+
   console.log('Kolko puti se rendnah?!?!?');
 
   //is a user still logged in
@@ -66,14 +68,18 @@ function App() {
         type: 'getAllUsers',
         payload: users,
       });
-      // console.log('Users from App.jsx: ', users)
-  })
+    })
   }, [])
 
   const getChosenMatchId = (id) => {
     setChosenProfileId(id);
   }
 
+  if (isLoading) {
+    return <div style={{margin: 'calc(50vh - 100px) auto'}}>
+      <CircularProgress size={100} />
+    </div>
+  }
 
   return (
     <>
@@ -84,13 +90,13 @@ function App() {
       <main className="App">
         <Switch>
           <Route exact path='/'>
-            {user ?
+            {user.uid ?
               <>
                 <HomePage />
               </> : <Redirect to="/login" />}
           </Route>
           <Route exact path='/login'>
-            {user ?
+            {user.uid ?
               <div>
                 <Redirect to="/" />
               </div>
@@ -99,7 +105,7 @@ function App() {
             }
           </Route>
           <Route exact path='/register'>
-            {user ?
+            {user.uid ?
               <div>
                 <Redirect to="/" />
               </div>
@@ -107,26 +113,26 @@ function App() {
               <Register />
             }
           </Route>
-          {user ?
+          {user.uid ?
             <Route exact path='/matches'>
-              <Matches getChosenMatchId={(id) => getChosenMatchId(id)}/>
+              <Matches getChosenMatchId={(id) => getChosenMatchId(id)} />
               {/* <Route exact path='/chosenMatch'>
               <ChosenMatch user={user}/>
             </Route> */}
               {/* <ChosenMatch user={user}/> */}
             </Route>
-          :
+            :
             <Register />
           }
-          {user ?
+          {user.uid ?
             chosenProfileId && <Route path="/matches/:id">
-              <ChosenMatch chosenProfileId={chosenProfileId}/>
+              <ChosenMatch chosenProfileId={chosenProfileId} />
             </Route>
-          :
+            :
             <Register />
           }
           <Route exact path='/profile'>
-            { user ? <Profile /> : <Redirect to='/profile' />}
+            {user.uid ? <Profile /> : <Redirect to='/profile' />}
           </Route>
           <Route path='*'>
             <Redirect to='/' />
@@ -134,8 +140,8 @@ function App() {
         </Switch>
 
       </main>
-      {user && isChatOpened && <Chat />}
-      {user && <InsertCommentIcon fontSize='large' className='chatIcon' onClick={showChat} />}
+      {user.uid && isChatOpened && <Chat />}
+      {user.uid && <InsertCommentIcon fontSize='large' className='chatIcon' onClick={showChat} />}
     </>
   );
 }
