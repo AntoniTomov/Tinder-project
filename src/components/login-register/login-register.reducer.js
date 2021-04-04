@@ -59,7 +59,25 @@ const userReducer = (state = initialState, action) => {
         case 'userChangedCollegeOrUni': {
             return {
                 ...state,
-                company: action.payload
+                collageOrUni: action.payload
+            }
+        }
+        case 'userChangedliked': {
+            return {
+                ...state,
+                liked: [...state.liked, action.payload]
+            }
+        }
+        case 'userChangeddisliked': {
+            return {
+                ...state,
+                disliked: [...state.disliked, action.payload]
+            }
+        }
+        case 'userChangedmatches': {
+            return {
+                ...state,
+                matches: [...state.matches, action.payload]
             }
         }
         default:

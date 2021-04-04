@@ -15,41 +15,29 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { db } from '../../firebase';
+import firebase, { db } from '../../firebase';
 
 const alreadyRemoved = [];
 
 function HomePage () {
-  // const users = useSelector(state => state.allUsers);
-
-  // Filtering the users from liked/disliked/matches
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.currentUser);
-  let users = useSelector(state => state.allUsers);
-  // let filteredUsers = users.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid);
-  
-  // const filteredUsers = filterProfiles(users, currentUser);
-
+  const users = useSelector(state => state.allUsers);
   const [characters, setCharacters] = useState([]);
   const [lastDirection, setLastDirection] = useState();
   const [isSwipeView, setIsSwipeView] = useState(true);
-  
+  const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
   
   useEffect(() => {
     const filteredUsers = filterProfiles(users, currentUser);
     setCharacters(filteredUsers);
   }, [])
-
-  // let charactersState = characters;
-
-  const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
   
   function filterProfiles (allProfiles, currentUser) {
     return allProfiles.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid)
   }
 
   const swiped = (direction, userIdToBeAdded, nameToDelete) => {
-    // console.log('removing: ' + nameToDelete);
     let arrProp = '';
     switch(direction){
       case 'left' : arrProp = 'disliked';
@@ -65,6 +53,7 @@ function HomePage () {
     updateDB(arrProp, userIdToBeAdded);
     setLastDirection(direction);
     alreadyRemoved.push(userIdToBeAdded);
+    // updateProfileMatches(currentUser.uid, userIdToBeAdded);
   }
 
   const outOfFrame = (userId) => {
@@ -76,27 +65,32 @@ function HomePage () {
     const userOneMatches = users.find(user => user.uid === userOneId).matches;
     const userTwoMatches = users.find(user => user.uid === userTwoId).matches;
     db.collection('users').doc(userOneId).update({
-      matches: [...userOneMatches, userTwoId],
+      matches: firebase.firestore.FieldValue.arrayUnion(userTwoId),
     })
 
     // Here we are creating the new chatRooms!
     createChatRoom(userOneId, userTwoId);
 
     db.collection('users').doc(userTwoId).update({
-      matches: [...userTwoMatches, userOneId],
+      matches: firebase.firestore.FieldValue.arrayUnion(userOneId),
     })
-
-    users = users.map(user => {
-      if(user.uid === userOneId) {
-        if(!user.matches.includes(userTwoId)) {
-          user.matches = [...user.matches, userTwoId];
+    .then(() => {
+      let updatedUsers = users.map(user => {
+        // if(user.uid === userOneId) {
+        //   if(!user.matches.includes(userTwoId)) {
+        //     user.matches = [...user.matches, userTwoId];
+        //     console.log('Update-vame matches na user: ', userOneId, '---> na --->', user.matches);
+        //   }
+        // }
+        if (user.uid === userTwoId) {
+          user.matches = [...user.matches, userOneId];
+          console.log('Update-vame matches na user: ', userTwoId, '---> na --->', user.matches);
         }
-      } else if (user.uid === userTwoId) {
-        user.matches = [...user.matches, userOneId];
-      }
-      return user;
-    });
-    updateDataBase( 'getAllUsers', users);
+        return user;
+      });
+      updateDataBase( 'getAllUsers', updatedUsers);
+      updateDataBase( 'userChangedmatches', userTwoId);
+    })
   }
 
   // To be moved to Service file:
@@ -120,14 +114,12 @@ function HomePage () {
   const updateDB = (arrProp, userIdToBeAdded) => {
     
     console.log('arrProp', arrProp)
-    db.collection('users').doc(currentUser.uid).update({
-      [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
+
+    arrProp !== 'matches' && db.collection('users').doc(currentUser.uid).update({
+      [arrProp]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
     })
     .then(() => {
-      currentUser[arrProp].push(userIdToBeAdded);
-      updateDataBase('userLoggedIn', currentUser)
-      // dispatch({ type: 'userLoggedIn', payload: currentUser})
-      // console.log('Updated currentUser liked Array: ', currentUser[arrProp], ' with: ', userIdToBeAdded)
+      updateDataBase(`userChanged${arrProp}`, userIdToBeAdded)
     })
     .catch((error) => {
       console.error("Error updating document: ", error);
@@ -135,7 +127,6 @@ function HomePage () {
 
     outOfFrame(userIdToBeAdded)
 
-    // console.log('characters: ', characters, ' sa setnati na ', charactersState, ' a filteredUsers sa ', characters)
     arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
@@ -143,11 +134,8 @@ function HomePage () {
           updateProfileMatches(currentUser.uid, userIdToBeAdded)
         }
       })
-    arrProp === 'matches' && db.collection('users').doc(userIdToBeAdded).get()
-      .then(() => {
-        // We are updating the matches of currentUser and lokedUser
-        updateProfileMatches(currentUser.uid, userIdToBeAdded)
-      })
+      // We are updating the matches of currentUser and lokedUser
+    arrProp === 'matches' && updateProfileMatches(currentUser.uid, userIdToBeAdded)
   }
 
   const swipe = (dir) => {
@@ -179,8 +167,14 @@ function HomePage () {
       [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
     })
     .then(() => {
-      currentUser[arrProp].push(userIdToBeAdded);
-      updateDataBase('userLoggedIn', currentUser)
+      // currentUser[arrProp].push(userIdToBeAdded);
+      // updateDataBase('userLoggedIn', currentUser)
+      const currentUserNewState = {
+        ...currentUser,
+        [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
+      }
+      // currentUser[arrProp].push(userIdToBeAdded);
+      updateDataBase('userLoggedIn', currentUserNewState)
       // dispatch({ type: 'userLoggedIn', payload: currentUser})
       // console.log('Updated currentUser liked Array: ', currentUser[arrProp], ' with: ', userIdToBeAdded)
     })
@@ -227,14 +221,14 @@ function HomePage () {
     db.collection('users').get()
     .then(res => res.forEach(doc => {
       doc.ref.update({
-        liked: [],
+        // liked: [],
         disliked: [],
         matches: [],
       })
     }))
     .then(() => {
-      dispatch({ type: 'userLoggedIn', payload: {...users, liked: [], disliked: [], matches: []} });
-      console.log('Successfully reset users: ', users);
+      
+      dispatch({ type: 'getAllUsers', payload: users.map(user => user.matches = []) });
     })
     // Here we are deleting ALL chats
     // db.collection('chatRooms').set({});

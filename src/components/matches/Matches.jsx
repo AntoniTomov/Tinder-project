@@ -2,7 +2,7 @@ import Grid from '@material-ui/core/Grid';
 import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import styles from './Matches.module.css';
 import { db } from '../../firebase';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
+
 const useStyles = makeStyles(theme => ({
     flexColumn: {
         display: 'flex',
@@ -70,22 +71,26 @@ const useStyles = makeStyles(theme => ({
 export default function Matches({ getChosenMatchId }) {
     const classes = useStyles();
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
-    const [matches, setMatches] = useState([]);
+    // const [matches, setMatches] = useState([]);
     const currentUser = useSelector(state => state.currentUser);
+    const [matches, setMatches] = useState([]);
     const allUsers = useSelector(state => state.allUsers);
     const matchesIds = useSelector(state => state.currentUser.matches);
     const defaultProfilePic = 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg';
-
+    const [isLoading, setIsLoading] = useState(true);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        let currentMatches = allUsers.filter(user => currentUser.matches.includes(user.uid));
-        setMatches(currentMatches);
-    }, [])
+        const allMatches = allUsers.filter(user => currentUser.matches.includes(user.uid));
+        setMatches(allMatches);
+    }, [currentUser])
 
-    console.log('matches: ', matches);
+    useEffect(() => {
+        matches?.length > 0 && setIsLoading(false);
+    }, [matches])
 
     const manageCards = (uid) => {
-        moreDetailsCardKey === uid ? setMoreDetailsCardKey(-1) : setMoreDetailsCardKey(uid);
+        moreDetailsCardKey === uid ? setMoreDetailsCardKey('') : setMoreDetailsCardKey(uid);
     }
 
     const showProfile = (chosenId) => {
@@ -94,10 +99,10 @@ export default function Matches({ getChosenMatchId }) {
 
     const dislikeUser = (userId) => {
         console.log(userId)
-        const currUserMatchesIds = currentUser.matches.filter(user => user !== userId);
-        const currUserLikedProfilesIds = currentUser.liked.filter(user => user !== userId);
+        const currUserMatchesIds = currentUser.matches.filter(matchId => matchId !== userId);
+        const currUserLikedProfilesIds = currentUser.liked.filter(likedId => likedId !== userId);
         const removedUser = allUsers.find(user => user.uid === userId)
-        const removedUserMatches = removedUser.matches.filter(user => user !== currentUser.uid);
+        const removedUserMatches = removedUser.matches.filter(matchId => matchId !== currentUser.uid);
         console.log('currUserMatches', currUserMatchesIds);
         console.log('currUserLikedProfiles', currUserLikedProfilesIds);
         console.log('currUserLikedProfiles sus removedUser: ', currentUser.liked);
@@ -107,13 +112,33 @@ export default function Matches({ getChosenMatchId }) {
         db.collection('users').doc(currentUser.uid).update({
             matches: [...currUserMatchesIds],
             liked: [...currUserLikedProfilesIds],
-        });
+        })
+        .then(() => {
+            dispatch({type: 'userChangedLiked', payload: userId});
+            dispatch({type: 'userChangedMatches', payload: userId});
+        })
+        .catch(err => console.log('Error after updating db for currentUser: ', err))
+
         db.collection('users').doc(userId).update({
             matches: [...removedUserMatches],
         })
+        .then(() => {
+            let updatedUsers = [...allUsers];
+            updatedUsers = updatedUsers.map(user => {
+                if(user.uid === userId) {
+                    user.matches = removedUserMatches;
+                }
+                return user;
+            });
+            dispatch({type: 'getAllUsers', payload: updatedUsers});
+            // setMatches(prev => prev.filter(user => user.uid !== userId));
+            const newMatches = matches.filter(user => user.uid !== userId);
+            setMatches(newMatches);
+        })
+        .catch(err => console.log('Error after updating db for currentUser: ', err))
         deleteChatRoom(userId, currentUser.uid)
-        let currentMatches = allUsers.filter(user => currUserMatchesIds.includes(user.uid));
-        setMatches(currentMatches);
+        // let currentMatches = allUsers.filter(user => currUserMatchesIds.includes(user.uid));
+        // setMatches(currentMatches);
     }
 
     // To be moved to a Service file:
@@ -124,6 +149,10 @@ export default function Matches({ getChosenMatchId }) {
             .catch((err) => console.log("Error on chatRoom deleting: ", err))
     }
 
+    if (isLoading) {
+        return <h2>THE PAGE IS LOADING...</h2>;
+    }
+
     return (
         <div className={classes.flexColumn}>
         <Typography className={classes.title}>Your matches</Typography>
@@ -131,7 +160,7 @@ export default function Matches({ getChosenMatchId }) {
             container
             className={classes.container}
         >
-        {matches.map((user) =>
+        {matches.length > 0 && matches.map((user) =>
             <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => showProfile(user.uid)}>
                 <CardActionArea component={Link} to={'/matches/' + user.uid}>
                     <CardMedia
@@ -144,7 +173,7 @@ export default function Matches({ getChosenMatchId }) {
                         {user.name} - {user.age}
                     </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                        {user.description ? user.description : `From ${user.location}`}
+                        {user.aboutYou ? user.aboutYou : `From ${user.country?.split(' ')[1]}`}
                     </Typography>
                     </CardContent>
                 </CardActionArea>
