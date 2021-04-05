@@ -2,7 +2,8 @@ html {
   font-size: 1rem!important;
 }
 
-.App {
+body {
+  overflow-x: hidden;
 }
 
 #root {
@@ -51,12 +52,5 @@ h1 {
   justify-content: center;
   width: 100%;
   color: rgb(163, 25, 163);
+  z-index: 1;
 }
-
-.chatIcon {
-  position: fixed;
-  bottom: 16px;
-  right: 24px;
-  color: rgb(136, 25, 163);
-}
-

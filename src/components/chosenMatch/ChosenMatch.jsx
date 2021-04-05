@@ -12,6 +12,7 @@ import './ChosenMatch.module.css'
 const useStyles = makeStyles({
     container: {
         width: '40vw',
+        minWidth: '400px',
         alignItems: 'center',
         textAlign: 'center',
         color: 'white',
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
         color: 'rgb(225,225,225)',
         margin: '0 auto',
         width: '100%',
-        padding: '0 5rem',
+        padding: '0 3rem',
         textAlign: 'center',
     },
 });
@@ -60,7 +61,7 @@ export default function ChosenMatch({ chosenProfileId }) {
                 width={300}
                 // countFrom={1}
                 renderOverlay={() => <div style={{fontSize: '2rem'}}>Show</div>}
-                overlayBackgroundColor="tomato"
+                overlayBackgroundColor="#e66465"
                 />
                 <h3>About me</h3>
                 <div className={styles.textField}>

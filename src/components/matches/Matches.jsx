@@ -20,6 +20,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         justifyContent: "center",
         alignItems: "center",
+        color: 'white',
     },
     title: {
         fontSize: '2rem',
@@ -69,6 +70,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Matches({ getChosenMatchId }) {
     const classes = useStyles();
+    const removedFromHomePage = useSelector(state => state.alreadyRemoved);
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
     // const [matches, setMatches] = useState([]);
     const currentUser = useSelector(state => state.currentUser);
@@ -97,13 +99,15 @@ export default function Matches({ getChosenMatchId }) {
     }
 
     const dislikeUser = (userId) => {
+        const updatedRemovedFromHomePage = removedFromHomePage.filter(id => id !== userId);
+        dispatch({type: 'setRemoved', payload: updatedRemovedFromHomePage})
         console.log(userId)
         const currUserMatchesIds = currentUser.matches.filter(matchId => matchId !== userId);
         const currUserLikedProfilesIds = currentUser.liked.filter(likedId => likedId !== userId);
         const removedUser = allUsers.find(user => user.uid === userId)
         const removedUserMatches = removedUser.matches.filter(matchId => matchId !== currentUser.uid);
         console.log('currUserMatches', currUserMatchesIds);
-        console.log('currUserLikedProfiles', currUserLikedProfilesIds);
+        console.log('currUserLikedProfilesIds', currUserLikedProfilesIds);
         console.log('currUserLikedProfiles sus removedUser: ', currentUser.liked);
         console.log('removedUser', removedUser);
         console.log('removedUserMatches', removedUserMatches);
@@ -113,8 +117,8 @@ export default function Matches({ getChosenMatchId }) {
             liked: [...currUserLikedProfilesIds],
         })
         .then(() => {
-            dispatch({type: 'userChangedLiked', payload: userId});
-            dispatch({type: 'userChangedMatches', payload: userId});
+            dispatch({type: 'userRemovedFromLiked', payload: currUserLikedProfilesIds});
+            dispatch({type: 'userRemovedFromMatches', payload: currUserMatchesIds});
         })
         .catch(err => console.log('Error after updating db for currentUser: ', err))
 
@@ -148,18 +152,22 @@ export default function Matches({ getChosenMatchId }) {
             .catch((err) => console.log("Error on chatRoom deleting: ", err))
     }
 
-    if (isLoading) {
-        return <h2>THE PAGE IS LOADING...</h2>;
-    }
+    // if (isLoading) {
+    //     return <h2>THE PAGE IS LOADING...</h2>;
+    // }
 
     return (
         <div className={classes.flexColumn}>
+        {matches.length === 0 ?
+        <h2>You don't have any matches yet!</h2>
+        :
         <Typography className={classes.title}>Your matches</Typography>
+        }
         <Grid
             container
             className={classes.container}
         >
-        {matches.length > 0 && matches.map((user) =>
+        {matches.map((user) =>
             <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => showProfile(user.uid)}>
                 <CardActionArea component={Link} to={'/matches/' + user.uid}>
                     <CardMedia
@@ -186,8 +194,7 @@ export default function Matches({ getChosenMatchId }) {
                 </CardActions>
                     <Button className={styles.btnStyle} onClick={() => manageCards(user.uid)}>{moreDetailsCardKey === user.uid ? 'Show less' : 'Show more'}</Button>
             </Card>
-        )}
-        
+        )}        
         </Grid>
         </div>
     );

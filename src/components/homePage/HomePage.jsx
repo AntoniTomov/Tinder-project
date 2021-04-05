@@ -17,10 +17,11 @@ import Typography from '@material-ui/core/Typography';
 import firebase, { db } from '../../firebase';
 import { spacing } from '@material-ui/system';
 
-const alreadyRemoved = [];
+// const alreadyRemoved = [];
 
 export default function HomePage ({ getChosenUserId }) {
   const dispatch = useDispatch();
+  const alreadyRemoved = useSelector(state => state.alreadyRemoved); // Setting alreadyRemoved through Redux
   const currentUser = useSelector(state => state.currentUser);
   const users = useSelector(state => state.allUsers);
   const [characters, setCharacters] = useState([]);
@@ -40,19 +41,20 @@ export default function HomePage ({ getChosenUserId }) {
   const swiped = (direction, userIdToBeAdded, nameToDelete) => {
     let arrProp = '';
     switch(direction){
-      case 'left' : arrProp = 'disliked';
+      case 'left' : arrProp = 'Disliked';
       break;
-      case 'right' : arrProp = 'liked';
+      case 'right' : arrProp = 'Liked';
       break;
-      case 'up' : arrProp = 'matches';
+      case 'up' : arrProp = 'Matches';
       break;
-      case 'down' : arrProp = 'disliked';
+      case 'down' : arrProp = 'Disliked';
       break;
       default: break;
     }
     updateDB(arrProp, userIdToBeAdded);
     setLastDirection(direction);
-    alreadyRemoved.push(userIdToBeAdded);
+    // alreadyRemoved.push(userIdToBeAdded);
+    dispatch({type: 'addToRemoved', payload: userIdToBeAdded}) // adding to alreadyRemoved in Redux
     // updateProfileMatches(currentUser.uid, userIdToBeAdded);
   }
 
@@ -76,12 +78,6 @@ export default function HomePage ({ getChosenUserId }) {
     })
     .then(() => {
       let updatedUsers = users.map(user => {
-        // if(user.uid === userOneId) {
-        //   if(!user.matches.includes(userTwoId)) {
-        //     user.matches = [...user.matches, userTwoId];
-        //     console.log('Update-vame matches na user: ', userOneId, '---> na --->', user.matches);
-        //   }
-        // }
         if (user.uid === userTwoId) {
           user.matches = [...user.matches, userOneId];
           console.log('Update-vame matches na user: ', userTwoId, '---> na --->', user.matches);
@@ -89,7 +85,7 @@ export default function HomePage ({ getChosenUserId }) {
         return user;
       });
       updateDataBase( 'getAllUsers', updatedUsers);
-      updateDataBase( 'userChangedmatches', userTwoId);
+      updateDataBase( 'userAddedToMatches', userTwoId);
     })
   }
 
@@ -115,11 +111,11 @@ export default function HomePage ({ getChosenUserId }) {
     
     console.log('arrProp', arrProp)
 
-    arrProp !== 'matches' && db.collection('users').doc(currentUser.uid).update({
-      [arrProp]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
+    arrProp !== 'Matches' && db.collection('users').doc(currentUser.uid).update({
+      [arrProp.toLowerCase()]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
     })
     .then(() => {
-      updateDataBase(`userChanged${arrProp}`, userIdToBeAdded)
+      updateDataBase(`userAddedTo${arrProp}`, userIdToBeAdded)
     })
     .catch((error) => {
       console.error("Error updating document: ", error);
@@ -127,7 +123,7 @@ export default function HomePage ({ getChosenUserId }) {
 
     outOfFrame(userIdToBeAdded)
 
-    arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
+    arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
           // We are updating the matches of currentUser and lokedUser
@@ -135,7 +131,7 @@ export default function HomePage ({ getChosenUserId }) {
         }
       })
       // We are updating the matches of currentUser and lokedUser
-    arrProp === 'matches' && updateProfileMatches(currentUser.uid, userIdToBeAdded)
+    arrProp === 'Matches' && updateProfileMatches(currentUser.uid, userIdToBeAdded)
   }
 
   const swipe = (dir) => {
@@ -143,7 +139,7 @@ export default function HomePage ({ getChosenUserId }) {
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].uid; // Find the card object to be removed
       const index = characters.map(person => person.uid).indexOf(toBeRemoved); // Find the index of which to make the reference to
-      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      // alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
       console.log('!!!!!!!!!!!Index: ', index)
       console.log('!!!!!!!!!!!childRefs: ', childRefs)
       console.log('!!!!!!!!!!!alreadyRemoved: ', alreadyRemoved)
@@ -154,7 +150,7 @@ export default function HomePage ({ getChosenUserId }) {
       // setCharacters(charactersState);
 
       // const userIdToBeAdded = cardsLeft[cardsLeft.length - 1].uid;
-      // const arrProp = dir === 'right' ? 'liked' : 'disliked';
+      // const arrProp = dir === 'right' ? 'Liked' : 'Disliked';
 
       // updateDB(arrProp, userIdToBeAdded);
     }
@@ -182,14 +178,14 @@ export default function HomePage ({ getChosenUserId }) {
       console.error("Error updating document: ", error);
     });
 
-    arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
+    arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
           // We are updating the matches of currentUser and lokedUser
           updateProfileMatches(currentUser.uid, userIdToBeAdded)
         }
       })
-    arrProp === 'matches' && db.collection('users').doc(userIdToBeAdded).get()
+    arrProp === 'Matches' && db.collection('users').doc(userIdToBeAdded).get()
       .then(() => {
         // We are updating the matches of currentUser and lokedUser
         updateProfileMatches(currentUser.uid, userIdToBeAdded)
@@ -200,6 +196,17 @@ export default function HomePage ({ getChosenUserId }) {
   }
 
   const resetCurrentUser = () => {
+    const currentUserMatches = currentUser.matches;
+    currentUserMatches.forEach(userId => {
+      db.collection('users').doc(userId).get()
+        .then(res => {
+          let newMatches = res.data().matches.filter(matchId => matchId !== currentUser.uid);
+          db.collection('users').doc(userId).update({
+            matches: newMatches,
+          })
+        })
+    })
+
     db.collection('users').doc(currentUser.uid).update({
       liked: [],
       disliked: [],
@@ -235,6 +242,10 @@ export default function HomePage ({ getChosenUserId }) {
   }
 
   const changeViewState = () => {
+    const filteredUsers = filterProfiles (users, currentUser)
+    const charactersLeft = filteredUsers.filter(userId => !alreadyRemoved.includes(userId))
+
+    setCharacters(charactersLeft);
     setIsSwipeView(!isSwipeView);
   }
 
@@ -243,7 +254,7 @@ export default function HomePage ({ getChosenUserId }) {
   }
 
   return (
-    <div style={{minWidth: '450px', color: 'white'}}> 
+    <div style={{minWidth: '450px', color: 'white', zIndex: '1'}}> 
       <Button onClick={resetCurrentUser} variant='contained' className={'resetButton'}>Reset currentUser</Button>
       <Button onClick={resetAllUser} variant='contained' className={'resetButton'}>Reset all users</Button>
 
@@ -268,7 +279,7 @@ export default function HomePage ({ getChosenUserId }) {
             <button onClick={() => swipe('left')}>Swipe left!</button>
             <button onClick={() => swipe('right')}>Swipe right!</button>
           </div>
-          {lastDirection ? <h2 key={lastDirection} className='infoText'>You swiped {lastDirection}</h2> : <h2 className='infoText'>Swipe a card or press a button to get started!</h2>}
+          {lastDirection ? <h3 key={lastDirection} className='infoText'>You swiped {lastDirection}</h3> : <h3 className='infoText'>Swipe a card or press a button to get started!</h3>}
 
         </div>
       ) : (
@@ -294,10 +305,10 @@ export default function HomePage ({ getChosenUserId }) {
                     </CardContent>
                   </CardActionArea>
                   <CardActions className="btnContainer">
-                    <Button size="small" color="primary" onClick={() => cardViewSwipe('disliked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('Disliked', user.uid)}>
                     Dislike
                     </Button>
-                    <Button size="small" color="primary" onClick={() => cardViewSwipe('liked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('Liked', user.uid)}>
                     Like
                     </Button>
                   </CardActions>
