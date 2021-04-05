@@ -149,18 +149,22 @@ export default function Matches({ getChosenMatchId }) {
             .catch((err) => console.log("Error on chatRoom deleting: ", err))
     }
 
-    if (isLoading) {
-        return <h2>THE PAGE IS LOADING...</h2>;
-    }
+    // if (isLoading) {
+    //     return <h2>THE PAGE IS LOADING...</h2>;
+    // }
 
     return (
         <div className={classes.flexColumn}>
+        {matches.length === 0 ?
+        <h2>You don't have any matches yet!</h2>
+        :
         <Typography className={classes.title}>Your matches</Typography>
+        }
         <Grid
             container
             className={classes.container}
         >
-        {matches.length > 0 && matches.map((user) =>
+        {matches.map((user) =>
             <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => showProfile(user.uid)}>
                 <CardActionArea component={Link} to={'/matches/' + user.uid}>
                     <CardMedia
@@ -187,8 +191,7 @@ export default function Matches({ getChosenMatchId }) {
                 </CardActions>
                     <Button className={styles.btnStyle} onClick={() => manageCards(user.uid)}>{moreDetailsCardKey === user.uid ? 'Show less' : 'Show more'}</Button>
             </Card>
-        )}
-        
+        )}        
         </Grid>
         </div>
     );

@@ -108,7 +108,7 @@ export default function MenuAppBar() {
               {
                 user.uid ?
                   <div>
-                    <MenuItem component={Link} to='/matches'>Kotenca</MenuItem>
+                    <MenuItem component={Link} to='/matches'>Matches</MenuItem>
                     <MenuItem component={Link} to='/profile'>Profile</MenuItem>
                     <MenuItem component={Link} to='/' onClick={() => {logout()}} >Logout</MenuItem>
                   </div>
