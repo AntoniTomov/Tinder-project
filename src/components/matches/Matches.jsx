@@ -104,7 +104,7 @@ export default function Matches({ getChosenMatchId }) {
         const removedUser = allUsers.find(user => user.uid === userId)
         const removedUserMatches = removedUser.matches.filter(matchId => matchId !== currentUser.uid);
         console.log('currUserMatches', currUserMatchesIds);
-        console.log('currUserLikedProfiles', currUserLikedProfilesIds);
+        console.log('currUserLikedProfilesIds', currUserLikedProfilesIds);
         console.log('currUserLikedProfiles sus removedUser: ', currentUser.liked);
         console.log('removedUser', removedUser);
         console.log('removedUserMatches', removedUserMatches);
@@ -114,8 +114,8 @@ export default function Matches({ getChosenMatchId }) {
             liked: [...currUserLikedProfilesIds],
         })
         .then(() => {
-            dispatch({type: 'userChangedLiked', payload: userId});
-            dispatch({type: 'userChangedMatches', payload: userId});
+            dispatch({type: 'userRemovedFromLiked', payload: currUserLikedProfilesIds});
+            dispatch({type: 'userRemovedFromMatches', payload: currUserMatchesIds});
         })
         .catch(err => console.log('Error after updating db for currentUser: ', err))
 

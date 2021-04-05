@@ -41,13 +41,13 @@ function HomePage () {
   const swiped = (direction, userIdToBeAdded, nameToDelete) => {
     let arrProp = '';
     switch(direction){
-      case 'left' : arrProp = 'disliked';
+      case 'left' : arrProp = 'Disliked';
       break;
-      case 'right' : arrProp = 'liked';
+      case 'right' : arrProp = 'Liked';
       break;
-      case 'up' : arrProp = 'matches';
+      case 'up' : arrProp = 'Matches';
       break;
-      case 'down' : arrProp = 'disliked';
+      case 'down' : arrProp = 'Disliked';
       break;
       default: break;
     }
@@ -90,7 +90,7 @@ function HomePage () {
         return user;
       });
       updateDataBase( 'getAllUsers', updatedUsers);
-      updateDataBase( 'userChangedmatches', userTwoId);
+      updateDataBase( 'userAddedToMatches', userTwoId);
     })
   }
 
@@ -116,11 +116,11 @@ function HomePage () {
     
     console.log('arrProp', arrProp)
 
-    arrProp !== 'matches' && db.collection('users').doc(currentUser.uid).update({
+    arrProp !== 'Matches' && db.collection('users').doc(currentUser.uid).update({
       [arrProp]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
     })
     .then(() => {
-      updateDataBase(`userChanged${arrProp}`, userIdToBeAdded)
+      updateDataBase(`userAddedTo${arrProp}`, userIdToBeAdded)
     })
     .catch((error) => {
       console.error("Error updating document: ", error);
@@ -128,7 +128,7 @@ function HomePage () {
 
     outOfFrame(userIdToBeAdded)
 
-    arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
+    arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
           // We are updating the matches of currentUser and lokedUser
@@ -136,7 +136,7 @@ function HomePage () {
         }
       })
       // We are updating the matches of currentUser and lokedUser
-    arrProp === 'matches' && updateProfileMatches(currentUser.uid, userIdToBeAdded)
+    arrProp === 'Matches' && updateProfileMatches(currentUser.uid, userIdToBeAdded)
   }
 
   const swipe = (dir) => {
@@ -155,7 +155,7 @@ function HomePage () {
       // setCharacters(charactersState);
 
       // const userIdToBeAdded = cardsLeft[cardsLeft.length - 1].uid;
-      // const arrProp = dir === 'right' ? 'liked' : 'disliked';
+      // const arrProp = dir === 'right' ? 'Liked' : 'Disliked';
 
       // updateDB(arrProp, userIdToBeAdded);
     }
@@ -183,14 +183,14 @@ function HomePage () {
       console.error("Error updating document: ", error);
     });
 
-    arrProp === 'liked' && db.collection('users').doc(userIdToBeAdded).get()
+    arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
           // We are updating the matches of currentUser and lokedUser
           updateProfileMatches(currentUser.uid, userIdToBeAdded)
         }
       })
-    arrProp === 'matches' && db.collection('users').doc(userIdToBeAdded).get()
+    arrProp === 'Matches' && db.collection('users').doc(userIdToBeAdded).get()
       .then(() => {
         // We are updating the matches of currentUser and lokedUser
         updateProfileMatches(currentUser.uid, userIdToBeAdded)
@@ -201,6 +201,17 @@ function HomePage () {
   }
 
   const resetCurrentUser = () => {
+    const currentUserMatches = currentUser.matches;
+    currentUserMatches.forEach(userId => {
+      db.collection('users').doc(userId).get()
+        .then(res => {
+          let newMatches = res.data().matches.filter(matchId => matchId !== currentUser.uid);
+          db.collection('users').doc(userId).update({
+            matches: newMatches,
+          })
+        })
+    })
+
     db.collection('users').doc(currentUser.uid).update({
       liked: [],
       disliked: [],
@@ -291,10 +302,10 @@ function HomePage () {
                     </CardContent>
                   </CardActionArea>
                   <CardActions className="btnContainer">
-                    <Button size="small" color="primary" onClick={() => cardViewSwipe('disliked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('Disliked', user.uid)}>
                     Dislike
                     </Button>
-                    <Button size="small" color="primary" onClick={() => cardViewSwipe('liked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('Liked', user.uid)}>
                     Like
                     </Button>
                   </CardActions>

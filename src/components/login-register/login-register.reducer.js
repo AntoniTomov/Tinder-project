@@ -84,22 +84,34 @@ const userReducer = (state = initialState, action) => {
                 collageOrUni: action.payload
             }
         }
-        case 'userChangedliked': {
+        case 'userAddedToLiked': {
             return {
                 ...state,
                 liked: [...state.liked, action.payload]
             }
         }
-        case 'userChangeddisliked': {
+        case 'userRemovedFromLiked': {
+            return {
+                ...state,
+                liked: action.payload
+            }
+        }
+        case 'userAddedToDisliked': {
             return {
                 ...state,
                 disliked: [...state.disliked, action.payload]
             }
         }
-        case 'userChangedmatches': {
+        case 'userAddedToMatches': {
             return {
                 ...state,
                 matches: [...state.matches, action.payload]
+            }
+        }
+        case 'userRemovedFromMatches': {
+            return {
+                ...state,
+                matches: action.payload,
             }
         }
         default:
