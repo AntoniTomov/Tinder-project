@@ -38,8 +38,21 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: '3rem',
   },
+  menuIcon: {
+    fontSize: '35px',
+  },
+  '& ul': {
+    padding: '40 !important',
+  },
+  linkMenuItem: {
+    textDecoration: 'none !important',
+    '&:focus':{
+      outline: 'none !important',
+    }
+  },
   menu: {
-    fontSize: '35px'
+    '& div ul.MuiList-padding': {
+    }
   },
 }));
 
@@ -80,26 +93,27 @@ export default function MenuAppBar() {
             </Paper>
           </Grid>
           <Grid>
-            <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
+            <MenuIcon className={classes.menuIcon} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
             <Menu
               id="simple-menu"
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
               onClose={handleClose}
+              className={classes.menu}
             >
-              <MenuItem component={Link} to='/'>Home</MenuItem>
+              <MenuItem component={Link} className={classes.linkMenuItem} to='/'>Home</MenuItem>
               {
                 user.uid ?
                   <div>
-                    <MenuItem component={Link} to='/matches'>Matches</MenuItem>
-                    <MenuItem component={Link} to='/profile'>Profile</MenuItem>
-                    <MenuItem component={Link} to='/' onClick={() => {logout()}} >Logout</MenuItem>
+                    <MenuItem component={Link} className={classes.linkMenuItem} to='/matches'>Matches</MenuItem>
+                    <MenuItem component={Link} className={classes.linkMenuItem} to='/profile'>Profile</MenuItem>
+                    <MenuItem component={Link} className={classes.linkMenuItem} to='/' onClick={() => {logout()}} >Logout</MenuItem>
                   </div>
                   :
                   <div>
-                    <MenuItem component={Link} to='/register'>Register</MenuItem>
-                    <MenuItem component={Link} to='/login'>Login</MenuItem>
+                    <MenuItem component={Link} className={classes.linkMenuItem} to='/register'>Register</MenuItem>
+                    <MenuItem component={Link} className={classes.linkMenuItem} to='/login'>Login</MenuItem>
                   </div>
               }
             </Menu>
