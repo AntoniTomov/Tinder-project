@@ -8,7 +8,7 @@ import Profile from '../profile/Profile';
 import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
-import ChosenUser from '../chosenUser/ChosenUser';
+import ChosenProfile from '../chosenUser/ChosenUser';
 import { CssBaseline, Fab } from '@material-ui/core';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -65,8 +65,6 @@ function App() {
   }
 
   const user = useSelector(state => state.currentUser);
-  const [chosenProfileId, setChosenProfileId] = useState(null);
-  const [chosenUserId, setChosenUserId] = useState(null);
 
   console.log('Kolko puti se rendnah?!?!?');
 
@@ -106,14 +104,6 @@ function App() {
     })
   }, [])
 
-  const getChosenMatchId = (id) => {
-    setChosenProfileId(id);
-  }
-
-  const getChosenUserId = (id) => {
-    setChosenUserId(id);
-  }
-
   if (isLoading) {
     return <div style={{ margin: 'calc(50vh - 100px) auto' }}>
       <CircularProgress size={100} />
@@ -128,15 +118,15 @@ function App() {
       </header>
       <main className="App">
         <Switch>
-          <Route exact path='/' getChosenUserId={(id) => getChosenUserId(id)}>
+          <Route exact path='/' >
             {user.uid ?
               <>
                 <HomePage />
               </> : <Redirect to="/login" />}
           </Route>
           {user.uid ?
-            chosenUserId && <Route path="/chosenUser/:id">
-              <ChosenUser chosenUserId={chosenUserId} />
+            <Route path="/chosenUser/:id">
+              <ChosenProfile />
             </Route>
             :
             <Register />
@@ -161,7 +151,7 @@ function App() {
           </Route>
           {user.uid ?
             <Route exact path='/matches'>
-              <Matches getChosenMatchId={(id) => getChosenMatchId(id)} />
+              <Matches />
               {/* <Route exact path='/chosenMatch'>
               <ChosenMatch user={user}/>
             </Route> */}
@@ -171,8 +161,8 @@ function App() {
             <Register />
           }
           {user.uid ?
-            chosenProfileId && <Route path="/matches/:id">
-              <ChosenMatch chosenProfileId={chosenProfileId} />
+            <Route path="/matches/:id">
+              <ChosenMatch />
             </Route>
             :
             <Register />

@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Matches({ getChosenMatchId }) {
+export default function Matches() {
     const classes = useStyles();
     const removedFromHomePage = useSelector(state => state.alreadyRemoved);
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
@@ -92,10 +92,6 @@ export default function Matches({ getChosenMatchId }) {
 
     const manageCards = (uid) => {
         moreDetailsCardKey === uid ? setMoreDetailsCardKey('') : setMoreDetailsCardKey(uid);
-    }
-
-    const showProfile = (chosenId) => {
-        getChosenMatchId(chosenId);
     }
 
     const dislikeUser = (userId) => {
@@ -156,6 +152,10 @@ export default function Matches({ getChosenMatchId }) {
     //     return <h2>THE PAGE IS LOADING...</h2>;
     // }
 
+    const updateChosenProfile = (user) => {
+        dispatch({type: 'setChosenProfile', payload: user})
+    }
+
     return (
         <div className={classes.flexColumn}>
         {matches.length === 0 ?
@@ -168,7 +168,7 @@ export default function Matches({ getChosenMatchId }) {
             className={classes.container}
         >
         {matches.map((user) =>
-            <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => showProfile(user.uid)}>
+            <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => updateChosenProfile(user)}>
                 <CardActionArea component={Link} to={'/matches/' + user.uid}>
                     <CardMedia
                     className={classes.media}

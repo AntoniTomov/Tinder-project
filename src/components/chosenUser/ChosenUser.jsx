@@ -3,6 +3,7 @@ import { CssBaseline, makeStyles, Grid, GridList, GridListTile, Typography  } fr
 import FbImageLibrary from 'react-fb-image-grid';
 import { useSelector } from 'react-redux';
 import './ChosenUser.module.css'
+// import useLocation from 'react-router-dom'
 
 const useStyles = makeStyles({
     container: {
@@ -24,18 +25,11 @@ const useStyles = makeStyles({
     },
 });
 
-export default function ChosenUser({ chosenUserId }) {
+export default function ChosenProfile() {
     const styles = useStyles();
+    const chosenUser = useSelector(state => state.chosenProfile);
     const users = useSelector(state => state.allUsers);
-    const [chosenUser, setChosenUser] = useState(null);
     const [images, setImages] = useState([]);
-
-    useEffect(() => {
-        const focusedUser = users.find(user => user.uid === chosenUserId);
-        setChosenUser(focusedUser);
-        console.log('chosenUser from useEffect: ', chosenUser);
-        console.log('chosenUserId from useEffect: ', chosenUserId);
-    }, [users])
 
     useEffect(() => {
         const imagesToDisplay = chosenUser?.images.filter(image => image !== '');

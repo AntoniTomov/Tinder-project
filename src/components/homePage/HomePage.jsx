@@ -19,7 +19,7 @@ import { spacing } from '@material-ui/system';
 
 // const alreadyRemoved = [];
 
-export default function HomePage ({ getChosenUserId }) {
+export default function HomePage () {
   const dispatch = useDispatch();
   const alreadyRemoved = useSelector(state => state.alreadyRemoved); // Setting alreadyRemoved through Redux
   const currentUser = useSelector(state => state.currentUser);
@@ -215,13 +215,13 @@ export default function HomePage ({ getChosenUserId }) {
       dispatch({ type: 'userLoggedIn', payload: {...currentUser, liked: [], disliked: [], matches: []} })
       console.log('Successfully reset currentUser: ', currentUser)
     })
-    // db.collection('chatRooms').get()
-    // .then(res => res.forEach(doc => {
-    //   if(doc.id.includes(currentUser.uid)) {
-    //     db.collection('chatRooms').doc(doc.id).delete()
-    //       .then(() => console.log('Successfully deleted the chatRooms for user: ', currentUser))
-    //   }
-    // }))
+    db.collection('chatRooms').get()
+    .then(res => res.forEach(doc => {
+      if(doc.id.includes(currentUser.uid)) {
+        db.collection('chatRooms').doc(doc.id).delete()
+          .then(() => console.log('Successfully deleted the chatRooms for user: ', currentUser))
+      }
+    }))
   }
 
   const resetAllUser = () => {
@@ -249,8 +249,8 @@ export default function HomePage ({ getChosenUserId }) {
     setIsSwipeView(!isSwipeView);
   }
 
-  const provideUserId = (userId) => {
-    getChosenUserId(userId);
+  const updateChosenProfile = (user) => {
+    dispatch({type: 'setChosenProfile', payload: user})
   }
 
   return (
@@ -280,7 +280,6 @@ export default function HomePage ({ getChosenUserId }) {
             <button onClick={() => swipe('right')}>Swipe right!</button>
           </div>
           {lastDirection ? <h3 key={lastDirection} className='infoText'>You swiped {lastDirection}</h3> : <h3 className='infoText'>Swipe a card or press a button to get started!</h3>}
-
         </div>
       ) : (
         <div>
@@ -288,7 +287,7 @@ export default function HomePage ({ getChosenUserId }) {
           <div className="containerCardView">
             <div className="containerCardView">
               {characters.map((user) =>
-                <Card elevation={20} className="root" key={user.uid} onClick={() => provideUserId(user.uid)}>
+                <Card elevation={20} className="root" key={user.uid} onClick={() => updateChosenProfile(user)}>
                   <CardActionArea component={Link} to={'/chosenUser/' + user.uid}>
                     <CardMedia
                       className="media"
@@ -296,12 +295,9 @@ export default function HomePage ({ getChosenUserId }) {
                       title={user.name}
                     />
                     <CardContent>
-                    <Typography className="colorBlack" gutterBottom variant="h5" component="h2">
-                      {user.name.split(' ')[0]} {user.age}
-                    </Typography>
-                    {/* <Typography variant="body2" color="textSecondary" component="p">
-                      {user.description ? user.description : `From ${user.location}`}
-                    </Typography> */}
+                      <Typography className="colorBlack" gutterBottom variant="h5" component="h2">
+                        {user.name.split(' ')[0]} {user.age}
+                      </Typography>
                     </CardContent>
                   </CardActionArea>
                   <CardActions className="btnContainer">

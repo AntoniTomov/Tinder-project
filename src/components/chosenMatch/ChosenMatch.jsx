@@ -31,31 +31,22 @@ const useStyles = makeStyles({
 });
 
     
-export default function ChosenMatch({ chosenProfileId }) {
-    console.log('chosenProfileId', chosenProfileId);
+export default function ChosenMatch() {
     const styles = useStyles();
-    const users = useSelector(state => state.allUsers);
-    const [chosenUser, setChosenUser] = useState(null);
+    const chosenProfile = useSelector(state => state.chosenProfile);
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        const focusedUser = users.find(user => user.uid === chosenProfileId);
-        setChosenUser(focusedUser);
-        console.log('chosenUser from useEffect: ', chosenUser);
-        console.log('chosenProfileId from useEffect: ', chosenProfileId);
-    }, [users])
-
-    useEffect(() => {
-        const imagesToDisplay = chosenUser?.images.filter(image => image !== '');
+        const imagesToDisplay = chosenProfile.images.filter(image => image !== '');
         setImages(imagesToDisplay);
-    }, [chosenUser])
+    }, [chosenProfile])
     
-    console.log('chosenUser', chosenUser);
+    console.log('chosenProfile', chosenProfile);
     console.log('images', images);
     return (
         <CssBaseline>
             <div className={styles.container}>
-                <h2 className={styles.name}>{chosenUser?.name}</h2>
+                <h2 className={styles.name}>{chosenProfile?.name}</h2>
                 <FbImageLibrary
                 images={images}
                 width={300}
@@ -65,42 +56,42 @@ export default function ChosenMatch({ chosenProfileId }) {
                 />
                 <h3>About me</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.aboutYou}
+                    {chosenProfile?.aboutYou}
                 </div>
                 <hr />
                 <h3>Passions</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.passions.join(', ')}
+                    {chosenProfile?.passions.join(', ')}
                 </div>
                 <hr />
                 <h3>Gender</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.gender}
+                    {chosenProfile?.gender}
                 </div>
                 <hr />
                 <h3>Sexual orientation</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.sexualOrientation}
+                    {chosenProfile?.sexualOrientation}
                 </div>
                 <hr />
                 <h3>Living in</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.country}
+                    {chosenProfile?.country}
                 </div>
                 <hr />
                 <h3>Job title</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.jobTitle}
+                    {chosenProfile?.jobTitle}
                 </div>
                 <hr />
                 <h3>Company</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.company}
+                    {chosenProfile?.company}
                 </div>
                 <hr />
                 <h3>College</h3>
                 <div className={styles.textField}>
-                    {chosenUser?.collageOrUni}
+                    {chosenProfile?.collageOrUni}
                 </div>
             </div>
         </CssBaseline>

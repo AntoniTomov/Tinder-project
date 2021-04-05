@@ -354,7 +354,7 @@ const Profile = () => {
                                 >
                                     {userImages.map((container, i) => {
                                         return (
-                                            <Grid xs={'auto'} item>
+                                            <Grid item key={i}>
                                                 <ImageUploaderContainer id={i} key={i} userId={user.uid} replaceImgUrl={replaceImgUrl} updateImages={updateImages} imgUrl={userImages[i] || ''} />
                                             </Grid>
                                         )

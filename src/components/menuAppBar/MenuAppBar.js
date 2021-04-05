@@ -87,12 +87,7 @@ export default function MenuAppBar() {
               <img src={logo} className={classes.logo} alt='logo'></img>
             </Paper>
           </Grid>
-          <Grid item xs={10}>
-            {/* <Typography variant="h4" className={classes.title}>
-              DINDER!
-            </Typography> */}
-          </Grid>
-          <Grid container xs={1} justify='flex-end'>
+          <Grid>
             <MenuIcon className={classes.menu} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />
             <Menu
               id="simple-menu"
@@ -101,7 +96,7 @@ export default function MenuAppBar() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem noOutline component={Link} to='/'>Home</MenuItem>
+              <MenuItem component={Link} to='/'>Home</MenuItem>
               {
                 user.uid ?
                   <div>
