@@ -31,7 +31,8 @@ const useStyles = makeStyles(theme => ({
     '& .MuiFab-root:hover': {
       backgroundColor: '#e66465',
       '& .MuiSvgIcon-root': {
-        color: 'rgb(225,225,225)'
+        color: 'rgb(225,225,225)',
+        zIndex: 2,
       },
     },
     zIndex: 2,

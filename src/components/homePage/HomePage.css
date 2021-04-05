@@ -142,7 +142,7 @@ h2 {
 }
 
 .containerCardView {
-    z-index: 2;
+    /* z-index: 2; */
     width: 100%;
     margin: 0 auto;
     position: relative;
