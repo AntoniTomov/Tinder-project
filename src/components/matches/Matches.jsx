@@ -71,6 +71,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Matches({ getChosenMatchId }) {
     const classes = useStyles();
+    const removedFromHomePage = useSelector(state => state.alreadyRemoved);
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
     // const [matches, setMatches] = useState([]);
     const currentUser = useSelector(state => state.currentUser);
@@ -99,6 +100,8 @@ export default function Matches({ getChosenMatchId }) {
     }
 
     const dislikeUser = (userId) => {
+        const updatedRemovedFromHomePage = removedFromHomePage.filter(id => id !== userId);
+        dispatch({type: 'setRemoved', payload: updatedRemovedFromHomePage})
         console.log(userId)
         const currUserMatchesIds = currentUser.matches.filter(matchId => matchId !== userId);
         const currUserLikedProfilesIds = currentUser.liked.filter(likedId => likedId !== userId);

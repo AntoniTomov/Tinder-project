@@ -18,10 +18,11 @@ import Typography from '@material-ui/core/Typography';
 import firebase, { db } from '../../firebase';
 import { spacing } from '@material-ui/system';
 
-const alreadyRemoved = [];
+// const alreadyRemoved = [];
 
 function HomePage () {
   const dispatch = useDispatch();
+  const alreadyRemoved = useSelector(state => state.alreadyRemoved); // Setting alreadyRemoved through Redux
   const currentUser = useSelector(state => state.currentUser);
   const users = useSelector(state => state.allUsers);
   const [characters, setCharacters] = useState([]);
@@ -53,7 +54,8 @@ function HomePage () {
     }
     updateDB(arrProp, userIdToBeAdded);
     setLastDirection(direction);
-    alreadyRemoved.push(userIdToBeAdded);
+    // alreadyRemoved.push(userIdToBeAdded);
+    dispatch({type: 'addToRemoved', payload: userIdToBeAdded}) // adding to alreadyRemoved in Redux
     // updateProfileMatches(currentUser.uid, userIdToBeAdded);
   }
 
@@ -111,7 +113,7 @@ function HomePage () {
     console.log('arrProp', arrProp)
 
     arrProp !== 'Matches' && db.collection('users').doc(currentUser.uid).update({
-      [arrProp]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
+      [arrProp.toLowerCase()]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
     })
     .then(() => {
       updateDataBase(`userAddedTo${arrProp}`, userIdToBeAdded)
