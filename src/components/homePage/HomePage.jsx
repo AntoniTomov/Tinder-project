@@ -77,12 +77,6 @@ function HomePage () {
     })
     .then(() => {
       let updatedUsers = users.map(user => {
-        // if(user.uid === userOneId) {
-        //   if(!user.matches.includes(userTwoId)) {
-        //     user.matches = [...user.matches, userTwoId];
-        //     console.log('Update-vame matches na user: ', userOneId, '---> na --->', user.matches);
-        //   }
-        // }
         if (user.uid === userTwoId) {
           user.matches = [...user.matches, userOneId];
           console.log('Update-vame matches na user: ', userTwoId, '---> na --->', user.matches);
@@ -144,7 +138,7 @@ function HomePage () {
     if (cardsLeft.length) {
       const toBeRemoved = cardsLeft[cardsLeft.length - 1].uid; // Find the card object to be removed
       const index = characters.map(person => person.uid).indexOf(toBeRemoved); // Find the index of which to make the reference to
-      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      // alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
       console.log('!!!!!!!!!!!Index: ', index)
       console.log('!!!!!!!!!!!childRefs: ', childRefs)
       console.log('!!!!!!!!!!!alreadyRemoved: ', alreadyRemoved)
@@ -276,7 +270,7 @@ function HomePage () {
             <button onClick={() => swipe('left')}>Swipe left!</button>
             <button onClick={() => swipe('right')}>Swipe right!</button>
           </div>
-          {lastDirection ? <h2 key={lastDirection} className='infoText'>You swiped {lastDirection}</h2> : <h2 className='infoText'>Swipe a card or press a button to get started!</h2>}
+          {lastDirection ? <h3 key={lastDirection} className='infoText'>You swiped {lastDirection}</h3> : <h3 className='infoText'>Swipe a card or press a button to get started!</h3>}
 
         </div>
       ) : (

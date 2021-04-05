@@ -2,7 +2,8 @@ html {
   font-size: 1rem!important;
 }
 
-.App {
+body {
+  overflow-x: hidden;
 }
 
 #root {

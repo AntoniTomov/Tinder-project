@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         justifyContent: "center",
         alignItems: "center",
+        color: 'white',
     },
     title: {
         fontSize: '2rem',
