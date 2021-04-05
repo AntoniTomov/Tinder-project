@@ -288,7 +288,7 @@ export default function HomePage () {
             <div className="containerCardView">
               {characters.map((user) =>
                 <Card elevation={20} className="root" key={user.uid} onClick={() => updateChosenProfile(user)}>
-                  <CardActionArea component={Link} to={'/chosenUser/' + user.uid}>
+                  <CardActionArea component={Link} to={'/chosenProfile/' + user.uid}>
                     <CardMedia
                       className="media"
                       image={user.images[0]}

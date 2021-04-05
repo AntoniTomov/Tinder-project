@@ -8,7 +8,7 @@ import Profile from '../profile/Profile';
 import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
-import ChosenProfile from '../chosenUser/ChosenUser';
+import ChosenProfile from '../chosenProfile/ChosenProfile';
 import { CssBaseline, Fab } from '@material-ui/core';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -125,7 +125,7 @@ function App() {
               </> : <Redirect to="/login" />}
           </Route>
           {user.uid ?
-            <Route path="/chosenUser/:id">
+            <Route path="/chosenProfile/:id">
               <ChosenProfile />
             </Route>
             :
