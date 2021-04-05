@@ -13,6 +13,15 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import firebase, { db } from '../../firebase';
+import { makeStyles } from '@material-ui/core/styles';
+import AgeRangeSlider from './AgeRangeSlider';
+import GenderRadioButtons from './GenderRadioButtons'
+
+const useStyles = makeStyles({
+  root: {
+    width: 300,
+  },
+});
 
 export default function HomePage () {
   const dispatch = useDispatch();
@@ -23,7 +32,22 @@ export default function HomePage () {
   const [lastDirection, setLastDirection] = useState();
   const [isSwipeView, setIsSwipeView] = useState(true);
   const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
-  
+  const lowestAge = users.map(user => +user.age).sort((a, b) => a - b).filter(age => !isNaN(age))[0];
+  const highestAge = users.map(user => +user.age).sort((a, b) => b - a).filter(age => !isNaN(age))[0];
+  const [ageRange, setAgeRange] = useState([lowestAge, highestAge]);
+  const [genderValue, setGenderValue] = useState('');
+
+
+  useEffect(() => {
+    if(genderValue === 'reset') {
+      const usersSortedByAge = users.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1]);
+      setCharacters(usersSortedByAge);
+    } else {
+      const usersSortedByAge = users.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1] && user.gender === genderValue);
+      setCharacters(usersSortedByAge);
+    }
+  }, [ageRange, genderValue, users])
+
   useEffect(() => {
     const filteredUsers = filterProfiles(users, currentUser);
     setCharacters(filteredUsers);
@@ -240,6 +264,8 @@ export default function HomePage () {
         </div>
       ) : (
         <div>
+          <GenderRadioButtons setGenderValue={setGenderValue}/>
+          <AgeRangeSlider lowestAge={lowestAge} highestAge={highestAge} setAgeRange={setAgeRange}/>
           <TouchAppIcon onClick={changeViewState} fontSize='large' style={{marginTop: '20px'}} />
           <div className="containerCardView">
             <div className="containerCardView">
