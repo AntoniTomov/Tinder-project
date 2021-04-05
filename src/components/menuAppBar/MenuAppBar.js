@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100px',
   },
   appBar: {
-    zIndex: '0',
+    zIndex: '1',
     background: 'none',
     padding: `0 ${theme.spacing(3)}px`,
   },

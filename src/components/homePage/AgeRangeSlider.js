@@ -32,7 +32,7 @@ export default function AgeRangeSlider({ lowestAge, highestAge, setAgeRange }) {
             </Typography>
             <Slider
                 orientation="vertical"
-                min={lowestAge}
+                min={lowestAge+1}
                 max={highestAge}
                 value={value}
                 // step={5}

@@ -46,7 +46,7 @@ export default function HomePage () {
       const usersSortedByAge = users.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1] && user.gender === genderValue);
       setCharacters(usersSortedByAge);
     }
-  }, [ageRange, genderValue, users])
+  }, [ageRange, genderValue])
 
   useEffect(() => {
     const filteredUsers = filterProfiles(users, currentUser);
@@ -203,6 +203,12 @@ export default function HomePage () {
           .then(() => console.log('Successfully deleted the chatRooms for user: ', currentUser))
       }
     }))
+
+    // TODO: Make the characters reset here!!!
+
+    // dispatch({type: 'setRemoved', payload: []})
+    // setCharacters(users);
+    // console.log(users);
   }
 
   const resetAllUser = () => {
@@ -217,6 +223,7 @@ export default function HomePage () {
     .then(() => {
       
       dispatch({ type: 'getAllUsers', payload: users.map(user => user.matches = []) });
+      setCharacters(users);
     })
     // Here we are deleting ALL chats
     // db.collection('chatRooms').set({});
@@ -235,12 +242,11 @@ export default function HomePage () {
   }
 
   return (
-    <div style={{minWidth: '450px', color: 'white', zIndex: '1'}}> 
+    <div style={{minWidth: '450px', color: 'white'}}>
       <Button onClick={resetCurrentUser} variant='contained' className={'resetButton'}>Reset currentUser</Button>
       <Button onClick={resetAllUser} variant='contained' className={'resetButton'}>Reset all users</Button>
-
       {isSwipeView ? (
-        <div style={{width: '85%', margin: '0 auto'}}>
+        <div style={{width: '85%', margin: '0 auto', zIndex: '2'}}>
           <ViewModuleIcon onClick={changeViewState} fontSize='large' style={{marginTop: '20px'}} />
           <link href='https://fonts.googleapis.com/css?family=Damion&display=swap' rel='stylesheet' />
           <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
@@ -264,10 +270,12 @@ export default function HomePage () {
         </div>
       ) : (
         <div>
-          <GenderRadioButtons setGenderValue={setGenderValue}/>
-          <AgeRangeSlider lowestAge={lowestAge} highestAge={highestAge} setAgeRange={setAgeRange}/>
-          <TouchAppIcon onClick={changeViewState} fontSize='large' style={{marginTop: '20px'}} />
-          <div className="containerCardView">
+          <div className='filtersContainer'>
+            <GenderRadioButtons setGenderValue={setGenderValue}/>
+            <AgeRangeSlider lowestAge={lowestAge} highestAge={highestAge} setAgeRange={setAgeRange}/>
+          </div> 
+          <TouchAppIcon onClick={changeViewState} fontSize='large' style={{marginTop: '20px', zIndex: '2'}} />
+          <div className="cardViewWrapper">
             <div className="containerCardView">
               {characters.map((user) =>
                 <Card elevation={20} className="root" key={user.uid} onClick={() => updateChosenProfile(user)}>
