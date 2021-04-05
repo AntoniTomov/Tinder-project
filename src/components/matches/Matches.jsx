@@ -12,7 +12,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Matches.module.css';
 import { db } from '../../firebase';
-import ChosenMatch from '../chosenMatch/ChosenMatch';
 
 const useStyles = makeStyles(theme => ({
     flexColumn: {

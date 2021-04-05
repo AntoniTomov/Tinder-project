@@ -1,6 +1,5 @@
-import { Hidden } from '@material-ui/core';
+import { Link } from "react-router-dom";
 import React, { useState, useMemo, useEffect } from 'react';
-// import TinderCard from '../react-tinder-card/index'
 import TinderCard from 'react-tinder-card';
 import './HomePage.css';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
@@ -20,7 +19,7 @@ import { spacing } from '@material-ui/system';
 
 const alreadyRemoved = [];
 
-function HomePage () {
+export default function HomePage ({ getChosenUserId }) {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.currentUser);
   const users = useSelector(state => state.allUsers);
@@ -239,6 +238,10 @@ function HomePage () {
     setIsSwipeView(!isSwipeView);
   }
 
+  const provideUserId = (userId) => {
+    getChosenUserId(userId);
+  }
+
   return (
     <div style={{minWidth: '450px', color: 'white'}}> 
       <Button onClick={resetCurrentUser} variant='contained' className={'resetButton'}>Reset currentUser</Button>
@@ -274,8 +277,8 @@ function HomePage () {
           <div className="containerCardView">
             <div className="containerCardView">
               {characters.map((user) =>
-                <Card elevation={20} className="root" key={user.uid} >
-                  <CardActionArea>
+                <Card elevation={20} className="root" key={user.uid} onClick={() => provideUserId(user.uid)}>
+                  <CardActionArea component={Link} to={'/chosenUser/' + user.uid}>
                     <CardMedia
                       className="media"
                       image={user.images[0]}
@@ -307,5 +310,3 @@ function HomePage () {
     </div>
   )
 }
-
-export default HomePage;

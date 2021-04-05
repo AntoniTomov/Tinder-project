@@ -7,6 +7,7 @@ import Profile from '../profile/Profile';
 import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
+import ChosenUser from '../chosenUser/ChosenUser';
 import { CssBaseline } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Matches from '../matches/Matches';
@@ -26,12 +27,14 @@ function App() {
   const [isChatOpened, setIsChatOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+
   const showChat = () => {
     setIsChatOpened(!isChatOpened);
   }
 
   const user = useSelector(state => state.currentUser);
   const [chosenProfileId, setChosenProfileId] = useState(null);
+  const [chosenUserId, setChosenUserId] = useState(null);
 
   console.log('Kolko puti se rendnah?!?!?');
 
@@ -75,6 +78,10 @@ function App() {
     setChosenProfileId(id);
   }
 
+  const getChosenUserId = (id) => {
+    setChosenUserId(id);
+  }
+
   if (isLoading) {
     return <div style={{ margin: 'calc(50vh - 100px) auto' }}>
       <CircularProgress size={100} />
@@ -89,12 +96,19 @@ function App() {
       </header>
       <main className="App">
         <Switch>
-          <Route exact path='/'>
+          <Route exact path='/' getChosenUserId={(id) => getChosenUserId(id)}>
             {user.uid ?
               <>
                 <HomePage />
               </> : <Redirect to="/login" />}
           </Route>
+          {user.uid ?
+            chosenUserId && <Route path="/chosenUser/:id">
+              <ChosenUser chosenUserId={chosenUserId} />
+            </Route>
+            :
+            <Register />
+          }
           <Route exact path='/login'>
             {user.uid ?
               <div>
