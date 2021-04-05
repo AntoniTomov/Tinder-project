@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom';
-import  Avatar from '@material-ui/core/Avatar';
-import { CssBaseline, makeStyles, Grid, GridList, GridListTile, Typography  } from '@material-ui/core';
-import CardMedia from '@material-ui/core/CardMedia';
-// import SimpleImageSlider from "react-simple-image-slider";
+import { CssBaseline, makeStyles } from '@material-ui/core';
 import FbImageLibrary from 'react-fb-image-grid';
 import { useSelector } from 'react-redux';
 import './ChosenMatch.module.css'
@@ -40,9 +36,7 @@ export default function ChosenMatch() {
         const imagesToDisplay = chosenProfile.images.filter(image => image !== '');
         setImages(imagesToDisplay);
     }, [chosenProfile])
-    
-    console.log('chosenProfile', chosenProfile);
-    console.log('images', images);
+
     return (
         <CssBaseline>
             <div className={styles.container}>

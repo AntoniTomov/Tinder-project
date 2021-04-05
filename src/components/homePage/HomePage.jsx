@@ -5,8 +5,6 @@ import './HomePage.css';
 import TouchAppIcon from '@material-ui/icons/TouchApp';
 import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import { useSelector, useDispatch } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -15,13 +13,10 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import firebase, { db } from '../../firebase';
-import { spacing } from '@material-ui/system';
-
-// const alreadyRemoved = [];
 
 export default function HomePage () {
   const dispatch = useDispatch();
-  const alreadyRemoved = useSelector(state => state.alreadyRemoved); // Setting alreadyRemoved through Redux
+  const alreadyRemoved = useSelector(state => state.alreadyRemoved);
   const currentUser = useSelector(state => state.currentUser);
   const users = useSelector(state => state.allUsers);
   const [characters, setCharacters] = useState([]);
@@ -38,7 +33,7 @@ export default function HomePage () {
     return allProfiles.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid)
   }
 
-  const swiped = (direction, userIdToBeAdded, nameToDelete) => {
+  const swiped = (direction, userIdToBeAdded) => {
     let arrProp = '';
     switch(direction){
       case 'left' : arrProp = 'Disliked';
@@ -53,34 +48,26 @@ export default function HomePage () {
     }
     updateDB(arrProp, userIdToBeAdded);
     setLastDirection(direction);
-    // alreadyRemoved.push(userIdToBeAdded);
-    dispatch({type: 'addToRemoved', payload: userIdToBeAdded}) // adding to alreadyRemoved in Redux
-    // updateProfileMatches(currentUser.uid, userIdToBeAdded);
+    dispatch({type: 'addToRemoved', payload: userIdToBeAdded})
   }
 
   const outOfFrame = (userId) => {
     console.log(userId + ' left the screen!!@#@!$!%@!$%#@^&#%&*@!$&^');
-    // updateDB(arrProp, userIdToBeAdded);
   }
 
   const updateProfileMatches = (userOneId, userTwoId) => {
-    const userOneMatches = users.find(user => user.uid === userOneId).matches;
-    const userTwoMatches = users.find(user => user.uid === userTwoId).matches;
     db.collection('users').doc(userOneId).update({
       matches: firebase.firestore.FieldValue.arrayUnion(userTwoId),
     })
 
-    // Here we are creating the new chatRooms!
     createChatRoom(userOneId, userTwoId);
 
     db.collection('users').doc(userTwoId).update({
       matches: firebase.firestore.FieldValue.arrayUnion(userOneId),
-    })
-    .then(() => {
+    }).then(() => {
       let updatedUsers = users.map(user => {
         if (user.uid === userTwoId) {
           user.matches = [...user.matches, userOneId];
-          console.log('Update-vame matches na user: ', userTwoId, '---> na --->', user.matches);
         }
         return user;
       });
@@ -88,7 +75,6 @@ export default function HomePage () {
       updateDataBase( 'userAddedToMatches', userTwoId);
     })
   }
-
   // To be moved to Service file:
   function createChatRoom(userOneId, userTwoId) {
     const chatRoomDocId = userOneId > userTwoId ? `${userTwoId}_${userOneId}` : `${userOneId}_${userTwoId}`;
@@ -101,8 +87,6 @@ export default function HomePage () {
       .catch((error) => console.log("Error on chatRoom creation: ", error.message))
   }
 
-  // TODO: да се зареждат картичките, които не се движат, иначе покажа и тези, които летят още...
-
   function updateDataBase(type, payload) {
     dispatch({ type: type, payload: payload});
   }
@@ -113,11 +97,9 @@ export default function HomePage () {
 
     arrProp !== 'Matches' && db.collection('users').doc(currentUser.uid).update({
       [arrProp.toLowerCase()]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
-    })
-    .then(() => {
+    }).then(() => {
       updateDataBase(`userAddedTo${arrProp}`, userIdToBeAdded)
-    })
-    .catch((error) => {
+    }).catch((error) => {
       console.error("Error updating document: ", error);
     });
 
@@ -126,53 +108,30 @@ export default function HomePage () {
     arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
-          // We are updating the matches of currentUser and lokedUser
           updateProfileMatches(currentUser.uid, userIdToBeAdded)
         }
       })
-      // We are updating the matches of currentUser and lokedUser
     arrProp === 'Matches' && updateProfileMatches(currentUser.uid, userIdToBeAdded)
   }
 
   const swipe = (dir) => {
     const cardsLeft = characters.filter(person => !alreadyRemoved.includes(person.uid));
     if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].uid; // Find the card object to be removed
-      const index = characters.map(person => person.uid).indexOf(toBeRemoved); // Find the index of which to make the reference to
-      // alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
-      console.log('!!!!!!!!!!!Index: ', index)
-      console.log('!!!!!!!!!!!childRefs: ', childRefs)
-      console.log('!!!!!!!!!!!alreadyRemoved: ', alreadyRemoved)
-      console.log('!!!!!!!!!!!characters: ', characters)
-      childRefs[index].current.swipe(dir); // Swipe the card!
-
-      // charactersState = charactersState.filter(character => character.uid !== toBeRemoved);
-      // setCharacters(charactersState);
-
-      // const userIdToBeAdded = cardsLeft[cardsLeft.length - 1].uid;
-      // const arrProp = dir === 'right' ? 'Liked' : 'Disliked';
-
-      // updateDB(arrProp, userIdToBeAdded);
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].uid;
+      const index = characters.map(person => person.uid).indexOf(toBeRemoved);
+      childRefs[index].current.swipe(dir);
     }
   }
 
   const cardViewSwipe = (arrProp, userIdToBeAdded) => {
-    
-    console.log('arrProp', arrProp)
     db.collection('users').doc(currentUser.uid).update({
-      [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
-    })
-    .then(() => {
-      // currentUser[arrProp].push(userIdToBeAdded);
-      // updateDataBase('userLoggedIn', currentUser)
+      [arrProp.toLowerCase()]: [...currentUser[arrProp.toLowerCase()], userIdToBeAdded],
+    }).then(() => {
       const currentUserNewState = {
         ...currentUser,
-        [arrProp]: [...currentUser[arrProp], userIdToBeAdded],
+        [arrProp.toLowerCase()]: [...currentUser[arrProp.toLowerCase()], userIdToBeAdded],
       }
-      // currentUser[arrProp].push(userIdToBeAdded);
       updateDataBase('userLoggedIn', currentUserNewState)
-      // dispatch({ type: 'userLoggedIn', payload: currentUser})
-      // console.log('Updated currentUser liked Array: ', currentUser[arrProp], ' with: ', userIdToBeAdded)
     })
     .catch((error) => {
       console.error("Error updating document: ", error);
@@ -181,13 +140,11 @@ export default function HomePage () {
     arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
       .then(doc => {
         if (doc.data().liked.includes(currentUser.uid)) {
-          // We are updating the matches of currentUser and lokedUser
           updateProfileMatches(currentUser.uid, userIdToBeAdded)
         }
       })
     arrProp === 'Matches' && db.collection('users').doc(userIdToBeAdded).get()
       .then(() => {
-        // We are updating the matches of currentUser and lokedUser
         updateProfileMatches(currentUser.uid, userIdToBeAdded)
       })
       const usersToPrint = filterProfiles(users, currentUser).filter(user => user.uid !== userIdToBeAdded);
@@ -269,7 +226,7 @@ export default function HomePage () {
               <TinderCard ref={childRefs[index]} className='swipe' key={character.uid} onSwipe={(dir) => {
                 swiped(dir, character.uid, character.name);
                 }} onCardLeftScreen={() => outOfFrame(character.uid)}>
-                <div style={{ backgroundImage: 'url(' + character.images[0] + ')' }} className='card'>
+                <div style={{ backgroundImage: 'url(' + (character.images[0] || 'https://firebasestorage.googleapis.com/v0/b/fir-project-d9b09.appspot.com/o/profilePics%2Fdefault-profile-pic.jpg?alt=media&token=12bd0268-84bd-47ee-9bf7-5ca4269f87d5') + ')' }} className='card'>
                   <h3>{character.name}</h3>
                 </div>
               </TinderCard>
@@ -291,7 +248,7 @@ export default function HomePage () {
                   <CardActionArea component={Link} to={'/chosenProfile/' + user.uid}>
                     <CardMedia
                       className="media"
-                      image={user.images[0]}
+                      image={user.images[0] || 'https://firebasestorage.googleapis.com/v0/b/fir-project-d9b09.appspot.com/o/profilePics%2Fdefault-profile-pic.jpg?alt=media&token=12bd0268-84bd-47ee-9bf7-5ca4269f87d5'}
                       title={user.name}
                     />
                     <CardContent>

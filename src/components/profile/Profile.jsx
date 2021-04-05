@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles, withStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,10 +14,10 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import ImageUploaderContainer from './imageUploader';
 
-import firebase, { auth, db } from '../../firebase';
+import { db } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
     root: {
         width: '40vw',
         minWidth: '400px',
@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
         margin: 0,
     },
 
-}));
+});
 
 const CssTextField = withStyles({
     root: {

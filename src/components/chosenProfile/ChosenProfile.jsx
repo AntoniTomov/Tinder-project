@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { CssBaseline, makeStyles, Grid, GridList, GridListTile, Typography  } from '@material-ui/core';
+import { CssBaseline, makeStyles } from '@material-ui/core';
 import FbImageLibrary from 'react-fb-image-grid';
 import { useSelector } from 'react-redux';
-import './ChosenProfile.module.css'
-// import useLocation from 'react-router-dom'
 
 const useStyles = makeStyles({
     container: {
@@ -28,7 +26,6 @@ const useStyles = makeStyles({
 export default function ChosenProfile() {
     const styles = useStyles();
     const chosenProfile = useSelector(state => state.chosenProfile);
-    const users = useSelector(state => state.allUsers);
     const [images, setImages] = useState([]);
 
     useEffect(() => {
