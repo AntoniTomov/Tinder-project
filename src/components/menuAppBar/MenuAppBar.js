@@ -41,16 +41,13 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: '0',
     background: 'none',
-    padding: `0 ${theme.spacing(3)}px`
+    padding: `0 ${theme.spacing(3)}px`,
   },
   title: {
     fontSize: '3rem',
   },
   menu: {
     fontSize: '35px'
-  },
-  noOutline: {
-    outline: 'none!important',
   },
 }));
 

@@ -243,11 +243,15 @@ function HomePage () {
   }
 
   const changeViewState = () => {
+    const filteredUsers = filterProfiles (users, currentUser)
+    const charactersLeft = filteredUsers.filter(userId => !alreadyRemoved.includes(userId))
+
+    setCharacters(charactersLeft);
     setIsSwipeView(!isSwipeView);
   }
 
   return (
-    <div style={{minWidth: '450px', color: 'white'}}> 
+    <div style={{minWidth: '450px', color: 'white', zIndex: '1'}}> 
       <Button onClick={resetCurrentUser} variant='contained' className={'resetButton'}>Reset currentUser</Button>
       <Button onClick={resetAllUser} variant='contained' className={'resetButton'}>Reset all users</Button>
 
