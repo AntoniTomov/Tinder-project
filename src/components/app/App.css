@@ -52,11 +52,3 @@ h1 {
   width: 100%;
   color: rgb(163, 25, 163);
 }
-
-.chatIcon {
-  position: fixed;
-  bottom: 16px;
-  right: 24px;
-  color: rgb(136, 25, 163);
-}
-

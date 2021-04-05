@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
 import MenuAppBar from '../menuAppBar/MenuAppBar';
 import HomePage from '../homePage/HomePage';
 import Profile from '../profile/Profile';
 import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline, Fab } from '@material-ui/core';
+import Zoom from '@material-ui/core/Zoom';
+import Tooltip from '@material-ui/core/Tooltip';
+import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
@@ -20,8 +24,36 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CodeSharp } from '@material-ui/icons';
 
 
+const useStyles = makeStyles(theme => ({
+  paper: {
+    position: 'fixed !important',
+    bottom: '50px',
+    right: '50px',
+    color: 'rgb(136, 25, 163)',
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    '& .MuiFab-root:hover': {
+      backgroundColor: '#e66465',
+      '& .MuiSvgIcon-root': {
+        color: 'rgb(225,225,225)'
+      },
+    },
+  },
+  smallBtn: {
+    position: 'absolute',
+    width: '50px',
+    height: '50px',
+    '& .MuiSvgIcon-root': {
+      width: '30px'
+    },
+    color: '#e66465',
+    background: 'rgb(225,225,225)',
+  },
+}));
+
+
 function App() {
   const dispatch = useDispatch();
+  const styles = useStyles();
 
   const [isChatOpened, setIsChatOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -141,7 +173,15 @@ function App() {
 
       </main>
       {user.uid && isChatOpened && <Chat />}
-      {user.uid && <InsertCommentIcon fontSize='large' className='chatIcon' onClick={showChat} />}
+      {user.uid &&
+        <Paper className={styles.paper}>
+          <Tooltip title="Open Chat" className={styles.tooltip} arrow TransitionComponent={Zoom} placement='left'>
+            <Fab component="span" className={styles.smallBtn}>
+              <InsertCommentIcon fontSize='large' onClick={showChat} />
+            </Fab>
+          </Tooltip>
+        </Paper>
+      }
     </>
   );
 }
