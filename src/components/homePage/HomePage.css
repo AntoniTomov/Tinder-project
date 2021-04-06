@@ -185,3 +185,7 @@ h2 {
     display: flex;
     justify-content: space-between;
 }
+.infoText {
+    width: 80%;
+    margin: 0 auto;
+}

@@ -1,7 +1,6 @@
 const profileInfoReducer = (state, action) => {
 
     switch (action.type){
-        // nice!!!
         case 'changedProfilePic':
             return {
                 ...state,

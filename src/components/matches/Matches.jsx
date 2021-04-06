@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
         justifyContent: "center",
         alignItems: "center",
         marginTop: '1rem',
+        '& a' : {
+            textDecoration: 'none',
+        }
     },
     item: {
         margin: `${theme.spacing(2)}px`,
