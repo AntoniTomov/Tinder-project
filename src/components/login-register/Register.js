@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { CssBaseline, Typography, InputLabel, OutlinedInput, FormControl, Container, TextField, Label, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
+import React, { useState} from 'react';
+import { CssBaseline, InputLabel, OutlinedInput, FormControl, Container, TextField, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import firebase, { db, auth } from '../../firebase';
-
-import { useDispatch, useSelector } from 'react-redux';
-import loginUser from './login-register.actions';
+import { useDispatch } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 const defaultProfilePicUrl = 'https://firebasestorage.googleapis.com/v0/b/fir-project-d9b09.appspot.com/o/profilePics%2Fdefault-profile-pic.jpg?alt=media&token=12bd0268-84bd-47ee-9bf7-5ca4269f87d5';
@@ -63,6 +61,26 @@ const CssTextField = withStyles({
         }
     },
 })(TextField);
+
+const CssOutlinedInput = withStyles({
+    root: {
+        '& span.MuiIconButton-label': {
+            color: 'rgb(225, 225, 225)',
+        },
+        '& input': {
+            color: 'rgb(225, 225, 225)',
+        },
+        '& fieldset': {
+            border: '1px solid rgb(225, 225, 225)',
+        },
+        '&:hover fieldset': {
+            border: '1px solid rgb(225, 225, 225) !important', //changing the outline on hover!!!
+        },
+        '&.MuiOutlinedInput-root.Mui-focused fieldset': {
+            border: '2px solid rgb(225, 225, 225) !important', //changing the outline on focus!!!
+        },
+    }
+})(OutlinedInput);
 
 export default function Register({ setCurrentUser }) {
     const classes = useStyles();
@@ -298,8 +316,8 @@ export default function Register({ setCurrentUser }) {
                         onChange={(ev) => changeInput(ev.target.value.trim(), 'email')}
                         label="Email" variant="outlined" />
                     <FormControl variant="outlined">
-                        <InputLabel className="label" htmlFor="password">Password</InputLabel>
-                        <OutlinedInput
+                        <InputLabel className="label" style={{ color: 'rgb(225, 225, 225)' }} htmlFor="password">Password</InputLabel>
+                        <CssOutlinedInput
                             id="password"
                             helperText={passwordError}
                             error={passwordError}

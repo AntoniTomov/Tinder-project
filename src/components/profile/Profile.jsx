@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         margin: '5px 0',
-        // background: 'rgba(255, 255, 255, 0.5)',
         background: 'none',
         color: 'white',
     },
@@ -79,11 +78,9 @@ const CssTextField = withStyles({
     root: {
         '& label': {
             color: 'rgb(225, 225, 225)',
-            // fontFamily: 'Nunito',
         },
         '& label.Mui-focused': {
             color: 'rgb(225, 225, 225)',
-            // fontFamily: 'Nunito',
         },
         '& .MuiInput-underline:before': {
             borderBottomColor: 'white'

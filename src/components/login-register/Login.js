@@ -29,25 +29,6 @@ const useStyles = makeStyles((theme) => ({
         margin: '0 auto',
         display: 'flex',
     },
-    label: {
-        lineHeight: '4px',
-    },
-    textfield: {
-        "&:hover .MuiInputLabel-root": {
-          color: theme.palette.text.primary
-        },
-        "& .Mui-focused.MuiInputLabel-root": {
-          color: theme.palette.primary.main
-        }
-      },
-      outlinedInput: {
-        "&:hover .MuiInputAdornment-root .MuiSvgIcon-root": {
-          color: theme.palette.text.primary
-        },
-        "&.Mui-focused .MuiInputAdornment-root .MuiSvgIcon-root": {
-          color: theme.palette.primary.main
-        }
-      },
 }));
 
 const CssTextField = withStyles({
@@ -57,12 +38,6 @@ const CssTextField = withStyles({
         },
         '& label.Mui-focused': {
             color: 'rgb(225, 225, 225)',
-        },
-        '& .MuiInput-underline:before': {
-            borderBottomColor: 'white'
-        },
-        '& .MuiInput-underline:after': {
-            borderBottomColor: '#1976d2',
         },
         '& .MuiOutlinedInput-root': {
             color: 'rgb(225, 225, 225)',
@@ -84,19 +59,15 @@ const CssOutlinedInput = withStyles({
         '& input': {
             color: 'rgb(225, 225, 225)',
         },
-        '& MuiControl-root': {
-            '& label': {
-                color: 'rgb(225, 225, 225)',
-            }
-        },
         '& fieldset': {
             border: '1px solid rgb(225, 225, 225)',
         },
-        '& .MuiOutlinedInput-root': {
-            '&.Mui-focused fieldset': {
-              borderColor: 'green',
-            },
-          },
+        '&:hover fieldset': {
+            border: '1px solid rgb(225, 225, 225) !important', //changing the outline on hover!!!
+        },
+        '&.MuiOutlinedInput-root.Mui-focused fieldset': {
+            border: '2px solid rgb(225, 225, 225) !important', //changing the outline on focus!!!
+        },
     }
 })(OutlinedInput);
 
@@ -117,23 +88,23 @@ export default function Login() {
     function changePasswordInput(ev) {
         setPassInput(ev.target.value.trim());
     }
-    
+
     const validateEmail = (email) => {
         const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email)
     }
-    
+
     const validateForm = () => {
 
         let emailErr = '';
         let passwordErr = '';
         const emailIsValid = validateEmail(emailInput);
 
-       
+
         if (!emailIsValid) {
             emailErr = 'Email is badly formatted!';
         }
-        
+
         if (passInput.length < 6) {
             passwordErr = 'Must be at least 6 chars';
         }
@@ -174,10 +145,10 @@ export default function Login() {
                     setEmailError(error.message);
                 });
 
-            
+
         }
     }
-    
+
     const handleClickShowPassword = () => {
         isPassVisible ? setIsPassVisible(false) : setIsPassVisible(true);
         console.log(isPassVisible)
