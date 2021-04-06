@@ -13,7 +13,7 @@
     left: -175px;
     width: 175px;
     border-radius: 1rem 0 0 1rem;
-    background-color: rgba(14, 14, 14, 0.7);
+    background-color: rgba(14, 14, 14, 0.85);
     /* border-right: 2px solid rgba(255, 255, 255, 0.3); */
     
 
@@ -48,11 +48,6 @@
     margin: 4px;
 }
 
-.chat .active {
-    /* background-color: rgba(255, 255, 255, 0.3); */
-    border-radius: 2rem 0 0 2rem;
-}
-
 .missedMsg {
     border-right: 3px solid #e66465;
 }
@@ -64,7 +59,7 @@
     /* margin: 50px; */
     display: flex;
     flex-direction: column;
-    background-color: rgba(14, 14, 14, 0.7);
+    background-color: rgba(14, 14, 14, 0.85);
     /* background-color: rgba(255, 255, 255, 0.7); */
     position: relative;
     border-radius: 0 1rem 0 0;
@@ -101,21 +96,31 @@
 
 .chatForm button {
     width: 20%;
-    background: radial-gradient(#9198e5,#e66465);
-    /* background: linear-gradient(#9198e5,#e66465); */
+    /* background: radial-gradient(#9198e5,#e66465); */
+    background: rgba(14, 14, 14, 0.7);
     border: none;
     outline: none;
     border-bottom-right-radius: 1rem;
     cursor: pointer;
 }
 .chatForm button:hover {
-    background: #e66465;
+    background: #d5d5d5;
     /* background: linear-gradient(#e66465, #9198e5); */
 }
 
 .chatForm button:disabled {
-    opacity: 0.5;
+    opacity: 0.8;
     cursor: not-allowed;
+}
+
+.chatForm button:hover:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.chatForm button svg {
+    color : #e66465 !important;
+    font-size: 2rem;
 }
 
 .chatForm input {
@@ -154,6 +159,7 @@ p {
     color: white;
     text-align: start;
     overflow-wrap: break-word;
+    margin: 10px 0;
 }
 
 .message {
