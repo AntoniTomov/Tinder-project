@@ -89,7 +89,7 @@ function App() {
     db.collection('users').onSnapshot(res => {
       let users = [];
       res.forEach(element => {
-        users.push(element.data());
+        element.uid !== user.uid && users.push(element.data());
       });
       // console.log('Tuk otnovo setvame users ot App.jsx: ', users)
       dispatch({
@@ -97,7 +97,7 @@ function App() {
         payload: users,
       });
     })
-  }, [])
+  }, [user])
 
   useEffect(() => {
     const choseUser = JSON.parse(window.localStorage.getItem('chosenProfile'))
