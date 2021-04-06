@@ -2,13 +2,10 @@ import { useEffect, useState } from "react";
 import { CssBaseline, makeStyles } from '@material-ui/core';
 import FbImageLibrary from 'react-fb-image-grid';
 import { useSelector } from 'react-redux';
-import './ChosenMatch.module.css'
-
 
 const useStyles = makeStyles({
     container: {
         width: '40vw',
-        minWidth: '400px',
         alignItems: 'center',
         textAlign: 'center',
         color: 'white',
@@ -21,19 +18,18 @@ const useStyles = makeStyles({
         color: 'rgb(225,225,225)',
         margin: '0 auto',
         width: '100%',
-        padding: '0 3rem',
+        padding: '0 5rem',
         textAlign: 'center',
     },
 });
 
-    
-export default function ChosenMatch() {
+export default function ChosenProfile() {
     const styles = useStyles();
     const chosenProfile = useSelector(state => state.chosenProfile);
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        const imagesToDisplay = chosenProfile.images.filter(image => image !== '');
+        const imagesToDisplay = chosenProfile?.images.filter(image => image !== '');
         setImages(imagesToDisplay);
     }, [chosenProfile])
 
@@ -46,7 +42,7 @@ export default function ChosenMatch() {
                 width={300}
                 // countFrom={1}
                 renderOverlay={() => <div style={{fontSize: '2rem'}}>Show</div>}
-                overlayBackgroundColor="#e66465"
+                overlayBackgroundColor="tomato"
                 />
                 <h3>About me</h3>
                 <div className={styles.textField}>

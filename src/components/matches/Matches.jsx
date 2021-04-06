@@ -12,7 +12,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Matches.module.css';
 import { db } from '../../firebase';
-import ChosenMatch from '../chosenMatch/ChosenMatch';
 
 const useStyles = makeStyles(theme => ({
     flexColumn: {
@@ -31,7 +30,6 @@ const useStyles = makeStyles(theme => ({
         width: '60%',
         position: 'relative',
         display: 'flex',
-        // padding: theme.spacing(0, 10, 2),
         justifyContent: "center",
         alignItems: "center",
         marginTop: '1rem',
@@ -41,7 +39,6 @@ const useStyles = makeStyles(theme => ({
         '&:hover':  {boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)'},
     },
     root: {
-        // maxWidth: 250,
         position: 'relative',
         backgroundColor: 'rgba(255, 255, 255, 0.4)',
         width: 250,
@@ -69,14 +66,13 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function Matches({ getChosenMatchId }) {
+export default function Matches() {
     const classes = useStyles();
+    const removedFromHomePage = useSelector(state => state.alreadyRemoved);
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
-    // const [matches, setMatches] = useState([]);
     const currentUser = useSelector(state => state.currentUser);
     const [matches, setMatches] = useState([]);
     const allUsers = useSelector(state => state.allUsers);
-    const matchesIds = useSelector(state => state.currentUser.matches);
     const defaultProfilePic = 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg';
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
@@ -94,36 +90,25 @@ export default function Matches({ getChosenMatchId }) {
         moreDetailsCardKey === uid ? setMoreDetailsCardKey('') : setMoreDetailsCardKey(uid);
     }
 
-    const showProfile = (chosenId) => {
-        getChosenMatchId(chosenId);
-    }
-
     const dislikeUser = (userId) => {
-        console.log(userId)
+        const updatedRemovedFromHomePage = removedFromHomePage.filter(id => id !== userId);
+        dispatch({type: 'setRemoved', payload: updatedRemovedFromHomePage})
         const currUserMatchesIds = currentUser.matches.filter(matchId => matchId !== userId);
         const currUserLikedProfilesIds = currentUser.liked.filter(likedId => likedId !== userId);
         const removedUser = allUsers.find(user => user.uid === userId)
         const removedUserMatches = removedUser.matches.filter(matchId => matchId !== currentUser.uid);
-        console.log('currUserMatches', currUserMatchesIds);
-        console.log('currUserLikedProfilesIds', currUserLikedProfilesIds);
-        console.log('currUserLikedProfiles sus removedUser: ', currentUser.liked);
-        console.log('removedUser', removedUser);
-        console.log('removedUserMatches', removedUserMatches);
 
         db.collection('users').doc(currentUser.uid).update({
             matches: [...currUserMatchesIds],
             liked: [...currUserLikedProfilesIds],
-        })
-        .then(() => {
+        }).then(() => {
             dispatch({type: 'userRemovedFromLiked', payload: currUserLikedProfilesIds});
             dispatch({type: 'userRemovedFromMatches', payload: currUserMatchesIds});
-        })
-        .catch(err => console.log('Error after updating db for currentUser: ', err))
+        }).catch(err => console.log('Error after updating db for currentUser: ', err))
 
         db.collection('users').doc(userId).update({
             matches: [...removedUserMatches],
-        })
-        .then(() => {
+        }).then(() => {
             let updatedUsers = [...allUsers];
             updatedUsers = updatedUsers.map(user => {
                 if(user.uid === userId) {
@@ -132,14 +117,11 @@ export default function Matches({ getChosenMatchId }) {
                 return user;
             });
             dispatch({type: 'getAllUsers', payload: updatedUsers});
-            // setMatches(prev => prev.filter(user => user.uid !== userId));
+
             const newMatches = matches.filter(user => user.uid !== userId);
             setMatches(newMatches);
-        })
-        .catch(err => console.log('Error after updating db for currentUser: ', err))
+        }).catch(err => console.log('Error after updating db for currentUser: ', err))
         deleteChatRoom(userId, currentUser.uid)
-        // let currentMatches = allUsers.filter(user => currUserMatchesIds.includes(user.uid));
-        // setMatches(currentMatches);
     }
 
     // To be moved to a Service file:
@@ -154,6 +136,10 @@ export default function Matches({ getChosenMatchId }) {
     //     return <h2>THE PAGE IS LOADING...</h2>;
     // }
 
+    const updateChosenProfile = (user) => {
+        dispatch({type: 'setChosenProfile', payload: user})
+    }
+
     return (
         <div className={classes.flexColumn}>
         {matches.length === 0 ?
@@ -166,7 +152,7 @@ export default function Matches({ getChosenMatchId }) {
             className={classes.container}
         >
         {matches.map((user) =>
-            <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => showProfile(user.uid)}>
+            <Card elevation={20} className={moreDetailsCardKey === user.uid ? `${classes.root} ${classes.expanded}` : classes.root} key={user.uid} onClick={() => updateChosenProfile(user)}>
                 <CardActionArea component={Link} to={'/matches/' + user.uid}>
                     <CardMedia
                     className={classes.media}

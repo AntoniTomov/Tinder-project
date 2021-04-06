@@ -4,6 +4,7 @@
     flex-direction: row !important;
     bottom: 65px;
     right: 95px;
+    z-index: 2;
 }
 
 .profilesInChat {

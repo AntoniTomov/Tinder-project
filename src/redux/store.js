@@ -1,12 +1,15 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
+import homePageReducer from '../components/homePage/homePage.reducer';
 import userReducer from '../components/login-register/login-register.reducer';
 import allUsersReducer from '../components/users/users.reducer';
+import chosenProfileReducer from '../components/chosenProfile/chosenProfile.reducer';
 
 const rootReducer = combineReducers({
 
     currentUser: userReducer,
     allUsers: allUsersReducer,
-
+    alreadyRemoved: homePageReducer,
+    chosenProfile: chosenProfileReducer,
 });
 
 const store = createStore(

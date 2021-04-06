@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Link, Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuAppBar from '../menuAppBar/MenuAppBar';
 import HomePage from '../homePage/HomePage';
@@ -8,20 +8,17 @@ import Profile from '../profile/Profile';
 import Register from "../login-register/Register";
 import Login from '../login-register/Login';
 import ChosenMatch from '../chosenMatch/ChosenMatch';
+import ChosenProfile from '../chosenProfile/ChosenProfile';
 import { CssBaseline, Fab } from '@material-ui/core';
 import Zoom from '@material-ui/core/Zoom';
 import Tooltip from '@material-ui/core/Tooltip';
 import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 import Matches from '../matches/Matches';
 import InsertCommentIcon from '@material-ui/icons/InsertComment';
 import Chat from '../chat/Chat';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { users } from '../matches/Matches';
-import firebase, { auth, db } from '../../firebase';
-
+import { auth, db } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { CodeSharp } from '@material-ui/icons';
 
 
 const useStyles = makeStyles(theme => ({
@@ -34,9 +31,11 @@ const useStyles = makeStyles(theme => ({
     '& .MuiFab-root:hover': {
       backgroundColor: '#e66465',
       '& .MuiSvgIcon-root': {
-        color: 'rgb(225,225,225)'
+        color: 'rgb(225,225,225)',
+        zIndex: 2,
       },
     },
+    zIndex: 2,
   },
   smallBtn: {
     position: 'absolute',
@@ -58,14 +57,12 @@ function App() {
   const [isChatOpened, setIsChatOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+
   const showChat = () => {
     setIsChatOpened(!isChatOpened);
   }
 
   const user = useSelector(state => state.currentUser);
-  const [chosenProfileId, setChosenProfileId] = useState(null);
-
-  console.log('Kolko puti se rendnah?!?!?');
 
   //is a user still logged in
   useEffect(() => {
@@ -78,13 +75,13 @@ function App() {
           });
           setIsLoading(false);
         })
-        console.log('ima lognat ')
+        // console.log('ima lognat ')
       } else {
         dispatch({
           type: 'userLoggedOut'
         });
         setIsLoading(false);
-        console.log('nqma lognat uj...')
+        // console.log('nqma lognat uj...')
       }
     });
   }, [])
@@ -95,17 +92,13 @@ function App() {
       res.forEach(element => {
         users.push(element.data());
       });
-      console.log('Tuk otnovo setvame users ot App.jsx: ', users)
+      // console.log('Tuk otnovo setvame users ot App.jsx: ', users)
       dispatch({
         type: 'getAllUsers',
         payload: users,
       });
     })
   }, [])
-
-  const getChosenMatchId = (id) => {
-    setChosenProfileId(id);
-  }
 
   if (isLoading) {
     return <div style={{ margin: 'calc(50vh - 100px) auto' }}>
@@ -121,11 +114,17 @@ function App() {
       </header>
       <main className="App">
         <Switch>
-          <Route exact path='/'>
+          <Route exact path='/' >
             {user.uid ?
-              <>
-                <HomePage />
-              </> : <Redirect to="/login" />}
+              <HomePage />
+              : <Redirect to="/login" />}
+          </Route>
+          <Route path="/chosenProfile/:id">
+            {user.uid ?
+              <ChosenProfile />
+              :
+              <Redirect to="/register" />
+            }
           </Route>
           <Route exact path='/login'>
             {user.uid ?
@@ -147,21 +146,17 @@ function App() {
           </Route>
           {user.uid ?
             <Route exact path='/matches'>
-              <Matches getChosenMatchId={(id) => getChosenMatchId(id)} />
-              {/* <Route exact path='/chosenMatch'>
-              <ChosenMatch user={user}/>
-            </Route> */}
-              {/* <ChosenMatch user={user}/> */}
+              <Matches />
             </Route>
             :
-            <Register />
+            <Redirect to='/register' />
           }
           {user.uid ?
-            chosenProfileId && <Route path="/matches/:id">
-              <ChosenMatch chosenProfileId={chosenProfileId} />
+            <Route path="/matches/:id">
+              <ChosenMatch />
             </Route>
             :
-            <Register />
+            <Redirect to='/register' />
           }
           <Route exact path='/profile'>
             {user.uid ? <Profile /> : <Redirect to='/profile' />}
@@ -170,7 +165,6 @@ function App() {
             <Redirect to='/' />
           </Route>
         </Switch>
-
       </main>
       {user.uid && isChatOpened && <Chat />}
       {user.uid &&

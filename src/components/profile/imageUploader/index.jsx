@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import Fab from '@material-ui/core/Fab';
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-import firebase, { storage, db } from '../../../firebase';
+import firebase from '../../../firebase';
 
 const useStyles = makeStyles(theme => ({
     paper: {
@@ -30,6 +31,9 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     smallBtn: {
         position: 'absolute',
@@ -43,15 +47,34 @@ const useStyles = makeStyles(theme => ({
         color: '#e66465',
         background: 'rgb(225,225,225)',
     },
+    error: {
+        color: 'red',
+        width: '90%',
+        fontWeight: 'bold',
+        backgroundColor: 'rgba(255,255,255,0.8)',
+    }
 }));
 
 const ImageUploaderContainer = ({ id, userId, imgUrl, replaceImgUrl, updateImages }) => {
     const classes = useStyles();
+    const [imageError, setImageError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [loaderProgress, setLoaderProgress] = useState(null);
+
 
     const handleUploadClick = (e) => {
+
         const data = e.target;
         if (data.files && data.files[0]) {
             let file = data.files[0];
+
+            if (file.size > 6123456){
+                setImageError('Image must be less then 6Mb!');
+                return;
+            }
+            setIsLoading(true);
+            setImageError('');
+
             let dotPossition = file.name.lastIndexOf('.');
             let newFileName = file.name.slice(0, dotPossition) + Date.now();
             console.log(newFileName);
@@ -61,10 +84,9 @@ const ImageUploaderContainer = ({ id, userId, imgUrl, replaceImgUrl, updateImage
             
             uploadTask.on('state_changed',
                 (snapshot) => {
-                    // Observe state change events such as progress, pause, and resume
-                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                     var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log('Upload is ' + progress + '% done');
+                    setLoaderProgress(progress);
+
                     // eslint-disable-next-line default-case
                     switch (snapshot.state) {
                         case firebase.storage.TaskState.PAUSED: // or 'paused'
@@ -85,7 +107,9 @@ const ImageUploaderContainer = ({ id, userId, imgUrl, replaceImgUrl, updateImage
                         console.log('File available at', downloadURL);
                         const newImagesArr = async () => await replaceImgUrl(id, downloadURL);
                         newImagesArr().then((images) => updateImages(images));
-                    });
+                        setIsLoading(false);
+                    })
+                    .catch(err => console.log('Error while uploading the image: ', err.message));
                 }
             );
         }
@@ -94,7 +118,10 @@ const ImageUploaderContainer = ({ id, userId, imgUrl, replaceImgUrl, updateImage
     return (
         <>
             <Paper elevation={6} className={classes.paper}>
-                <div className={classes.divImg} style={{backgroundImage: `url(${imgUrl})`}}></div>
+                <div className={classes.divImg} style={{backgroundImage: `url(${imgUrl})`}}>
+                    {imageError ? <span className={classes.error}>{imageError}</span> : null}
+                    {isLoading ? <CircularProgress variant="determinate" value={loaderProgress} /> : null}
+                </div>
                 <input
                     accept="image/*"
                     className={classes.input}
