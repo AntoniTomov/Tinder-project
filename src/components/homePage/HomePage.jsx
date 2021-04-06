@@ -35,14 +35,16 @@ export default function HomePage () {
   const lowestAge = users.map(user => +user.age).sort((a, b) => a - b).filter(age => !isNaN(age))[0];
   const highestAge = users.map(user => +user.age).sort((a, b) => b - a).filter(age => !isNaN(age))[0];
   const [ageRange, setAgeRange] = useState([lowestAge, highestAge]);
-  const [genderValue, setGenderValue] = useState('');
+  const [genderValue, setGenderValue] = useState('all');
 
 
   useEffect(() => {
-    if(genderValue === 'reset') {
+    if(genderValue === 'all') {
       const usersSortedByAge = users.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1]);
       setCharacters(usersSortedByAge);
     } else {
+      console.log('genderValue', genderValue)
+      console.log('ageRange', ageRange)
       const usersSortedByAge = users.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1] && user.gender === genderValue);
       setCharacters(usersSortedByAge);
     }

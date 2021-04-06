@@ -169,11 +169,8 @@ export default function Matches() {
                     </CardContent>
                 </CardActionArea>
                 <CardActions className={classes.btnContainer}>
-                    <Button size="small" color="primary">
-                    Chat
-                    </Button>
                     <Button size="small" color="primary" onClick={() => dislikeUser(user.uid)}>
-                    Dislike
+                    Remove match
                     </Button>
                 </CardActions>
                     <Button className={styles.btnStyle} onClick={() => manageCards(user.uid)}>{moreDetailsCardKey === user.uid ? 'Show less' : 'Show more'}</Button>

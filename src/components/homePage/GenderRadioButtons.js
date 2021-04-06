@@ -15,7 +15,7 @@ export default function GenderRadioButtons({setGenderValue}) {
     },
   });
 
-  const [value, setValue] = React.useState('female');
+  const [value, setValue] = React.useState('all');
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -29,7 +29,7 @@ export default function GenderRadioButtons({setGenderValue}) {
         <FormControlLabel value="female" control={<Radio color="secondary"/>} label="Female" />
         <FormControlLabel value="male" control={<Radio color="primary"/>} label="Male" />
         <FormControlLabel value="other" control={<Radio color="default"/>} label="Other" />
-        <FormControlLabel value="reset" control={<Radio color="default"/>} label="Reset" />
+        <FormControlLabel value="all" control={<Radio color="default"/>} label="All" />
       </RadioGroup>
     </FormControl>
   );
