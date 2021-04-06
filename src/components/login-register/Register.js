@@ -316,7 +316,7 @@ export default function Register({ setCurrentUser }) {
                         <CssTextField
                             id="firstNameInput"
                             autoFocus
-                            error={firstNameError}
+                            error={!!firstNameError}
                             aria-describedby="firstName-reg-text-helper"
                             value={firstNameInput}
                             onChange={(ev) => changeInput(ev.target.value.trim(), 'firstName')}
@@ -327,7 +327,7 @@ export default function Register({ setCurrentUser }) {
                         <CssTextField
                             id="lastNameInput"
                             autoFocus
-                            error={lastNameError}
+                            error={!!lastNameError}
                             aria-describedby="lastName-reg-text-helper"
                             onChange={(ev) => changeInput(ev.target.value.trim(), 'lastName')}
                             label="Last name" variant="outlined" />
@@ -339,7 +339,7 @@ export default function Register({ setCurrentUser }) {
                             autoFocus
                             type="email"
                             aria-describedby="email-reg-text-helper"
-                            error={emailError}
+                            error={!!emailError}
                             value={emailInput}
                             onChange={(ev) => changeInput(ev.target.value.trim(), 'email')}
                             label="Email" variant="outlined" />
@@ -349,7 +349,7 @@ export default function Register({ setCurrentUser }) {
                         <InputLabel className="label" style={{ color: 'rgb(225, 225, 225)' }} htmlFor="password">Password</InputLabel>
                         <CssOutlinedInput
                             id="password"
-                            error={passwordError}
+                            error={!!passwordError}
                             value={passInput}
                             onChange={(ev) => changeInput(ev.target.value, 'password')}
                             label="Password"
@@ -375,7 +375,7 @@ export default function Register({ setCurrentUser }) {
                     <FormControl variant="outlined">
                         <CssTextField
                             id="age"
-                            error={ageError}
+                            error={!!ageError}
                             value={ageInput}
                             onChange={(ev) => changeInput(ev.target.value, 'age')}
                             label="How old are you?"
