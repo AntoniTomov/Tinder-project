@@ -1,5 +1,5 @@
-import React, { useState} from 'react';
-import { CssBaseline, InputLabel, OutlinedInput, FormControl, Container, TextField, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
+import React, { useState } from 'react';
+import { CssBaseline, InputLabel, OutlinedInput, FormControl, FormHelperText, Container, TextField, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import firebase, { db, auth } from '../../firebase';
 import { useDispatch } from 'react-redux';
@@ -13,6 +13,14 @@ const useStyles = makeStyles((theme) => ({
             margin: theme.spacing(1),
             width: '35ch',
         },
+        '& .MuiFormControl-root': {
+            '& .MuiFormHelperText-root.MuiFormHelperText-contained': {
+                color: 'red !important',
+                fontSize: '0.9rem',
+                padding: 0,
+                borderRadius: '0',
+            }
+        }
     },
     container: {
         marginTop: '1rem',
@@ -55,6 +63,13 @@ const CssTextField = withStyles({
         },
         '& .MuiFormHelperText-contained': {
             color: 'red',
+            fontSize: '0.9rem',
+            padding: 0,
+            borderRadius: '0',
+        },
+        // '& .MuiFormControl-root  .MuiFormHelperText-root.MuiFormHelperText-contained':{
+        '& #email-reg-text-helper.MuiFormHelperText-root.MuiFormHelperText-contained': {
+            color: 'red !important',
             fontSize: '0.9rem',
             padding: 0,
             borderRadius: '0',
@@ -118,6 +133,10 @@ export default function Register({ setCurrentUser }) {
         const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(emailInput)
     }
+    const validateName = (name) => {
+        const re = /[a-zA-Z][a-zA-Z ]{2,}/;
+        return re.test(name);
+    }
     const changeAllErrorsState = (firstNameErr, lastNameErr, emailErr, passwordErr, ageErr) => {
         setFirstNameError(firstNameErr);
         setLastNameError(lastNameErr);
@@ -133,15 +152,17 @@ export default function Register({ setCurrentUser }) {
         let emailErr = '';
         let ageErr = '';
         let passwordErr = '';
-        const emailIsValid = validateEmail(emailInput);
+        const isEmailValid = validateEmail(emailInput);
+        const isFirstNameValid = validateName(firstNameInput);
+        const isLastNameValid = validateName(lastNameInput);
 
-        if (firstNameInput.length <= 2) {
-            firstNameErr = 'Must be at least 3 chars';
+        if (!isFirstNameValid) {
+            firstNameErr = 'Must be at least 3 letters long!';
         }
-        if (lastNameInput.length <= 2) {
-            lastNameErr = 'Must be at least 3 chars';
+        if (!isLastNameValid) {
+            lastNameErr = 'Must be at least 3 letters long!';
         }
-        if (!emailIsValid) {
+        if (!isEmailValid) {
             emailErr = 'Email is badly formatted!';
         }
         if (ageInput < 18) {
@@ -291,35 +312,43 @@ export default function Register({ setCurrentUser }) {
             <CssBaseline />
             <Container className={classes.container} position="relative" align="center">
                 <form className={classes.root} noValidate autoComplete="off" onSubmit={register}>
-                    <CssTextField
-                        id="firstNameInput"
-                        autoFocus
-                        helperText={firstNameError}
-                        error={firstNameError}
-                        value={firstNameInput}
-                        onChange={(ev) => changeInput(ev.target.value.trim(), 'firstName')}
-                        label="First name" variant="outlined" />
-                    <CssTextField
-                        id="lastNameInput"
-                        autoFocus
-                        helperText={lastNameError}
-                        error={lastNameError}
-                        onChange={(ev) => changeInput(ev.target.value.trim(), 'lastName')}
-                        label="Last name" variant="outlined" />
-                    <CssTextField
-                        id="email"
-                        autoFocus
-                        type="email"
-                        helperText={emailError}
-                        error={emailError}
-                        value={emailInput}
-                        onChange={(ev) => changeInput(ev.target.value.trim(), 'email')}
-                        label="Email" variant="outlined" />
+                    <FormControl variant="outlined">
+                        <CssTextField
+                            id="firstNameInput"
+                            autoFocus
+                            error={firstNameError}
+                            aria-describedby="firstName-reg-text-helper"
+                            value={firstNameInput}
+                            onChange={(ev) => changeInput(ev.target.value.trim(), 'firstName')}
+                            label="First name" variant="outlined" />
+                        {!!firstNameError && <FormHelperText id="firstName-reg-text-helper">{firstNameError}</FormHelperText>}
+                    </FormControl>
+                    <FormControl variant="outlined">
+                        <CssTextField
+                            id="lastNameInput"
+                            autoFocus
+                            error={lastNameError}
+                            aria-describedby="lastName-reg-text-helper"
+                            onChange={(ev) => changeInput(ev.target.value.trim(), 'lastName')}
+                            label="Last name" variant="outlined" />
+                        {!!lastNameError && <FormHelperText id="lastName-reg-text-helper">{lastNameError}</FormHelperText>}
+                    </FormControl>
+                    <FormControl variant="outlined">
+                        <CssTextField
+                            id="email"
+                            autoFocus
+                            type="email"
+                            aria-describedby="email-reg-text-helper"
+                            error={emailError}
+                            value={emailInput}
+                            onChange={(ev) => changeInput(ev.target.value.trim(), 'email')}
+                            label="Email" variant="outlined" />
+                        {!!emailError && <FormHelperText id="email-reg-text-helper">{emailError}</FormHelperText>}
+                    </FormControl>
                     <FormControl variant="outlined">
                         <InputLabel className="label" style={{ color: 'rgb(225, 225, 225)' }} htmlFor="password">Password</InputLabel>
                         <CssOutlinedInput
                             id="password"
-                            helperText={passwordError}
                             error={passwordError}
                             value={passInput}
                             onChange={(ev) => changeInput(ev.target.value, 'password')}
@@ -327,6 +356,7 @@ export default function Register({ setCurrentUser }) {
                             variant="outlined"
                             type={isPassVisible ? 'text' : 'password'}
                             autoComplete="current-password"
+                            aria-describedby="password-reg-text-helper"
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -340,17 +370,21 @@ export default function Register({ setCurrentUser }) {
                                 </InputAdornment>
                             }
                         />
+                        {!!passwordError && <FormHelperText id="password-reg-text-helper">{passwordError}</FormHelperText>}
                     </FormControl>
-                    <CssTextField
-                        id="age"
-                        helperText={ageError}
-                        error={ageError}
-                        value={ageInput}
-                        onChange={(ev) => changeInput(ev.target.value, 'age')}
-                        label="How old are you?"
-                        variant="outlined"
-                        type="number"
-                    />
+                    <FormControl variant="outlined">
+                        <CssTextField
+                            id="age"
+                            error={ageError}
+                            value={ageInput}
+                            onChange={(ev) => changeInput(ev.target.value, 'age')}
+                            label="How old are you?"
+                            variant="outlined"
+                            type="number"
+                            aria-describedby="age-reg-text-helper"
+                        />
+                        {!!ageError && <FormHelperText id="age-reg-text-helper">{ageError}</FormHelperText>}
+                    </FormControl>
                     <Button variant="contained" color="primary" type='submit' disabled={!ageInput || !emailInput || !firstNameInput || !lastNameInput || passInput.length < 1} >Register</Button>
                     <Button variant="contained" color="primary" onClick={signInWithGoogle}>
                         <img className={classes.googleIcon} src="https://img.icons8.com/ios-filled/50/000000/google-logo.png" alt="google icon" />

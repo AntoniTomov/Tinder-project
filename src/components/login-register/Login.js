@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CssBaseline, Typography, InputLabel, OutlinedInput, FormControl, Container, TextField, Label, IconButton, InputAdornment, makeStyles, Button } from "@material-ui/core";
+import { CssBaseline, InputLabel, OutlinedInput, FormControl, Container, TextField, IconButton, InputAdornment, makeStyles, Button, FormHelperText } from "@material-ui/core";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { auth, db } from '../../firebase';
 import firebase from '../../firebase';
@@ -77,7 +77,7 @@ export default function Login() {
     const [passInput, setPassInput] = useState("");
     const [isPassVisible, setIsPassVisible] = useState(false);
     const [emailError, setEmailError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -97,7 +97,7 @@ export default function Login() {
     const validateForm = () => {
 
         let emailErr = '';
-        let passwordErr = '';
+        let passwordErr = false;
         const emailIsValid = validateEmail(emailInput);
 
 
@@ -106,7 +106,7 @@ export default function Login() {
         }
 
         if (passInput.length < 6) {
-            passwordErr = 'Must be at least 6 chars';
+            passwordErr = true;
         }
 
         if (emailErr || passwordErr) {
@@ -163,21 +163,26 @@ export default function Login() {
             <CssBaseline />
             <Container className={classes.container} position="relative" align="center">
                 <form className={classes.root} onSubmit={login} noValidate autoComplete="off">
+                <FormControl variant="outlined">
                     <CssTextField
                         id="email"
-                        fullWidth='true'
+                        fullWidth={true}
                         autoFocus
-                        helperText={emailError}
-                        error={emailError}
+                        // helperText={emailError}
+                        error={!!emailError}
+                        aria-describedby="email-login-text-helper"
                         onChange={changeEmailInput}
                         label="Username" variant="outlined" />
+                        {!! emailError && <FormHelperText id="email-login-text-helper">{emailError}</FormHelperText>}
+                        </FormControl>
                     <FormControl variant="outlined">
                         <InputLabel className="label" style={{ color: 'rgb(225, 225, 225)' }} htmlFor="password">Password</InputLabel>
                         <CssOutlinedInput
                             id="password"
-                            fullWidth='true'
-                            helperText={passwordError}
-                            error={passwordError}
+                            fullWidth={true}
+                            // helperText={passwordError}
+                            aria-describedby="password-login-text-helper"
+                            error={!!passwordError}
                             value={passInput}
                             onChange={changePasswordInput}
                             label="Password"
@@ -197,6 +202,7 @@ export default function Login() {
                                 </InputAdornment>
                             }
                         />
+                        {!! passwordError && <FormHelperText id="password-login-text-helper">Must be at least 6 chars!</FormHelperText>}
                     </FormControl>
                     <Button type='submit' variant="contained" color="primary">Login</Button>
                 </form>
