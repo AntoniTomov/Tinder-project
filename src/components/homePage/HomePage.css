@@ -9,7 +9,7 @@ h2 {
 
 .filtersContainer {
     position: absolute;
-    top: 6rem;
+    top: 9.7rem;
     left: 3rem;
     color: white;
 }
@@ -48,6 +48,10 @@ h2 {
     border-radius: 20px;
     height: 300px;
     box-shadow: 0px 0px 60px 0px rgba(0, 0, 0, 0.30);
+}
+.buttons button{
+    color: #e66465 !important;
+    background: rgb(225,225,225) !important;
 }
 
 .card {

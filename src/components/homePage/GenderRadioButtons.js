@@ -11,7 +11,7 @@ export default function GenderRadioButtons({setGenderValue}) {
     root: {
       '& legend':{
         color: 'white',
-      }
+      },
     },
   });
 

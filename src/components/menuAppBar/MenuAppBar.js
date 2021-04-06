@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     margin: `${theme.spacing(1)}px auto`,
     background: 'rgba(255,255,255,0.3)',
     padding: '0 10px',
+    minWidth: '120px',
   },
   logo: {
     width: '100px',
