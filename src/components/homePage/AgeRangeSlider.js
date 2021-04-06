@@ -31,6 +31,7 @@ export default function AgeRangeSlider({ lowestAge, highestAge, setAgeRange }) {
                 Age range
             </Typography>
             <Slider
+                style={{color: 'white'}}
                 orientation="vertical"
                 min={lowestAge+1}
                 max={highestAge}
