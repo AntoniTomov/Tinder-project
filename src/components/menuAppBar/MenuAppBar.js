@@ -13,7 +13,7 @@ import { auth } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux'
 
 
-import logo from './dinderTrans2.png'
+import logo from './DINDER-LOGO.png'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: '1',
     background: 'none',
     padding: `0 ${theme.spacing(3)}px`,
+    marginTop: 10,
   },
   title: {
     fontSize: '3rem',
@@ -89,9 +90,7 @@ export default function MenuAppBar() {
           alignItems='center'
         >
           <Grid item xs={1}>
-            <Paper className={classes.logoPaper} elevation={10}>
               <img src={logo} className={classes.logo} alt='logo'></img>
-            </Paper>
           </Grid>
           <Grid>
             <MenuIcon className={classes.menuIcon} aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenu} />

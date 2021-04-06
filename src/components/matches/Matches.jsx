@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
     expanded: {
         height: 'auto',
         position: 'fixed',
-        top: '50px',
+        top: '135px',
         left: '5%',
         zIndex: 2,
     },
@@ -131,10 +131,6 @@ export default function Matches() {
             .then(() => console.log("Successfully deleted the chatRoom for users: ", currentUserId, selectedUserId))
             .catch((err) => console.log("Error on chatRoom deleting: ", err))
     }
-
-    // if (isLoading) {
-    //     return <h2>THE PAGE IS LOADING...</h2>;
-    // }
 
     const updateChosenProfile = (user) => {
         dispatch({type: 'setChosenProfile', payload: user});
