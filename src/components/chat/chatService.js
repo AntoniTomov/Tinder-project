@@ -5,8 +5,5 @@ export const sentMessage = (chatId, userId, message) => {
     targetChatRef.update({
             messages: firebase.firestore.FieldValue.arrayUnion({ message: message, sender: userId, createdAt: Date.now() }),
             lastMessageTimestamp: Date.now(),
-            // timeStamp: firebase.firestore.FieldValue.serverTimestamp(),
         })
 }
-
-// export const updateIsTyping 

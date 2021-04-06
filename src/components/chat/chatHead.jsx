@@ -15,11 +15,11 @@ const useStyles = makeStyles(theme => ({
         fontSize: '8px',
     },
     active : {
-        background: 'rgba(255, 255, 255, 0.3)',
+        background: 'rgba(255, 255, 255, 0.4)',
         borderRadius: '2rem 0 0 2rem',
     },
     missed : {
-        background: 'red',
+        border: '2px solid #e66465'
     }
 }));
 
@@ -29,16 +29,9 @@ export default function ChatHead({ selectTargetChat,  chat, isActive  }) {
     const currentUserId = useSelector(state => state.currentUser.uid)
     const targetUserId  = chat.id.split('_').filter(id => id !== currentUserId).join('');
     const targetUser = allUsers.find(user => user.uid === targetUserId);
-
-
     const [currentChat, setCurrentChat] = useState(chat);
-    const [isTyping, setIsTyping] = useState(false);
-
     const [hasMissedMessages, setHasMissedMessages] = useState(false);
 
-
-
-    // Shte se podkara kogato chat ot propsa se promeni!!!
     useEffect(() => {
         if (chat.messages.length > 0) {
             let lastMessageSender = chat.messages[chat.messages.length - 1].sender;
@@ -50,20 +43,14 @@ export default function ChatHead({ selectTargetChat,  chat, isActive  }) {
                 setHasMissedMessages(false);
             }
         }
-        // if(chat.isTyping.includes(targetUserId)) {
-        //     setIsTyping(true)
-        // } else {
-        //     setIsTyping(false)
-        // }
     }, [chat, isActive, currentChat.messages.length])
     
-
     const handleChatOnClick = () => {
-        selectTargetChat(chat.id);
+        selectTargetChat(chat.id, targetUser);
     }
 
     return (
-        <span key={targetUser.id} style={hasMissedMessages ? {border: '2px solid red'} : {}} className={isActive ? styles['active'] : ''} onClick={e => handleChatOnClick(e)}>
+        <span key={targetUser.id} style={hasMissedMessages ? {borderRight: '3px solid #e66465'} : {}} className={isActive ? styles['active'] : ''} onClick={handleChatOnClick}>
             <Avatar className={styles.head} alt={targetUser.name} src={targetUser.images[0]} />
             {targetUser.name}
         </span>

@@ -169,7 +169,7 @@ function App() {
       {user.uid && isChatOpened && <Chat />}
       {user.uid &&
         <Paper className={styles.paper}>
-          <Tooltip title="Open Chat" className={styles.tooltip} arrow TransitionComponent={Zoom} placement='left'>
+          <Tooltip title={isChatOpened ? 'Close Chat':'Open Chat'} className={styles.tooltip} arrow TransitionComponent={Zoom} placement='top'>
             <Fab component="span" className={styles.smallBtn}>
               <InsertCommentIcon fontSize='large' onClick={showChat} />
             </Fab>
