@@ -97,7 +97,7 @@ export default function Chat() {
                 <div className={chatClasses.profilesInChat}>
                     <div className={chatClasses.innerDivChat}>
                         {
-                            allChats.map(chat => {
+                            allChats.length > 0 && allChats.map(chat => {
                                 return (<ChatHead 
                                     chat={chat}
                                     isActive={targetChatId === chat.id}

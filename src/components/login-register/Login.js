@@ -165,7 +165,7 @@ export default function Login() {
                 <form className={classes.root} onSubmit={login} noValidate autoComplete="off">
                     <CssTextField
                         id="email"
-                        fullWidth='true'
+                        fullWidth={true}
                         autoFocus
                         helperText={emailError}
                         error={emailError}
@@ -175,7 +175,7 @@ export default function Login() {
                         <InputLabel className="label" style={{ color: 'rgb(225, 225, 225)' }} htmlFor="password">Password</InputLabel>
                         <CssOutlinedInput
                             id="password"
-                            fullWidth='true'
+                            fullWidth={true}
                             helperText={passwordError}
                             error={passwordError}
                             value={passInput}

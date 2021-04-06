@@ -215,7 +215,7 @@ export default function HomePage () {
     db.collection('users').get()
     .then(res => res.forEach(doc => {
       doc.ref.update({
-        // liked: [],
+        liked: [],
         disliked: [],
         matches: [],
       })
@@ -226,7 +226,9 @@ export default function HomePage () {
       setCharacters(users);
     })
     // Here we are deleting ALL chats
-    // db.collection('chatRooms').set({});
+    let chatRoomsRef = db.collection('chatRooms');
+    chatRoomsRef.get()
+      .then(res => res.forEach(doc => chatRoomsRef.doc(doc.id).delete()));
   }
 
   const changeViewState = () => {
