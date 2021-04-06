@@ -69,35 +69,53 @@ function App() {
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
       if (user) {
-        db.collection('users').doc(user.uid).get().then(res => {
+        db.collection('users').doc(user.uid).get()
+        .then(res => {
           dispatch({
             type: 'userLoggedIn',
             payload: res.data()
           });
-          setIsLoading(false);
+      console.log('Dispatchnahme currentUser: ', res.data())
+          // setIsLoading(false);
+          // db.collection('users').onSnapshot(data => {
+          //   let users = [];
+          //   data.forEach(element => {
+          //     element.uid !== res.data().uid && users.push(element.data());
+          //   });
+          //   dispatch({
+          //     type: 'getAllUsers',
+          //     payload: users,
+          //   });
+          // })
         })
       } else {
         dispatch({
           type: 'userLoggedOut'
         });
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     });
   }, [])
 
   useEffect(() => {
-    db.collection('users').onSnapshot(res => {
-      let users = [];
-      res.forEach(element => {
-        element.uid !== user.uid && users.push(element.data());
-      });
-      // console.log('Tuk otnovo setvame users ot App.jsx: ', users)
-      dispatch({
-        type: 'getAllUsers',
-        payload: users,
-      });
-    })
-  }, [user])
+    if(user.uid) {
+      console.log('User ID na currentUser: ', user.uid)
+      db.collection('users').onSnapshot(res => {
+        let users = [];
+        res.forEach(element => {
+          element.uid !== user.uid && users.push(element.data());
+        });
+        // console.log('Tuk otnovo setvame users ot App.jsx: ', users)
+        dispatch({
+          type: 'getAllUsers',
+          payload: users,
+        });
+      console.log('Dispatchnahme tezi useri: ', users)
+        setIsLoading(false);
+      })
+    }
+
+  }, [user.uid])
 
   useEffect(() => {
     const choseUser = JSON.parse(window.localStorage.getItem('chosenProfile'))

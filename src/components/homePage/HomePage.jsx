@@ -38,22 +38,25 @@ export default function HomePage () {
   const [genderValue, setGenderValue] = useState('all');
 
   useEffect(() => {
-    if(genderValue === 'all') {
-      const usersSortedByAge = users.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1]);
-      setCharacters(usersSortedByAge);
-    } else {
-      const usersSortedByAge = users.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1] && user.gender === genderValue);
-      setCharacters(usersSortedByAge);
-    }
+    const filteredUsers = filterProfiles(users);
+    setCharacters(filteredUsers);
   }, [ageRange, genderValue])
 
-  useEffect(() => {
-    const filteredUsers = filterProfiles(users, currentUser);
-    setCharacters(filteredUsers);
-  }, [])
+  function setCharactersAfterFiltering(usersToFilter) {
+    const filteredUsers = filterProfiles(users);
+      setCharacters(filteredUsers);
+  }
   
-  function filterProfiles (allProfiles, currentUser) {
-    return allProfiles.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid)
+  function filterProfiles (allProfiles) {
+    const tempFilteredUsers =  allProfiles.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid)
+    let filteredUsers = [];
+
+    if(genderValue === 'all') {
+      filteredUsers = tempFilteredUsers.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1]);
+    } else {
+      filteredUsers = tempFilteredUsers.filter(user => user.age >= ageRange[0] && user.age <= ageRange[1] && user.gender === genderValue);
+    }
+    return filteredUsers;
   }
 
   const swiped = (direction, userIdToBeAdded) => {
@@ -170,7 +173,7 @@ export default function HomePage () {
       .then(() => {
         updateProfileMatches(currentUser.uid, userIdToBeAdded)
       })
-      const usersToPrint = filterProfiles(users, currentUser).filter(user => user.uid !== userIdToBeAdded);
+      const usersToPrint = filterProfiles(users).filter(user => user.uid !== userIdToBeAdded);
 
       setCharacters(usersToPrint);
   }
