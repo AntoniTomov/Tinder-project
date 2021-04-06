@@ -64,6 +64,7 @@ function App() {
 
   const user = useSelector(state => state.currentUser);
 
+
   //is a user still logged in
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
@@ -75,13 +76,11 @@ function App() {
           });
           setIsLoading(false);
         })
-        // console.log('ima lognat ')
       } else {
         dispatch({
           type: 'userLoggedOut'
         });
         setIsLoading(false);
-        // console.log('nqma lognat uj...')
       }
     });
   }, [])
@@ -99,6 +98,11 @@ function App() {
       });
     })
   }, [])
+
+  useEffect(() => {
+    const choseUser = JSON.parse(window.localStorage.getItem('chosenProfile'))
+    dispatch({type: 'setChosenProfile', payload: choseUser});
+}, [])
 
   if (isLoading) {
     return <div style={{ margin: 'calc(50vh - 100px) auto' }}>

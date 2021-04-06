@@ -137,7 +137,8 @@ export default function Matches() {
     // }
 
     const updateChosenProfile = (user) => {
-        dispatch({type: 'setChosenProfile', payload: user})
+        dispatch({type: 'setChosenProfile', payload: user});
+        window.localStorage.setItem('chosenProfile', JSON.stringify(user));
     }
 
     return (
