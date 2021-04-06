@@ -29,13 +29,14 @@ export default function HomePage () {
   const currentUser = useSelector(state => state.currentUser);
   const users = useSelector(state => state.allUsers);
   const [characters, setCharacters] = useState([]);
-  const [lastDirection, setLastDirection] = useState();
   const [isSwipeView, setIsSwipeView] = useState(true);
   const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
   const lowestAge = users.map(user => +user.age).sort((a, b) => a - b).filter(age => !isNaN(age))[0];
   const highestAge = users.map(user => +user.age).sort((a, b) => b - a).filter(age => !isNaN(age))[0];
   const [ageRange, setAgeRange] = useState([lowestAge, highestAge]);
   const [genderValue, setGenderValue] = useState('all');
+  const [swipeAction, setSwipeAction] = useState('');
+  const [swipedUserName, setSwipedUserName] = useState('');
 
   useEffect(() => {
     const filteredUsers = filterProfiles(users);
@@ -61,19 +62,28 @@ export default function HomePage () {
 
   const swiped = (direction, userIdToBeAdded) => {
     let arrProp = '';
+    let swipeAction = '';
     switch(direction){
-      case 'left' : arrProp = 'Disliked';
+      case 'left' :
+        arrProp = 'Disliked';
+        swipeAction = 'disliked';
       break;
-      case 'right' : arrProp = 'Liked';
+      case 'right' :
+        arrProp = 'Liked';
+        swipeAction = 'liked';
       break;
-      case 'up' : arrProp = 'Matches';
+      case 'up' :
+        arrProp = 'Matches';
+        swipeAction = 'matched';
       break;
-      case 'down' : arrProp = 'Disliked';
+      case 'down' : 
+        arrProp = 'Disliked';
+        swipeAction = 'disliked';
       break;
       default: break;
     }
     updateDB(arrProp, userIdToBeAdded);
-    setLastDirection(direction);
+    setSwipeAction(swipeAction);
     dispatch({type: 'addToRemoved', payload: userIdToBeAdded})
   }
 
@@ -246,6 +256,14 @@ export default function HomePage () {
     window.localStorage.setItem('chosenProfile', JSON.stringify(user));
   }
 
+  useEffect(() => {
+    if(alreadyRemoved.length > 0) {
+      const swipedId = alreadyRemoved[alreadyRemoved.length - 1]
+      const userNameToDisplay = users.find(user => user.uid === swipedId).name;
+      setSwipedUserName(userNameToDisplay);
+    }
+  }, [alreadyRemoved])
+
   return (
     <div style={{minWidth: '450px', color: 'white'}}>
       <Button onClick={resetCurrentUser} variant='contained' className={'resetButton'}>Reset currentUser</Button>
@@ -271,7 +289,7 @@ export default function HomePage () {
             <button onClick={() => swipe('left')}>Swipe left!</button>
             <button onClick={() => swipe('right')}>Swipe right!</button>
           </div>
-          {lastDirection ? <h3 key={lastDirection} className='infoText'>You swiped {lastDirection}</h3> : <h3 className='infoText'>Swipe a card or press a button to get started!</h3>}
+          {swipeAction ? <h3 key={swipeAction} className='infoText'>You {swipeAction} {swipedUserName}!</h3> : <h3 className='infoText'>Swipe a card or press a button to get started!</h3>}
         </div>
       ) : (
         <div>
