@@ -172,7 +172,7 @@ export default function Login() {
                         error={!!emailError}
                         aria-describedby="email-login-text-helper"
                         onChange={changeEmailInput}
-                        label="Username" variant="outlined" />
+                        label="Email" variant="outlined" />
                         {!! emailError && <FormHelperText id="email-login-text-helper">{emailError}</FormHelperText>}
                         </FormControl>
                     <FormControl variant="outlined">
