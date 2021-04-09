@@ -207,6 +207,7 @@ export default function HomePage () {
     }).then(() => {
       dispatch({ type: 'userLoggedIn', payload: {...currentUser, liked: [], disliked: [], matches: []} })
       console.log('Successfully reset currentUser: ', currentUser)
+      setCharacters(users);
     })
     db.collection('chatRooms').get()
     .then(res => res.forEach(doc => {
@@ -235,7 +236,7 @@ export default function HomePage () {
     .then(() => {
       
       dispatch({ type: 'getAllUsers', payload: users.map(user => user.matches = []) });
-      setCharacters(users);
+      setCharacters([...users]);
     })
     // Here we are deleting ALL chats
     let chatRoomsRef = db.collection('chatRooms');

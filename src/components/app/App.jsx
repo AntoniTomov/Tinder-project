@@ -57,65 +57,101 @@ function App() {
   const [isChatOpened, setIsChatOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const showChat = () => {
     setIsChatOpened(!isChatOpened);
   }
 
   const user = useSelector(state => state.currentUser);
-
+  const allUsers = useSelector(state => state.allUsers);
 
   //is a user still logged in
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
       if (user) {
-        db.collection('users').doc(user.uid).get()
-        .then(res => {
+        setIsLoading(true);
+        db.collection('users').doc(user.uid).get().then(res => {
           dispatch({
             type: 'userLoggedIn',
             payload: res.data()
           });
-      console.log('Dispatchnahme currentUser: ', res.data())
-          // setIsLoading(false);
-          // db.collection('users').onSnapshot(data => {
-          //   let users = [];
-          //   data.forEach(element => {
-          //     element.uid !== res.data().uid && users.push(element.data());
-          //   });
-          //   dispatch({
-          //     type: 'getAllUsers',
-          //     payload: users,
-          //   });
-          // })
         })
       } else {
         dispatch({
           type: 'userLoggedOut'
         });
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     });
   }, [])
 
+
+
   useEffect(() => {
     if(user.uid) {
-      console.log('User ID na currentUser: ', user.uid)
       db.collection('users').onSnapshot(res => {
-        let users = [];
-        res.forEach(element => {
-          element.uid !== user.uid && users.push(element.data());
-        });
-        // console.log('Tuk otnovo setvame users ot App.jsx: ', users)
-        dispatch({
-          type: 'getAllUsers',
-          payload: users,
-        });
-      console.log('Dispatchnahme tezi useri: ', users)
-        setIsLoading(false);
-      })
+      let users = [];
+      console.log('User ot useEffect-a na allUsers: ', user)
+      res.forEach(element => {
+        if(element.id !== user.uid) {
+          console.log('Vkarvame ei toq user: ', element)
+          users.push(element.data())
+        }
+      });
+      dispatch({
+        type: 'getAllUsers',
+        payload: users,
+      });
+      
+    })
+  }
+  }, [user.uid])
+
+  useEffect(() => {
+    if(allUsers.length > 0) {
+
+      console.log('Promenih se - i az sum isLoading!!! Date.noe()!@#', allUsers)
+      
+      setIsLoading(false);
     }
 
-  }, [user.uid])
+  }, [allUsers.length])
+
+  // useEffect(() => {
+  //   auth.onAuthStateChanged(function (user) {
+  //     if (user) {
+  //       db.collection('users').doc(user.uid).get()
+  //       .then(res => {
+  //         dispatch({
+  //           type: 'userLoggedIn',
+  //           payload: res.data()
+  //         });
+  //         setIsLoading(false);
+  //       })
+  //     } else {
+  //       dispatch({
+  //         type: 'userLoggedOut'
+  //       });
+  //       setIsLoading(false);
+  //     }
+  //   });
+  // }, [])
+
+  // useEffect(() => {
+  //   if(user.uid) {
+  //     console.log('User ID na currentUser: ', user.uid)
+  //     let users = [];
+  //     db.collection('users').onSnapshot(res => {
+  //       res.forEach(element => {
+  //         element.uid !== user.uid && users.push(element.data());
+  //       })
+  //       dispatch({
+  //         type: 'getAllUsers',
+  //         payload: users,
+  //         })
+  //         setIsLoading(false)
+  //       })
+  //     }
+  // }, [user.uid])
 
   useEffect(() => {
     const choseUser = JSON.parse(window.localStorage.getItem('chosenProfile'))

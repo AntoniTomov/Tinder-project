@@ -256,14 +256,16 @@ export default function Register({ setCurrentUser }) {
                 return userRef.set(obj)
                     .then(() => {
                         console.log("Document successfully updated! // syzdadoh takyv potrebitel");
+                        dispatch({ type: 'userLoggedIn', payload: obj });
                     })
                     .catch((error) => {
                         console.error("Error updating document: ", error);
                     });
             } else {
                 console.log('IVA VECHE takyv potrebirel, ne promenqm bazata')
+                dispatch({ type: 'userLoggedIn', payload: doc.data() });
             }
-            dispatch({ type: 'userLoggedIn', payload: obj });
+            // dispatch({ type: 'userLoggedIn', payload: obj });
         })
             .catch((error) => {
                 console.log("Error getting document:", error);
