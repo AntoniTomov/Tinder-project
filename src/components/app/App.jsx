@@ -58,35 +58,22 @@ function App() {
   const [isChatOpened, setIsChatOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const showChat = () => {
     setIsChatOpened(!isChatOpened);
   }
 
   const user = useSelector(state => state.currentUser);
+  const allUsers = useSelector(state => state.allUsers);
 
-
-  //is a user still logged in
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
       if (user) {
-        db.collection('users').doc(user.uid).get()
-        .then(res => {
+        setIsLoading(true);
+        db.collection('users').doc(user.uid).get().then(res => {
           dispatch({
             type: 'userLoggedIn',
             payload: res.data()
           });
-          setIsLoading(false);
-          db.collection('users').onSnapshot(data => {
-            let users = [];
-            data.forEach(element => {
-              element.uid !== res.data().uid && users.push(element.data());
-            });
-            dispatch({
-              type: 'getAllUsers',
-              payload: users,
-            });
-          })
         })
       } else {
         dispatch({
@@ -95,32 +82,38 @@ function App() {
         setIsLoading(false);
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    if(user.uid) {
-      console.log('User ID na currentUser: ', user.uid)
+    if (user.uid) {
       db.collection('users').onSnapshot(res => {
-        let users = [];
+        const users = [];
         res.forEach(element => {
-          element.uid !== user.uid && users.push(element.data());
+          if (element.id !== user.uid) {
+            console.log('Vkarvame ei toq user: ', element)
+            users.push(element.data())
+          }
         });
-        // console.log('Tuk otnovo setvame users ot App.jsx: ', users)
         dispatch({
           type: 'getAllUsers',
           payload: users,
         });
-      console.log('Dispatchnahme tezi useri: ', users)
-        setIsLoading(false);
       })
     }
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.uid])
 
   useEffect(() => {
+    if (allUsers.length > 0) {
+      setIsLoading(false);
+    }
+  }, [allUsers.length])
+
+  useEffect(() => {
     const choseUser = JSON.parse(window.localStorage.getItem('chosenProfile'))
-    dispatch({type: 'setChosenProfile', payload: choseUser});
-}, [])
+    dispatch({ type: 'setChosenProfile', payload: choseUser });
+  }, [])
 
   if (isLoading) {
     return <div style={{ margin: 'calc(50vh - 100px) auto' }}>
@@ -191,7 +184,7 @@ function App() {
       {user.uid && isChatOpened && <Chat />}
       {user.uid &&
         <Paper className={styles.paper}>
-          <Tooltip title={isChatOpened ? 'Close Chat':'Open Chat'} className={styles.tooltip} arrow TransitionComponent={Zoom} placement='top'>
+          <Tooltip title={isChatOpened ? 'Close Chat' : 'Open Chat'} className={styles.tooltip} arrow TransitionComponent={Zoom} placement='top'>
             <Fab component="span" className={styles.smallBtn}>
               <InsertCommentIcon fontSize='large' onClick={showChat} />
             </Fab>

@@ -76,7 +76,10 @@ export default function MenuAppBar() {
 
   const logout = () => {
     auth.signOut()
-    .then(dispatch({type: 'userLoggedOut'}))
+    .then(() => {
+      dispatch({type: 'userLoggedOut'});
+      dispatch({type: 'getAllUsers', payload: []});
+    })
     .catch(error => console.log(error.message))
   }
 

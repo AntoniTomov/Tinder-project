@@ -16,12 +16,17 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function ChatHead({ message }) {
+export default function Message({ message }) {
     const styles = useStyles();
     const allUsers = useSelector(state => state.allUsers);
     const user = useSelector(state => state.currentUser);
     const messageStyle = message.sender === user.uid ? 'sent' : 'received';
-    const userImage = allUsers.find(user => user.uid === message.sender)?.images[0];
+    let userImage = null;
+    if (message.sender === user.uid) {
+        userImage = user.images[0]
+    } else {
+        userImage = allUsers.find(user => user.uid === message.sender)?.images[0];
+    }
 
     return (
         <div className={[`${chatClasses.message} ${chatClasses[messageStyle]}`]}>
