@@ -51,6 +51,7 @@ const useStyles = makeStyles(theme => ({
 
 
 function App() {
+  console.log(process.env)
   const dispatch = useDispatch();
   const styles = useStyles();
 
@@ -75,24 +76,23 @@ function App() {
             type: 'userLoggedIn',
             payload: res.data()
           });
-      console.log('Dispatchnahme currentUser: ', res.data())
-          // setIsLoading(false);
-          // db.collection('users').onSnapshot(data => {
-          //   let users = [];
-          //   data.forEach(element => {
-          //     element.uid !== res.data().uid && users.push(element.data());
-          //   });
-          //   dispatch({
-          //     type: 'getAllUsers',
-          //     payload: users,
-          //   });
-          // })
+          setIsLoading(false);
+          db.collection('users').onSnapshot(data => {
+            let users = [];
+            data.forEach(element => {
+              element.uid !== res.data().uid && users.push(element.data());
+            });
+            dispatch({
+              type: 'getAllUsers',
+              payload: users,
+            });
+          })
         })
       } else {
         dispatch({
           type: 'userLoggedOut'
         });
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     });
   }, [])
