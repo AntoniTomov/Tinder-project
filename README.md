@@ -40,3 +40,7 @@ This is the final project for IT Talents season 12.
 ![image](https://user-images.githubusercontent.com/12417094/113817481-12fad000-977f-11eb-90da-ff3fe395bb98.png)
 
 ![image](https://user-images.githubusercontent.com/12417094/113817380-e6df4f00-977e-11eb-9737-4a651fc8410c.png)
+
+###### Presentation
+
+[ITTalents_Dinder_presentation.pdf](https://github.com/AntoniTomov/Tinder-project/files/6290076/ITTalents_Dinder_presentation.pdf)
