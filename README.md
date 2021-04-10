@@ -1,5 +1,5 @@
 ## Link to the Website
-https://antonitomov.github.io/Tinder-project/
+https://fir-project-d9b09.firebaseapp.com/
 
 ## Created by
 
