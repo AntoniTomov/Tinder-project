@@ -10,6 +10,27 @@ Viktor Karalulanov and Antoni Tomov
 Dinder is online dating website that allows users to anonymously swipe to like or dislike other profiles based on their photos, a small bio, and common interests. Once two users have 'matched', they can exchange messages.
 This is the final project for IT Talents season 12.
 
+## Technologies
+
+* Javascript
+* React
+* Redux
+* CSS modules
+* Material UI
+* Firebase
+
+## Features
+
+- Login / Register / Logout
+- Edit profile
+- Like / Dislike / Superlike with swiping
+- Like / Dislike with buttons
+- Filter users
+- View short info
+- View user's info
+- View my matches
+- Chat with matches
+
 ![image](https://user-images.githubusercontent.com/12417094/113817127-80f2c780-977e-11eb-93ed-1a67a0829924.png)
 
 ![image](https://user-images.githubusercontent.com/12417094/113817199-9f58c300-977e-11eb-87bc-455b5a19a1cf.png)
