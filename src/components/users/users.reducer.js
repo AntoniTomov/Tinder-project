@@ -6,6 +6,8 @@ const allUsersReducer = (state = initialState, action) => {
             return [
                 ...action.payload,
             ]
+        case 'resetAllUsers':
+            return initialState;
         default:
             return state;
     }
