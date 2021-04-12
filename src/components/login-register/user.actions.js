@@ -7,16 +7,14 @@ export const updateUserInfo = (diff, prop) => {
     }
 }
 
-export const changeUserData = (action, id, prop) => {
+// Check if you need this function:
+
+export const changeUserData = (arrProp, id) => {
 
     return (dispatch, getState) => {
         let user = getState().currentUser;
-        let data = user[prop];
-        if (action === 'add') {
-            data.push(id)
-        } else {
-            data = data.filter(user => user.uid !== id)
-        }
+        let data = user[arrProp];
+        data.push(id)
         dispatch({ type: 'changeUserData', payload: user })
     }
 }

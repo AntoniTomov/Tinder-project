@@ -51,7 +51,6 @@ const useStyles = makeStyles(theme => ({
 
 
 function App() {
-  console.log(process.env)
   const dispatch = useDispatch();
   const styles = useStyles();
 

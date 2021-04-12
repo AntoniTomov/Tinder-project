@@ -16,11 +16,11 @@ import firebase, { db } from '../../firebase';
 import { makeStyles } from '@material-ui/core/styles';
 import AgeRangeSlider from './AgeRangeSlider';
 import GenderRadioButtons from './GenderRadioButtons'
-
 import { updateAllUsers } from '../users/users.action';
 import { createChatRoom } from './Services';
-
 import { changeUserData } from '../login-register/user.actions';
+import { updateUserInFirebase } from './Services';
+import store from '../../redux/store'
 
 const useStyles = makeStyles({
   root: {
@@ -47,11 +47,6 @@ export default function HomePage () {
     const filteredUsers = filterProfiles(users);
     setCharacters(filteredUsers);
   }, [ageRange, genderValue])
-
-  function setCharactersAfterFiltering(usersToFilter) {
-    const filteredUsers = filterProfiles(users);
-      setCharacters(filteredUsers);
-  }
   
   function filterProfiles (allProfiles) {
     const tempFilteredUsers =  allProfiles.filter(user => !currentUser.liked.includes(user.uid) && !currentUser.disliked.includes(user.uid) && !currentUser.matches.includes(user.uid) && currentUser.uid !== user.uid)
@@ -68,21 +63,22 @@ export default function HomePage () {
   const swiped = (direction, userIdToBeAdded) => {
     let arrProp = '';
     let swipeAction = '';
+
     switch(direction){
       case 'left' :
-        arrProp = 'Disliked';
+        arrProp = 'disliked';
         swipeAction = 'disliked';
       break;
       case 'right' :
-        arrProp = 'Liked';
+        arrProp = 'liked';
         swipeAction = 'liked';
       break;
       case 'up' :
-        arrProp = 'Matches';
+        arrProp = 'matches';
         swipeAction = 'matched';
       break;
-      case 'down' : 
-        arrProp = 'Disliked';
+      case 'down' :
+        arrProp = 'disliked';
         swipeAction = 'disliked';
       break;
       default: break;
@@ -97,36 +93,34 @@ export default function HomePage () {
   }
 
   const updateProfileMatches = (userOneId, userTwoId) => {
-    dispatch(updateAllUsers(userOneId, userTwoId))
+    dispatch(updateAllUsers(userOneId, userTwoId));
     createChatRoom(userOneId, userTwoId);
-    dispatch({type: 'userAddedToMatches', payload: userTwoId});
-  }
-  
-  function updateDataBase(type, payload) {
-    dispatch({ type: type, payload: payload});
+    // dispatch({type: 'userAddedToMatches', payload: userTwoId});
   }
 
-  const updateDB = (arrProp, userIdToBeAdded) => {
-    
-    console.log('arrProp', arrProp)
-
-    arrProp !== 'Matches' && db.collection('users').doc(currentUser.uid).update({
-      [arrProp.toLowerCase()]: firebase.firestore.FieldValue.arrayUnion(userIdToBeAdded),
-    }).then(() => {
-      updateDataBase(`userAddedTo${arrProp}`, userIdToBeAdded)
+  function changeUserProps(arrProp, userIdToBeAdded) {
+    updateUserInFirebase(currentUser.uid, userIdToBeAdded, arrProp)
+    .then(() => {
+      dispatch(changeUserData(arrProp, userIdToBeAdded))
+      console.log('Update-nahme usera!!!')
     }).catch((error) => {
       console.error("Error updating document: ", error);
     });
 
-    outOfFrame(userIdToBeAdded)
+    if (arrProp === 'liked') {
+      const targetUserLiked = users.find(user => user.uid === userIdToBeAdded).liked;
+      console.log('targetUserLiked from homePage---->', targetUserLiked)
+      if (targetUserLiked.includes(currentUser.uid)) {
+        updateProfileMatches(currentUser.uid, userIdToBeAdded)
+      }
+    } else if(arrProp === 'matches') {
+      updateProfileMatches(currentUser.uid, userIdToBeAdded)
+    }
+  }
 
-    arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
-      .then(doc => {
-        if (doc.data().liked.includes(currentUser.uid)) {
-          updateProfileMatches(currentUser.uid, userIdToBeAdded)
-        }
-      })
-    arrProp === 'Matches' && updateProfileMatches(currentUser.uid, userIdToBeAdded)
+  const updateDB = (arrProp, userIdToBeAdded) => {
+    changeUserProps(arrProp, userIdToBeAdded);
+    outOfFrame(userIdToBeAdded);
   }
 
   const swipe = (dir) => {
@@ -139,32 +133,9 @@ export default function HomePage () {
   }
 
   const cardViewSwipe = (arrProp, userIdToBeAdded) => {
-    db.collection('users').doc(currentUser.uid).update({
-      [arrProp.toLowerCase()]: [...currentUser[arrProp.toLowerCase()], userIdToBeAdded],
-    }).then(() => {
-      const currentUserNewState = {
-        ...currentUser,
-        [arrProp.toLowerCase()]: [...currentUser[arrProp.toLowerCase()], userIdToBeAdded],
-      }
-      updateDataBase('userLoggedIn', currentUserNewState)
-    })
-    .catch((error) => {
-      console.error("Error updating document: ", error);
-    });
-
-    arrProp === 'Liked' && db.collection('users').doc(userIdToBeAdded).get()
-      .then(doc => {
-        if (doc.data().liked.includes(currentUser.uid)) {
-          updateProfileMatches(currentUser.uid, userIdToBeAdded)
-        }
-      })
-    arrProp === 'Matches' && db.collection('users').doc(userIdToBeAdded).get()
-      .then(() => {
-        updateProfileMatches(currentUser.uid, userIdToBeAdded)
-      })
-      const usersToPrint = filterProfiles(users).filter(user => user.uid !== userIdToBeAdded);
-
-      setCharacters(usersToPrint);
+    changeUserProps(arrProp, userIdToBeAdded);
+    const usersToPrint = filterProfiles(users).filter(user => user.uid !== userIdToBeAdded);
+    setCharacters(usersToPrint);
   }
 
   const resetCurrentUser = () => {
@@ -213,9 +184,8 @@ export default function HomePage () {
       })
     }))
     .then(() => {
-      
-      dispatch({ type: 'getAllUsers', payload: users.map(user => user.matches = []) });
-      setCharacters([...users]);
+      // TODO: reset Users on the page without refresh
+      setCharacters(users);
     })
     // Here we are deleting ALL chats
     let chatRoomsRef = db.collection('chatRooms');
@@ -295,10 +265,10 @@ export default function HomePage () {
                     </CardContent>
                   </CardActionArea>
                   <CardActions className="btnContainer">
-                    <Button size="small" color="primary" onClick={() => cardViewSwipe('Disliked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('disliked', user.uid)}>
                     Dislike
                     </Button>
-                    <Button size="small" color="primary" onClick={() => cardViewSwipe('Liked', user.uid)}>
+                    <Button size="small" color="primary" onClick={() => cardViewSwipe('liked', user.uid)}>
                     Like
                     </Button>
                   </CardActions>
