@@ -17,6 +17,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import AgeRangeSlider from './AgeRangeSlider';
 import GenderRadioButtons from './GenderRadioButtons'
 
+import { updateAllUsers } from '../users/users.action';
+import { createChatRoom } from './Services';
+
+import { changeUserData } from '../login-register/user.actions';
+
 const useStyles = makeStyles({
   root: {
     width: 300,
@@ -27,7 +32,7 @@ export default function HomePage () {
   const dispatch = useDispatch();
   const alreadyRemoved = useSelector(state => state.alreadyRemoved);
   const currentUser = useSelector(state => state.currentUser);
-  const users = useSelector(state => state.allUsers);
+  const users = useSelector(state => state.allUsers.allUsers);
   const [characters, setCharacters] = useState([]);
   const [isSwipeView, setIsSwipeView] = useState(true);
   const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
@@ -92,37 +97,11 @@ export default function HomePage () {
   }
 
   const updateProfileMatches = (userOneId, userTwoId) => {
-    db.collection('users').doc(userOneId).update({
-      matches: firebase.firestore.FieldValue.arrayUnion(userTwoId),
-    })
-
+    dispatch(updateAllUsers(userOneId, userTwoId))
     createChatRoom(userOneId, userTwoId);
-
-    db.collection('users').doc(userTwoId).update({
-      matches: firebase.firestore.FieldValue.arrayUnion(userOneId),
-    }).then(() => {
-      let updatedUsers = users.map(user => {
-        if (user.uid === userTwoId) {
-          user.matches = [...user.matches, userOneId];
-        }
-        return user;
-      });
-      updateDataBase( 'getAllUsers', updatedUsers);
-      updateDataBase( 'userAddedToMatches', userTwoId);
-    })
+    dispatch({type: 'userAddedToMatches', payload: userTwoId});
   }
-  // To be moved to Service file:
-  function createChatRoom(userOneId, userTwoId) {
-    const chatRoomDocId = userOneId > userTwoId ? `${userTwoId}_${userOneId}` : `${userOneId}_${userTwoId}`;
-    db.collection('chatRooms').doc(chatRoomDocId).set({
-      messages: [],
-      users: [userOneId, userTwoId],
-      isTyping: false, 
-    })
-      .then(() => console.log("Successfully created chatRoom with users: ", [userOneId, userTwoId]))
-      .catch((error) => console.log("Error on chatRoom creation: ", error.message))
-  }
-
+  
   function updateDataBase(type, payload) {
     dispatch({ type: type, payload: payload});
   }

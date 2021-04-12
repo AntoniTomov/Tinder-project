@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Message({ message }) {
     const styles = useStyles();
-    const allUsers = useSelector(state => state.allUsers);
+    const allUsers = useSelector(state => state.allUsers.allUsers);
     const user = useSelector(state => state.currentUser);
     const messageStyle = message.sender === user.uid ? 'sent' : 'received';
     let userImage = null;

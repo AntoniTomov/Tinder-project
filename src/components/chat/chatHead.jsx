@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChatHead({ selectTargetChat,  chat, isActive  }) {
     const styles = useStyles();
-    const allUsers = useSelector(state => state.allUsers);
+    const allUsers = useSelector(state => state.allUsers.allUsers);
     const currentUserId = useSelector(state => state.currentUser.uid)
     const targetUserId  = chat.id.split('_').filter(id => id !== currentUserId).join('');
     const targetUser = allUsers.find(user => user.uid === targetUserId);

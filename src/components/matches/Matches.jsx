@@ -75,7 +75,7 @@ export default function Matches() {
     const [moreDetailsCardKey, setMoreDetailsCardKey] = useState(-1);
     const currentUser = useSelector(state => state.currentUser);
     const [matches, setMatches] = useState([]);
-    const allUsers = useSelector(state => state.allUsers);
+    const allUsers = useSelector(state => state.allUsers.allUsers);
     const defaultProfilePic = 'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg';
     const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();

@@ -63,7 +63,7 @@ function App() {
   }
 
   const user = useSelector(state => state.currentUser);
-  const allUsers = useSelector(state => state.allUsers);
+  const allUsers = useSelector(state => state.allUsers.allUsers);
 
   useEffect(() => {
     auth.onAuthStateChanged(function (user) {
@@ -90,10 +90,7 @@ function App() {
       db.collection('users').onSnapshot(res => {
         const users = [];
         res.forEach(element => {
-          if (element.id !== user.uid) {
-            console.log('Vkarvame ei toq user: ', element)
             users.push(element.data())
-          }
         });
         dispatch({
           type: 'getAllUsers',

@@ -31,58 +31,12 @@ const userReducer = (state = initialState, action) => {
             }
         case 'userLoggedOut':
             return initialState;
-        case 'userChangedProfilePic':
+        case 'updateProfile': 
+            return action.payload;
+        case 'changeUserData' :
             return {
-                ...state,
-                images: action.payload,
+                ...action.payload
             }
-        case 'userChangedAboutYou':
-            return {
-                ...state,
-                aboutYou: action.payload,
-            }
-        case 'userChangedGender': {
-            return {
-                ...state,
-                gender: action.payload
-            }
-        }
-        case 'userChangedLivingIn': {
-            return {
-                ...state,
-                country: action.payload
-            }
-        }
-        case 'userChangedPassions': {
-            return {
-                ...state,
-                passions: action.payload
-            }
-        }
-        case 'userChangedOrientation': {
-            return {
-                ...state,
-                sexualOrientation: action.payload
-            }
-        }
-        case 'userChangedJobTitle': {
-            return {
-                ...state,
-                jobTitle: action.payload
-            }
-        }
-        case 'userChangedCompany': {
-            return {
-                ...state,
-                company: action.payload
-            }
-        }
-        case 'userChangedCollegeOrUni': {
-            return {
-                ...state,
-                collageOrUni: action.payload
-            }
-        }
         case 'userAddedToLiked': {
             return {
                 ...state,

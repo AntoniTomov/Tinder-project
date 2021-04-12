@@ -16,6 +16,7 @@ import ImageUploaderContainer from './imageUploader';
 
 import { db } from '../../firebase';
 import { useDispatch, useSelector } from 'react-redux';
+import { updateUserInfo } from '../login-register/user.actions';
 
 const useStyles = makeStyles({
     root: {
@@ -158,10 +159,7 @@ const Profile = () => {
             userRef.update({ aboutYou: e.target.value })
                 .then(() => {
                     console.log('Updated successfully');
-                    dispatch({
-                        type: 'userChangedAboutYou',
-                        payload: e.target.value
-                    });
+                    dispatch(updateUserInfo(e.target.value, 'aboutYou'))
 
                 })
                 .catch(error => {
@@ -180,10 +178,7 @@ const Profile = () => {
             userRef.update({ passions: value })
                 .then(() => {
                     console.log('Updated successfully')
-                    dispatch({
-                        type: 'userChangedPassions',
-                        payload: value
-                    });
+                    dispatch(updateUserInfo(value, 'passions'))
                 })
                 .catch(error => {
                     console.log('Error updating', error);
@@ -196,10 +191,7 @@ const Profile = () => {
         userRef.update({ gender: e.target.value })
             .then(() => {
                 console.log('updated successfully');
-                dispatch({
-                    type: 'userChangedGender',
-                    payload: e.target.value
-                })
+                dispatch(updateUserInfo(e.target.value, 'gender'))
             })
             .catch(error => {
                 console.log('Error updating', error);
@@ -211,10 +203,7 @@ const Profile = () => {
         userRef.update({ sexualOrientation: e.target.value })
             .then(() => {
                 console.log('updated successfully');
-                dispatch({
-                    type: 'userChangedOrientation',
-                    payload: e.target.value
-                })
+                dispatch(updateUserInfo(e.target.value, 'sexualOrientation'))
             })
             .catch(error => {
                 console.log('Error updating', error);
@@ -227,10 +216,7 @@ const Profile = () => {
         userRef.update({ country: `${region} ${e.target.value}` })
             .then(() => {
                 console.log('updated successfully');
-                dispatch({
-                    type: 'userChangedLivingIn',
-                    payload: `${region} ${e.target.value}`
-                });
+                dispatch(updateUserInfo(`${region} ${e.target.value}`, 'country'))
             })
             .catch(error => {
                 console.log('Error updating', error);
@@ -249,10 +235,7 @@ const Profile = () => {
             userRef.update({ jobTitle: e.target.value })
                 .then(() => {
                     console.log('Updated successfully');
-                    dispatch({
-                        type: 'userChangedJobTitle',
-                        payload: e.target.value
-                    });
+                    dispatch(updateUserInfo(e.target.value, 'jobTitle'))
                 })
                 .catch(error => {
                     console.log('Error updating', error);
@@ -268,10 +251,7 @@ const Profile = () => {
             userRef.update({ company: e.target.value })
                 .then(() => {
                     console.log('Updated successfully');
-                    dispatch({
-                        type: 'userChangedCompany',
-                        payload: e.target.value
-                    });
+                    dispatch(updateUserInfo(e.target.value, 'company'))
                 })
                 .catch(error => {
                     console.log('Error updating', error);
@@ -286,10 +266,7 @@ const Profile = () => {
             userRef.update({ collageOrUni: e.target.value })
                 .then(() => {
                     console.log('Updated successfully');
-                    dispatch({
-                        type: 'userChangedCollegeOrUni',
-                        payload: e.target.value
-                    });
+                    dispatch(updateUserInfo(e.target.value, 'collageOrUni'))
                 })
                 .catch(error => {
                     console.log('Error updating', error);
@@ -312,10 +289,7 @@ const Profile = () => {
         const replacedImageUrls = [...userImages];
         replacedImageUrls[index] = url;
         setUserImages(replacedImageUrls);
-        dispatch({
-            type: 'userChangedProfilePic',
-            payload: replacedImageUrls,
-        })
+        dispatch(updateUserInfo(replacedImageUrls, 'images'))
         return replacedImageUrls;
     }
 
