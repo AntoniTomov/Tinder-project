@@ -31,17 +31,55 @@ const useStyles = makeStyles({
 export default function HomePage () {
   const dispatch = useDispatch();
   const alreadyRemoved = useSelector(state => state.alreadyRemoved);
-  const currentUser = useSelector(state => state.currentUser);
+  let currentUser = useSelector(state => state.currentUser);
   const users = useSelector(state => state.allUsers.allUsers);
   const [characters, setCharacters] = useState([]);
   const [isSwipeView, setIsSwipeView] = useState(true);
   const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [characters.length]); 
+  // const childRefs = useMemo(() => Array(characters.length).fill(0).map(i => React.createRef()), [currentUser.disliked.length, characters.length]); 
   const lowestAge = users.map(user => +user.age).sort((a, b) => a - b).filter(age => !isNaN(age))[0];
   const highestAge = users.map(user => +user.age).sort((a, b) => b - a).filter(age => !isNaN(age))[0];
   const [ageRange, setAgeRange] = useState([lowestAge, highestAge]);
   const [genderValue, setGenderValue] = useState('all');
   const [swipeAction, setSwipeAction] = useState('');
   const [swipedUserName, setSwipedUserName] = useState('');
+  const [didCardLeave, setDidCardLeave] = useState(false);
+
+  function select(state) {
+    return state.allUsers.allUsers;
+  }
+
+  function getUpdatedCurrentUser() {
+    const prevCurrentUser = currentUser;
+    const allUsers = select(store.getState());
+    const newState = allUsers.find(user => user.uid === currentUser.uid)
+    const excludedUsers = allUsers.filter(user => newState.disliked.includes(user.uid) || newState.liked.includes(user.uid) || newState.matches.includes(user.uid));
+    const idsOfExcludedUsers = excludedUsers.map(user => user.uid);
+    if(prevCurrentUser.disliked.length !== newState.disliked.length) {
+      currentUser = {...newState};
+      console.log('currentUser: ', currentUser.disliked)
+      console.log('newState: ', newState.disliked)
+      if (didCardLeave) {
+        dispatch({type: 'setRemoved', payload: idsOfExcludedUsers})
+        const updatedUsers = filterProfiles(allUsers);
+        setCharacters(updatedUsers);
+        setDidCardLeave(false);
+        console.log('Setvame didCardLeave na False: ', didCardLeave)
+      }
+    } else {
+      setDidCardLeave(false);
+      console.log('Ne sme promenqli currentUser: ', prevCurrentUser, newState)
+    }
+  }
+
+  useEffect(() => {
+    const unsubscribe = store.subscribe(getUpdatedCurrentUser);
+    // if(didCardLeave) {
+    //   setDidCardLeave(false);
+    // }
+    console.log('!!!didCardLeave ot useEffect s unsubscribe e: ', didCardLeave)
+    return () => unsubscribe();
+  }, [didCardLeave])
 
   useEffect(() => {
     const filteredUsers = filterProfiles(users);
@@ -89,7 +127,9 @@ export default function HomePage () {
   }
 
   const outOfFrame = (userId) => {
-    console.log(userId + ' left the screen!!@#@!$!%@!$%#@^&#%&*@!$&^');
+    console.log('didCardLeave e: ', didCardLeave)
+    setDidCardLeave(true);
+    console.log('Setvame didCardLeave na TRUE: ', didCardLeave)
   }
 
   const updateProfileMatches = (userOneId, userTwoId) => {
@@ -120,7 +160,7 @@ export default function HomePage () {
 
   const updateDB = (arrProp, userIdToBeAdded) => {
     changeUserProps(arrProp, userIdToBeAdded);
-    outOfFrame(userIdToBeAdded);
+    // outOfFrame(userIdToBeAdded);
   }
 
   const swipe = (dir) => {
@@ -130,9 +170,11 @@ export default function HomePage () {
       const index = characters.map(person => person.uid).indexOf(toBeRemoved);
       childRefs[index].current.swipe(dir);
     }
+    
   }
 
   const cardViewSwipe = (arrProp, userIdToBeAdded) => {
+    // setDidCardLeave(true);
     changeUserProps(arrProp, userIdToBeAdded);
     const usersToPrint = filterProfiles(users).filter(user => user.uid !== userIdToBeAdded);
     setCharacters(usersToPrint);
@@ -225,7 +267,7 @@ export default function HomePage () {
           <link href='https://fonts.googleapis.com/css?family=Alatsi&display=swap' rel='stylesheet' />
           <h1 className={'homeTitle'}>React Tinder Card</h1>
           <div className='cardContainer'>
-            {characters.map((character, index) =>
+            {childRefs && childRefs.length > 0 && characters.map((character, index) =>
               <TinderCard ref={childRefs[index]} className='swipe' key={character.uid} onSwipe={(dir) => {
                 swiped(dir, character.uid, character.name);
                 }} onCardLeftScreen={() => outOfFrame(character.uid)}>
